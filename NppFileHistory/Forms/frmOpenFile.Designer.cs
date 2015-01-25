@@ -28,95 +28,104 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.tbxSearch = new System.Windows.Forms.TextBox();
+            this.lblSearch = new System.Windows.Forms.Label();
+            this.lbxFiles = new System.Windows.Forms.ListBox();
+            this.lblFullSelectedPath = new System.Windows.Forms.Label();
+            this.btnOpenSelected = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textBox1
+            // tbxSearch
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 34);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(449, 20);
-            this.textBox1.TabIndex = 0;
+            this.tbxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxSearch.Location = new System.Drawing.Point(12, 34);
+            this.tbxSearch.Name = "tbxSearch";
+            this.tbxSearch.Size = new System.Drawing.Size(286, 20);
+            this.tbxSearch.TabIndex = 0;
+            this.tbxSearch.TextChanged += new System.EventHandler(this.tbxSearch_TextChanged);
+            this.tbxSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxSearch_KeyDown);
             // 
-            // label1
+            // lblSearch
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(9, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(185, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Enter fragments separated by spaces:";
+            this.lblSearch.AutoSize = true;
+            this.lblSearch.Location = new System.Drawing.Point(9, 12);
+            this.lblSearch.Name = "lblSearch";
+            this.lblSearch.Size = new System.Drawing.Size(226, 13);
+            this.lblSearch.TabIndex = 1;
+            this.lblSearch.Text = "Enter search fragments (separated by spaces):";
             // 
-            // listBox1
+            // lbxFiles
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 64);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(555, 225);
-            this.listBox1.TabIndex = 2;
+            this.lbxFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbxFiles.DisplayMember = "Text";
+            this.lbxFiles.FormattingEnabled = true;
+            this.lbxFiles.Location = new System.Drawing.Point(12, 126);
+            this.lbxFiles.Name = "lbxFiles";
+            this.lbxFiles.Size = new System.Drawing.Size(514, 264);
+            this.lbxFiles.TabIndex = 2;
+            this.lbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
+            this.lbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
+            this.lbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
+            this.lbxFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxFiles_KeyDown);
             // 
-            // label2
+            // lblFullSelectedPath
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 297);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(524, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Some file paaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
-    "aaaaaath";
+            this.lblFullSelectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFullSelectedPath.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lblFullSelectedPath.Enabled = false;
+            this.lblFullSelectedPath.Location = new System.Drawing.Point(12, 62);
+            this.lblFullSelectedPath.Name = "lblFullSelectedPath";
+            this.lblFullSelectedPath.Size = new System.Drawing.Size(514, 56);
+            this.lblFullSelectedPath.TabIndex = 3;
             // 
-            // button1
+            // btnOpenSelected
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(368, 320);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Open selected";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnOpenSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenSelected.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpenSelected.Location = new System.Drawing.Point(328, 32);
+            this.btnOpenSelected.Name = "btnOpenSelected";
+            this.btnOpenSelected.Size = new System.Drawing.Size(93, 23);
+            this.btnOpenSelected.TabIndex = 4;
+            this.btnOpenSelected.Text = "Open selected";
+            this.btnOpenSelected.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btnCancel
             // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(474, 320);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(93, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(474, 33);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(93, 21);
-            this.comboBox1.TabIndex = 6;
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(434, 32);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(93, 23);
+            this.btnCancel.TabIndex = 5;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // frmOpenFile
             // 
+            this.AcceptButton = this.btnOpenSelected;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(579, 355);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(539, 405);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnOpenSelected);
+            this.Controls.Add(this.lblFullSelectedPath);
+            this.Controls.Add(this.lbxFiles);
+            this.Controls.Add(this.lblSearch);
+            this.Controls.Add(this.tbxSearch);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MinimumSize = new System.Drawing.Size(555, 444);
             this.Name = "frmOpenFile";
             this.Opacity = 0.9D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select recent file to open";
+            this.Load += new System.EventHandler(this.frmOpenFile_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -124,12 +133,11 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox tbxSearch;
+        private System.Windows.Forms.Label lblSearch;
+        private System.Windows.Forms.ListBox lbxFiles;
+        private System.Windows.Forms.Button btnOpenSelected;
+        private System.Windows.Forms.Button btnCancel;
+        public System.Windows.Forms.Label lblFullSelectedPath;
     }
 }

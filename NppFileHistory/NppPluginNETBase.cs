@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace NppPluginNET
 {
@@ -40,6 +41,14 @@ namespace NppPluginNET
             int curScintilla;
             Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
             return (curScintilla == 0) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
+        }
+
+        internal static string GetFilePathFromBufferID(uint bufferID)
+        {
+            StringBuilder sBfilePath = new StringBuilder(Win32.MAX_PATH);
+            Win32.SendMessage(PluginBase.nppData._nppHandle,
+                NppMsg.NPPM_GETFULLPATHFROMBUFFERID, (int)bufferID, sBfilePath);
+            return sBfilePath.ToString();
         }
         #endregion
     }

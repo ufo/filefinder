@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
-using NppPluginNET;
+using System.Windows.Forms;
 using NppPlugin.DllExport;
+using NppPluginNET;
 
 namespace NppFileHistory
 {
@@ -16,8 +18,16 @@ namespace NppFileHistory
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void setInfo(NppData notepadPlusData)
         {
-            PluginBase.nppData = notepadPlusData;
-            Main.CommandMenuInit();
+            try
+            {
+                PluginBase.nppData = notepadPlusData;
+                Main.CommandMenuInit();
+                Main.LoadSettings();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
@@ -45,16 +55,44 @@ namespace NppFileHistory
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static void beNotified(IntPtr notifyCode)
         {
-            SCNotification nc = (SCNotification)Marshal.PtrToStructure(notifyCode, typeof(SCNotification));
-            if (nc.nmhdr.code == (uint)NppMsg.NPPN_TBMODIFICATION)
+            try
             {
-                PluginBase._funcItems.RefreshItems();
-                Main.SetToolBarIcon();
+                SCNotification nc = (SCNotification)Marshal.PtrToStructure(notifyCode, typeof(SCNotification));
+                if (nc.nmhdr.code == (uint)NppMsg.NPPN_TBMODIFICATION)
+                {
+                    PluginBase._funcItems.RefreshItems();
+                    Main.SetToolBarIcon();
+                }
+                else if (nc.nmhdr.code == (uint)NppMsg.NPPN_SHUTDOWN)
+                {
+                    Main.SaveSettings();
+                    Marshal.FreeHGlobal(_ptrPluginName);
+                }
+                else if (nc.nmhdr.code == (uint)NppMsg.NPPN_FILEOPENED)
+                {
+                    string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
+                    if (File.Exists(filePath))
+                    {
+                        Main.RecentFiles.Remove(filePath);
+                    }
+                }
+                else if (nc.nmhdr.code == (uint)NppMsg.NPPN_FILEBEFORECLOSE)
+                {
+                    string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
+                    if (File.Exists(filePath))
+                    {
+                        Main.RecentFiles.Insert(0, filePath);
+                        if (Main.RecentFiles.Count > Main.maxHistoryLength)
+                        {
+                            Main.RecentFiles.RemoveRange(Main.maxHistoryLength,
+                                Main.RecentFiles.Count - Main.maxHistoryLength);
+                        }
+                    }
+                }
             }
-            else if (nc.nmhdr.code == (uint)NppMsg.NPPN_SHUTDOWN)
+            catch (Exception ex)
             {
-                Main.PluginCleanUp();
-                Marshal.FreeHGlobal(_ptrPluginName);
+                MessageBox.Show(ex.Message);
             }
         }
     }
