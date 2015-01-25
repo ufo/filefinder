@@ -31,9 +31,15 @@
             this.tbxSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.lbxFiles = new System.Windows.Forms.ListBox();
-            this.lblFullSelectedPath = new System.Windows.Forms.Label();
             this.btnOpenSelected = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
+            this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
+            this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbxSearch
@@ -42,7 +48,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxSearch.Location = new System.Drawing.Point(12, 34);
             this.tbxSearch.Name = "tbxSearch";
-            this.tbxSearch.Size = new System.Drawing.Size(286, 20);
+            this.tbxSearch.Size = new System.Drawing.Size(302, 20);
             this.tbxSearch.TabIndex = 0;
             this.tbxSearch.TextChanged += new System.EventHandler(this.tbxSearch_TextChanged);
             this.tbxSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxSearch_KeyDown);
@@ -65,23 +71,12 @@
             this.lbxFiles.FormattingEnabled = true;
             this.lbxFiles.Location = new System.Drawing.Point(12, 126);
             this.lbxFiles.Name = "lbxFiles";
-            this.lbxFiles.Size = new System.Drawing.Size(514, 264);
+            this.lbxFiles.Size = new System.Drawing.Size(514, 251);
             this.lbxFiles.TabIndex = 2;
             this.lbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
             this.lbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
             this.lbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
             this.lbxFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxFiles_KeyDown);
-            // 
-            // lblFullSelectedPath
-            // 
-            this.lblFullSelectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblFullSelectedPath.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.lblFullSelectedPath.Enabled = false;
-            this.lblFullSelectedPath.Location = new System.Drawing.Point(12, 62);
-            this.lblFullSelectedPath.Name = "lblFullSelectedPath";
-            this.lblFullSelectedPath.Size = new System.Drawing.Size(514, 56);
-            this.lblFullSelectedPath.TabIndex = 3;
             // 
             // btnOpenSelected
             // 
@@ -105,6 +100,58 @@
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
+            // tbxFullSelectedPath
+            // 
+            this.tbxFullSelectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxFullSelectedPath.Location = new System.Drawing.Point(12, 62);
+            this.tbxFullSelectedPath.Multiline = true;
+            this.tbxFullSelectedPath.Name = "tbxFullSelectedPath";
+            this.tbxFullSelectedPath.ReadOnly = true;
+            this.tbxFullSelectedPath.Size = new System.Drawing.Size(514, 56);
+            this.tbxFullSelectedPath.TabIndex = 6;
+            this.tbxFullSelectedPath.TabStop = false;
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblProgress,
+            this.pbProgress,
+            this.lblEmpty,
+            this.lblResult});
+            this.statusStrip.Location = new System.Drawing.Point(0, 383);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(539, 22);
+            this.statusStrip.TabIndex = 9;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(110, 17);
+            this.lblProgress.Text = "Searching for files...";
+            this.lblProgress.Visible = false;
+            // 
+            // pbProgress
+            // 
+            this.pbProgress.Enabled = false;
+            this.pbProgress.Name = "pbProgress";
+            this.pbProgress.Size = new System.Drawing.Size(200, 16);
+            this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.pbProgress.Visible = false;
+            // 
+            // lblResult
+            // 
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(68, 17);
+            this.lblResult.Text = "Result: 0 / 0";
+            // 
+            // lblEmpty
+            // 
+            this.lblEmpty.Name = "lblEmpty";
+            this.lblEmpty.Size = new System.Drawing.Size(113, 17);
+            this.lblEmpty.Spring = true;
+            // 
             // frmOpenFile
             // 
             this.AcceptButton = this.btnOpenSelected;
@@ -112,9 +159,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(539, 405);
+            this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.tbxFullSelectedPath);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpenSelected);
-            this.Controls.Add(this.lblFullSelectedPath);
             this.Controls.Add(this.lbxFiles);
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.tbxSearch);
@@ -124,8 +172,11 @@
             this.Opacity = 0.9D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Select recent file to open";
+            this.Text = "Select file to open";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmOpenFile_FormClosing);
             this.Load += new System.EventHandler(this.frmOpenFile_Load);
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,6 +189,11 @@
         private System.Windows.Forms.ListBox lbxFiles;
         private System.Windows.Forms.Button btnOpenSelected;
         private System.Windows.Forms.Button btnCancel;
-        public System.Windows.Forms.Label lblFullSelectedPath;
+        public System.Windows.Forms.TextBox tbxFullSelectedPath;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel lblProgress;
+        private System.Windows.Forms.ToolStripProgressBar pbProgress;
+        private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
+        private System.Windows.Forms.ToolStripStatusLabel lblResult;
     }
 }

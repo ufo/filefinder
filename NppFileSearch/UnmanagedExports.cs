@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -26,7 +27,7 @@ namespace NppFileSearch
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -37,9 +38,39 @@ namespace NppFileSearch
             return PluginBase._funcItems.NativePointer;
         }
 
+        const int NPEM_NPPFILESEARCH_HISTORY = 0x0101;
+        const int NPEM_NPPFILESEARCH_STRINGLIST = 0x0102;
+        const int NPEM_NPPFILESEARCH_DIRECTORY = 0x0103;
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
+            try
+            {
+                if (Message == (uint)NppMsg.NPPM_MSGTOPLUGIN)
+                {
+                    CommunicationInfo communicationInfo = (CommunicationInfo)Marshal.PtrToStructure(
+                        (IntPtr)lParam, typeof(CommunicationInfo));
+                    string srcModuleName = Marshal.PtrToStringAuto(communicationInfo.srcModuleName);
+                    if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_HISTORY)
+                    {
+                        Main.OpenFromFileHistory();
+                    }
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_STRINGLIST)
+                    {
+                        List<string> lstFiles = new ClikeStringArray(communicationInfo.info).ManagedStringsUnicode;
+                        Main.OpenFromStringList(srcModuleName, lstFiles);
+                    }
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_DIRECTORY)
+                    {
+                        string folderPath = Marshal.PtrToStringAuto(communicationInfo.info);
+                        Main.OpenFromDirectory(srcModuleName, folderPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return 1;
         }
 
@@ -92,7 +123,7 @@ namespace NppFileSearch
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

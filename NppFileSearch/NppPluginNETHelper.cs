@@ -193,6 +193,14 @@ namespace NppPluginNET
         public string pszModuleName;    // const TCHAR*: it's the plugin file name. It's used to identify the plugin
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CommunicationInfo
+    {
+        public int internalMsg;
+        public IntPtr srcModuleName;
+        public IntPtr info;				// defined by plugin
+    }
+
     public enum LangType
     {
         L_TEXT, L_PHP , L_C, L_CPP, L_CS, L_OBJC, L_JAVA, L_RC,
@@ -2186,6 +2194,7 @@ namespace NppPluginNET
     {
         IntPtr _nativeArray;
         List<IntPtr> _nativeItems;
+        public bool AutoDispose = false;
         bool _disposed = false;
 
         public ClikeStringArray(int num, int stringCapacity)
@@ -2199,6 +2208,7 @@ namespace NppPluginNET
                 _nativeItems.Add(item);
             }
             Marshal.WriteIntPtr((IntPtr)((int)_nativeArray + (num * IntPtr.Size)), IntPtr.Zero);
+            AutoDispose = true;
         }
         public ClikeStringArray(List<string> lstStrings)
         {
@@ -2211,6 +2221,19 @@ namespace NppPluginNET
                 _nativeItems.Add(item);
             }
             Marshal.WriteIntPtr((IntPtr)((int)_nativeArray + (lstStrings.Count * IntPtr.Size)), IntPtr.Zero);
+            AutoDispose = true;
+        }
+        public ClikeStringArray(IntPtr nativeArray)
+        {
+            _nativeArray = nativeArray;
+            _nativeItems = new List<IntPtr>();
+            IntPtr ptr = Marshal.ReadIntPtr(_nativeArray);
+            while (ptr != IntPtr.Zero)
+            {
+                _nativeItems.Add(ptr);
+                ptr = Marshal.ReadIntPtr(_nativeArray, (int)_nativeArray + (_nativeItems.Count * IntPtr.Size));
+            }
+            AutoDispose = false;
         }
 
         public IntPtr NativePointer { get { return _nativeArray; } }
@@ -2229,7 +2252,7 @@ namespace NppPluginNET
 
         public void Dispose()
         {
-            if (!_disposed)
+            if (AutoDispose && !_disposed)
             {
                 for (int i = 0; i < _nativeItems.Count; i++)
                     if (_nativeItems[i] != IntPtr.Zero) Marshal.FreeHGlobal(_nativeItems[i]);
