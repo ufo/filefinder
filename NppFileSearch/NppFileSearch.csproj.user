@@ -12,8 +12,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
-    <StartProgram>C:\Users\ufo\Desktop\NppFileHistory\Notepad++\notepad++.exe</StartProgram>
-    <StartWorkingDirectory>C:\Users\ufo\Desktop\NppFileHistory\Notepad++\</StartWorkingDirectory>
+    <StartProgram>C:\Users\ufo\Desktop\NppFileSearch\Notepad++\notepad++.exe</StartProgram>
+    <StartWorkingDirectory>C:\Users\ufo\Desktop\NppFileSearch\Notepad++\</StartWorkingDirectory>
     <StartArguments>-multiInst</StartArguments>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>

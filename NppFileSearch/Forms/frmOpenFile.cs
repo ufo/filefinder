@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace NppFileHistory
+namespace NppFileSearch
 {
     public partial class frmOpenFile : Form
     {

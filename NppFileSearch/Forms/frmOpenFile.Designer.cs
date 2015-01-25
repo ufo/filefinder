@@ -1,4 +1,4 @@
-﻿namespace NppFileHistory
+﻿namespace NppFileSearch
 {
     partial class frmOpenFile
     {

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using NppPlugin.DllExport;
 using NppPluginNET;
 
-namespace NppFileHistory
+namespace NppFileSearch
 {
     class UnmanagedExports
     {

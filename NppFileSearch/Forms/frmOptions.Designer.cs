@@ -1,4 +1,4 @@
-﻿namespace NppFileHistory
+﻿namespace NppFileSearch
 {
     partial class frmOptions
     {
@@ -154,7 +154,7 @@
             this.Name = "frmOptions";
             this.Opacity = 0.9D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "NppFileHistory";
+            this.Text = "NppFileSearch";
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

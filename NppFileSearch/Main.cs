@@ -9,12 +9,12 @@ using NppPluginNET;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace NppFileHistory
+namespace NppFileSearch
 {
     class Main
     {
         #region " Fields "
-        internal const string PluginName = "NppFileHistory";
+        internal const string PluginName = "NppFileSearch";
 
         const string OPENFROMFILEHISTORY = "Open from file history...";
         const string OPENLASTCLOSEDFILE = "Open last closed file";

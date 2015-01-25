@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace NppFileHistory
+namespace NppFileSearch
 {
     public partial class frmOptions : Form
     {
