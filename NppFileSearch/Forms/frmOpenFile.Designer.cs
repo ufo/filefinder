@@ -37,8 +37,8 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -140,17 +140,17 @@
             this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.pbProgress.Visible = false;
             // 
+            // lblEmpty
+            // 
+            this.lblEmpty.Name = "lblEmpty";
+            this.lblEmpty.Size = new System.Drawing.Size(456, 17);
+            this.lblEmpty.Spring = true;
+            // 
             // lblResult
             // 
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(68, 17);
             this.lblResult.Text = "Result: 0 / 0";
-            // 
-            // lblEmpty
-            // 
-            this.lblEmpty.Name = "lblEmpty";
-            this.lblEmpty.Size = new System.Drawing.Size(113, 17);
-            this.lblEmpty.Spring = true;
             // 
             // frmOpenFile
             // 

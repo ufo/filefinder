@@ -41,8 +41,10 @@ namespace NppFileSearch
 
         internal enum FilePathFormat
         {
-            FileNameFirst,
-            FullPath
+            FullPathFileNameFirst,
+            FullPath,
+            RelativePathFileNameFirst,
+            RelativePath
         }
         internal static FilePathFormat filePathFormat;
         #endregion
@@ -91,8 +93,7 @@ namespace NppFileSearch
             idTbbFunction = Win32.GetPrivateProfileInt("Options", "TbbFunction", 1/*OPENFROMFILEHISTORY*/, iniFilePath);
             maxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             caseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
-            filePathFormat = (Win32.GetPrivateProfileInt("Options", "FilePathFormat", 0, iniFilePath) == 0) ?
-                FilePathFormat.FileNameFirst : FilePathFormat.FullPath;
+            filePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "FilePathFormat", 0, iniFilePath);
 
             historyFilePath = Path.Combine(pluginConfigFolder, PluginName + ".txt");
             if (File.Exists(historyFilePath))
@@ -155,8 +156,10 @@ namespace NppFileSearch
             frmOptions.cbxTbbFunction.Items.AddRange(TbbFunctions.ToArray());
             frmOptions.cbxTbbFunction.SelectedIndex = idTbbFunction;
             frmOptions.cbxCaseSensitiveSearch.Checked = caseSensitiveSearch;
-            frmOptions.cbxFilePathFormat.Items.Add(FilePathFormat.FileNameFirst.ToString());
-            frmOptions.cbxFilePathFormat.Items.Add(FilePathFormat.FullPath.ToString());
+            foreach (string frmt in Enum.GetNames(typeof(FilePathFormat)))
+            {
+                frmOptions.cbxFilePathFormat.Items.Add(frmt);
+            }
             frmOptions.cbxFilePathFormat.SelectedIndex = (int)filePathFormat;
             if (frmOptions.ShowDialog() == DialogResult.OK)
             {

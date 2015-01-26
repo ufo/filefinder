@@ -54,18 +54,18 @@
             this.cbxTbbFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxTbbFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxTbbFunction.FormattingEnabled = true;
-            this.cbxTbbFunction.Location = new System.Drawing.Point(235, 50);
+            this.cbxTbbFunction.Location = new System.Drawing.Point(226, 50);
             this.cbxTbbFunction.Name = "cbxTbbFunction";
-            this.cbxTbbFunction.Size = new System.Drawing.Size(137, 21);
+            this.cbxTbbFunction.Size = new System.Drawing.Size(187, 21);
             this.cbxTbbFunction.TabIndex = 1;
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(280, 190);
+            this.btnCancel.Location = new System.Drawing.Point(322, 190);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(93, 23);
+            this.btnCancel.Size = new System.Drawing.Size(91, 23);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -74,9 +74,9 @@
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(174, 190);
+            this.btnSave.Location = new System.Drawing.Point(225, 190);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(93, 23);
+            this.btnSave.Size = new System.Drawing.Size(91, 23);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -93,14 +93,14 @@
             // nudMaxHistoryLength
             // 
             this.nudMaxHistoryLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxHistoryLength.Location = new System.Drawing.Point(235, 16);
+            this.nudMaxHistoryLength.Location = new System.Drawing.Point(226, 16);
             this.nudMaxHistoryLength.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.nudMaxHistoryLength.Name = "nudMaxHistoryLength";
-            this.nudMaxHistoryLength.Size = new System.Drawing.Size(137, 20);
+            this.nudMaxHistoryLength.Size = new System.Drawing.Size(187, 20);
             this.nudMaxHistoryLength.TabIndex = 9;
             // 
             // cbxCaseSensitiveSearch
@@ -108,9 +108,9 @@
             this.cbxCaseSensitiveSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxCaseSensitiveSearch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbxCaseSensitiveSearch.Location = new System.Drawing.Point(12, 84);
+            this.cbxCaseSensitiveSearch.Location = new System.Drawing.Point(11, 84);
             this.cbxCaseSensitiveSearch.Name = "cbxCaseSensitiveSearch";
-            this.cbxCaseSensitiveSearch.Size = new System.Drawing.Size(360, 24);
+            this.cbxCaseSensitiveSearch.Size = new System.Drawing.Size(403, 24);
             this.cbxCaseSensitiveSearch.TabIndex = 10;
             this.cbxCaseSensitiveSearch.Text = "Case sensitive history search";
             this.cbxCaseSensitiveSearch.UseVisualStyleBackColor = true;
@@ -120,9 +120,9 @@
             this.cbxFilePathFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxFilePathFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxFilePathFormat.FormattingEnabled = true;
-            this.cbxFilePathFormat.Location = new System.Drawing.Point(235, 118);
+            this.cbxFilePathFormat.Location = new System.Drawing.Point(226, 118);
             this.cbxFilePathFormat.Name = "cbxFilePathFormat";
-            this.cbxFilePathFormat.Size = new System.Drawing.Size(137, 21);
+            this.cbxFilePathFormat.Size = new System.Drawing.Size(187, 21);
             this.cbxFilePathFormat.TabIndex = 12;
             // 
             // lblFilePathFormat
@@ -140,7 +140,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(394, 227);
+            this.ClientSize = new System.Drawing.Size(434, 227);
             this.Controls.Add(this.cbxFilePathFormat);
             this.Controls.Add(this.lblFilePathFormat);
             this.Controls.Add(this.cbxCaseSensitiveSearch);
