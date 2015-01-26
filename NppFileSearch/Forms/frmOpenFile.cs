@@ -9,9 +9,12 @@ namespace NppFileSearch
     public partial class frmOpenFile : Form
     {
         string CallerName;
+        
         List<string> Files;
         Dictionary<string, Dictionary<string, string>> FormattedFiles;
+
         string lcaDirPath; // least common ancestor
+        
         BackgroundWorker bw = null;
 
         public frmOpenFile(string callerName, List<string> files)
@@ -189,16 +192,23 @@ namespace NppFileSearch
                 {
                     break;
                 }
+
                 foreach (string file in Directory.GetFiles(dir))
                 {
                     if (bw.CancellationPending == true)
                     {
                         break;
                     }
-                    lock (Files)
+
+                    if ((Main.includedFileExts.Count == 0) ||
+                        (Main.includedFileExts.Contains(Path.GetExtension(file).ToLower())))
                     {
-                        Files.Add(file);
+                        lock (Files)
+                        {
+                            Files.Add(file);
+                        }
                     }
+
                     FileCounter++;
                     if (FileCounter == 100)
                     {
@@ -210,6 +220,22 @@ namespace NppFileSearch
                         System.Threading.Thread.Sleep(1);
                     }
                 }
+                
+                foreach (string excl in Main.excludedDirs)
+                {
+                    string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
+                    if (_excl.Contains("\\"))
+                    {
+                        if (dir.ToLower().EndsWith(_excl))
+                            continue;
+                    }
+                    else
+                    {
+                        if (_excl == Path.GetDirectoryName(dir).ToLower())
+                            continue;
+                    }
+                }
+
                 GetFiles(dir);
             }
         }

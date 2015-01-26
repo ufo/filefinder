@@ -17,15 +17,17 @@ namespace NppFileSearch
         internal const string PluginName = "NppFileSearch";
 
         const string OPENFROMFILEHISTORY = "Open from file history...";
+        const string OPENFROMCURRENTFOLDERSTRUCTURE = "Open from current folder structure...";
         const string OPENLASTCLOSEDFILE = "Open last closed file";
         static List<string> TbbFunctions = new List<string>()
         {
             "None",
             OPENFROMFILEHISTORY,
+            OPENFROMCURRENTFOLDERSTRUCTURE,
             OPENLASTCLOSEDFILE
         };
         static int idTbbFunction;
-        static Bitmap tbBmp = Properties.Resources.history;
+        static Bitmap tbBmp = Properties.Resources.search;
 
         static string pluginFolder;
         static string pluginConfigFolder;
@@ -35,6 +37,8 @@ namespace NppFileSearch
         internal static int windowHeight;
         internal static int maxHistoryLength;
         internal static bool caseSensitiveSearch;
+        internal static List<string> includedFileExts;
+        internal static List<string> excludedDirs;
 
         static string historyFilePath;
         internal static List<string> RecentFiles = new List<string>() { };
@@ -53,14 +57,16 @@ namespace NppFileSearch
         internal static void CommandMenuInit()
         {
             PluginBase.SetCommand(0, OPENFROMFILEHISTORY, OpenFromFileHistory,
-                new ShortcutKey(true, false, true, Keys.O));
-            PluginBase.SetCommand(1, OPENLASTCLOSEDFILE, OpenLastClosedFile,
-                new ShortcutKey(true, true, true, Keys.O));
-            PluginBase.SetCommand(2, "", null);
-            PluginBase.SetCommand(3, "Options", ShowOptions);
-            PluginBase.SetCommand(4, "", null);
-            PluginBase.SetCommand(5, "Help", ShowHelp);
-            PluginBase.SetCommand(6, "About", ShowAbout);
+                new ShortcutKey(true, true, true, Keys.H));
+            PluginBase.SetCommand(1, OPENFROMCURRENTFOLDERSTRUCTURE, OpenFromCurrentFolderStructure,
+                new ShortcutKey(true, true, true, Keys.D));
+            PluginBase.SetCommand(2, OPENLASTCLOSEDFILE, OpenLastClosedFile,
+                new ShortcutKey(true, true, true, Keys.L));
+            PluginBase.SetCommand(3, "", null);
+            PluginBase.SetCommand(4, "Options", ShowOptions);
+            PluginBase.SetCommand(5, "", null);
+            PluginBase.SetCommand(6, "Help", ShowHelp);
+            PluginBase.SetCommand(7, "About", ShowAbout);
         }
         internal static void SetToolBarIcon()
         {
@@ -82,7 +88,7 @@ namespace NppFileSearch
             StringBuilder sbPluginFolder = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR,
                 Win32.MAX_PATH, sbPluginFolder);
-            pluginConfigFolder = sbPluginFolder.ToString();
+            pluginConfigFolder = Path.Combine(sbPluginFolder.ToString(), PluginName);
             if (!Directory.Exists(pluginConfigFolder)) Directory.CreateDirectory(pluginConfigFolder);
 
             iniFilePath = Path.Combine(pluginConfigFolder, PluginName + ".ini");
@@ -95,6 +101,15 @@ namespace NppFileSearch
             caseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
             filePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "FilePathFormat", 0, iniFilePath);
 
+            string filterFilePath = Path.Combine(pluginConfigFolder, PluginName + ".included-file-exts.txt");
+            includedFileExts = File.Exists(filterFilePath) ?
+                new List<string>(File.ReadAllLines(filterFilePath)) :
+                new List<string>() { };
+            filterFilePath = Path.Combine(pluginConfigFolder, PluginName + ".excluded-dirs.txt");
+            excludedDirs = File.Exists(filterFilePath) ?
+                new List<string>(File.ReadAllLines(filterFilePath)) :
+                new List<string>() { };
+
             historyFilePath = Path.Combine(pluginConfigFolder, PluginName + ".txt");
             if (File.Exists(historyFilePath))
             {
@@ -103,14 +118,17 @@ namespace NppFileSearch
         }
         internal static void SaveSettings()
         {
-            File.WriteAllLines(historyFilePath, RecentFiles);
-
             Win32.WritePrivateProfileString("Window", "Width", windowWidth.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Window", "Height", windowHeight.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "TbbFunction", idTbbFunction.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", maxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", caseSensitiveSearch ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "FilePathFormat", ((int)filePathFormat).ToString(), iniFilePath);
+
+            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + ".included-file-exts.txt"), includedFileExts);
+            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + ".excluded-dirs.txt"), excludedDirs);
+
+            File.WriteAllLines(historyFilePath, RecentFiles);
         }
         #endregion
 
@@ -123,6 +141,36 @@ namespace NppFileSearch
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     RecentFiles.Remove(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        internal static void OpenFromCurrentFolderStructure()
+        {
+            try
+            {
+                uint bufID = (uint)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
+                string filePath = PluginBase.GetFilePathFromBufferID(bufID);
+                string folderPath = "";
+                if (File.Exists(filePath))
+                {
+                    folderPath = Path.GetDirectoryName(filePath);
+                }
+                else
+                {
+                    folderPath = Environment.CurrentDirectory;
+                }
+                frmOpenFile frmOpenFile = new frmOpenFile("Current folder structure", folderPath);
+                if (frmOpenFile.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = frmOpenFile.tbxFullSelectedPath.Text;
+                    if (!string.IsNullOrEmpty(filePath))
+                    {
+                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                    }
                 }
             }
             catch (Exception ex)
@@ -152,6 +200,7 @@ namespace NppFileSearch
         internal static void ShowOptions()
         {
             frmOptions frmOptions = new frmOptions();
+            
             frmOptions.nudMaxHistoryLength.Value = maxHistoryLength;
             frmOptions.cbxTbbFunction.Items.AddRange(TbbFunctions.ToArray());
             frmOptions.cbxTbbFunction.SelectedIndex = idTbbFunction;
@@ -161,6 +210,9 @@ namespace NppFileSearch
                 frmOptions.cbxFilePathFormat.Items.Add(frmt);
             }
             frmOptions.cbxFilePathFormat.SelectedIndex = (int)filePathFormat;
+            frmOptions.tbxIncludedFileExt.Lines = includedFileExts.ToArray();
+            frmOptions.tbxExcludedDirs.Lines = excludedDirs.ToArray();
+
             if (frmOptions.ShowDialog() == DialogResult.OK)
             {
                 maxHistoryLength = (int)frmOptions.nudMaxHistoryLength.Value;
@@ -172,6 +224,8 @@ namespace NppFileSearch
                 idTbbFunction = frmOptions.cbxTbbFunction.SelectedIndex;
                 caseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
                 filePathFormat = (FilePathFormat)frmOptions.cbxFilePathFormat.SelectedIndex;
+                includedFileExts = new List<string>(frmOptions.tbxIncludedFileExt.Lines);
+                excludedDirs = new List<string>(frmOptions.tbxExcludedDirs.Lines);
             }
         }
         internal static void ShowHelp()

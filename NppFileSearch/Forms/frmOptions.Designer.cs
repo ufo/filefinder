@@ -37,7 +37,13 @@
             this.cbxCaseSensitiveSearch = new System.Windows.Forms.CheckBox();
             this.cbxFilePathFormat = new System.Windows.Forms.ComboBox();
             this.lblFilePathFormat = new System.Windows.Forms.Label();
+            this.tbxIncludedFileExt = new System.Windows.Forms.TextBox();
+            this.gbxIncludedFileExt = new System.Windows.Forms.GroupBox();
+            this.gbxExcludedDirs = new System.Windows.Forms.GroupBox();
+            this.tbxExcludedDirs = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).BeginInit();
+            this.gbxIncludedFileExt.SuspendLayout();
+            this.gbxExcludedDirs.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTbbFunction
@@ -63,9 +69,9 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(322, 190);
+            this.btnCancel.Location = new System.Drawing.Point(324, 347);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(91, 23);
+            this.btnCancel.Size = new System.Drawing.Size(89, 23);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -74,9 +80,9 @@
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(225, 190);
+            this.btnSave.Location = new System.Drawing.Point(226, 347);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(91, 23);
+            this.btnSave.Size = new System.Drawing.Size(89, 23);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -112,7 +118,7 @@
             this.cbxCaseSensitiveSearch.Name = "cbxCaseSensitiveSearch";
             this.cbxCaseSensitiveSearch.Size = new System.Drawing.Size(403, 24);
             this.cbxCaseSensitiveSearch.TabIndex = 10;
-            this.cbxCaseSensitiveSearch.Text = "Case sensitive history search";
+            this.cbxCaseSensitiveSearch.Text = "Case sensitive search filter";
             this.cbxCaseSensitiveSearch.UseVisualStyleBackColor = true;
             // 
             // cbxFilePathFormat
@@ -134,13 +140,59 @@
             this.lblFilePathFormat.TabIndex = 11;
             this.lblFilePathFormat.Text = "File path format";
             // 
+            // tbxIncludedFileExt
+            // 
+            this.tbxIncludedFileExt.AcceptsReturn = true;
+            this.tbxIncludedFileExt.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbxIncludedFileExt.Location = new System.Drawing.Point(6, 19);
+            this.tbxIncludedFileExt.Multiline = true;
+            this.tbxIncludedFileExt.Name = "tbxIncludedFileExt";
+            this.tbxIncludedFileExt.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbxIncludedFileExt.Size = new System.Drawing.Size(175, 115);
+            this.tbxIncludedFileExt.TabIndex = 14;
+            this.tbxIncludedFileExt.WordWrap = false;
+            // 
+            // gbxIncludedFileExt
+            // 
+            this.gbxIncludedFileExt.Controls.Add(this.tbxIncludedFileExt);
+            this.gbxIncludedFileExt.Location = new System.Drawing.Point(15, 165);
+            this.gbxIncludedFileExt.Name = "gbxIncludedFileExt";
+            this.gbxIncludedFileExt.Size = new System.Drawing.Size(187, 140);
+            this.gbxIncludedFileExt.TabIndex = 15;
+            this.gbxIncludedFileExt.TabStop = false;
+            this.gbxIncludedFileExt.Text = "Included file extensions:";
+            // 
+            // gbxExcludedDirs
+            // 
+            this.gbxExcludedDirs.Controls.Add(this.tbxExcludedDirs);
+            this.gbxExcludedDirs.Location = new System.Drawing.Point(226, 165);
+            this.gbxExcludedDirs.Name = "gbxExcludedDirs";
+            this.gbxExcludedDirs.Size = new System.Drawing.Size(187, 140);
+            this.gbxExcludedDirs.TabIndex = 16;
+            this.gbxExcludedDirs.TabStop = false;
+            this.gbxExcludedDirs.Text = "Excluded directories:";
+            // 
+            // tbxExcludedDirs
+            // 
+            this.tbxExcludedDirs.AcceptsReturn = true;
+            this.tbxExcludedDirs.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbxExcludedDirs.Location = new System.Drawing.Point(6, 19);
+            this.tbxExcludedDirs.Multiline = true;
+            this.tbxExcludedDirs.Name = "tbxExcludedDirs";
+            this.tbxExcludedDirs.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbxExcludedDirs.Size = new System.Drawing.Size(175, 115);
+            this.tbxExcludedDirs.TabIndex = 14;
+            this.tbxExcludedDirs.WordWrap = false;
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(434, 227);
+            this.ClientSize = new System.Drawing.Size(434, 384);
+            this.Controls.Add(this.gbxExcludedDirs);
+            this.Controls.Add(this.gbxIncludedFileExt);
             this.Controls.Add(this.cbxFilePathFormat);
             this.Controls.Add(this.lblFilePathFormat);
             this.Controls.Add(this.cbxCaseSensitiveSearch);
@@ -156,6 +208,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "NppFileSearch";
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).EndInit();
+            this.gbxIncludedFileExt.ResumeLayout(false);
+            this.gbxIncludedFileExt.PerformLayout();
+            this.gbxExcludedDirs.ResumeLayout(false);
+            this.gbxExcludedDirs.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,5 +228,9 @@
         public System.Windows.Forms.CheckBox cbxCaseSensitiveSearch;
         public System.Windows.Forms.ComboBox cbxFilePathFormat;
         private System.Windows.Forms.Label lblFilePathFormat;
+        private System.Windows.Forms.GroupBox gbxIncludedFileExt;
+        private System.Windows.Forms.GroupBox gbxExcludedDirs;
+        public System.Windows.Forms.TextBox tbxIncludedFileExt;
+        public System.Windows.Forms.TextBox tbxExcludedDirs;
     }
 }
