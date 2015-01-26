@@ -110,10 +110,27 @@ namespace NppFileSearch
                     if ((Main.filePathFormat == Main.FilePathFormat.FullPathFileNameFirst) ||
                         (Main.filePathFormat == Main.FilePathFormat.RelativePathFileNameFirst))
                     {
-                        f = f.Replace("...", ",,,");
+                        //f = f.Replace("...", ",,,");
                         string dirName = Path.GetDirectoryName(f);
+                        if (((dirName.Length == 1) && (dirName[0] == '\\')) ||
+                            ((dirName.Length > 1) && dirName.StartsWith("\\\\")))
+                        {
+                            dirName = dirName.Substring(1);
+                        }
+                        if (!string.IsNullOrEmpty(dirName))
+                        {
+                            dirName = string.Format(" ({0})", dirName);
+                        }
                         string fileName = Path.GetFileName(f);
-                        f = string.Format("{0} ({1})", fileName, dirName);
+                        f = fileName + dirName;
+                    }
+                    else if (Main.filePathFormat == Main.FilePathFormat.RelativePath)
+                    {
+                        if (((f.Length == 1) && (f[0] == '\\')) ||
+                            ((f.Length > 1) && f.StartsWith("\\\\")))
+                        {
+                            f = f.Substring(1);
+                        }
                     }
                     TextRenderer.MeasureText(f, Font, new System.Drawing.Size(tbxFullSelectedPath.Width - 20, 0),
                         TextFormatFlags.ModifyString | TextFormatFlags.PathEllipsis);
@@ -186,6 +203,34 @@ namespace NppFileSearch
         int FileCounter = 0;
         void GetFiles(string folderPath)
         {
+            foreach (string file in Directory.GetFiles(folderPath))
+            {
+                if (bw.CancellationPending == true)
+                {
+                    break;
+                }
+
+                if ((Main.includedFileExts.Count == 0) ||
+                    (Main.includedFileExts.Contains(Path.GetExtension(file).ToLower())))
+                {
+                    lock (Files)
+                    {
+                        Files.Add(file);
+                    }
+                }
+
+                FileCounter++;
+                if (FileCounter == 100)
+                {
+                    FileCounter = 0;
+                    bw.ReportProgress(0);
+                }
+                if (FileCounter % 2 == 0)
+                {
+                    System.Threading.Thread.Sleep(1);
+                }
+            }
+
             foreach (string dir in Directory.GetDirectories(folderPath))
             {
                 if (bw.CancellationPending == true)
@@ -193,50 +238,32 @@ namespace NppFileSearch
                     break;
                 }
 
-                foreach (string file in Directory.GetFiles(dir))
-                {
-                    if (bw.CancellationPending == true)
-                    {
-                        break;
-                    }
-
-                    if ((Main.includedFileExts.Count == 0) ||
-                        (Main.includedFileExts.Contains(Path.GetExtension(file).ToLower())))
-                    {
-                        lock (Files)
-                        {
-                            Files.Add(file);
-                        }
-                    }
-
-                    FileCounter++;
-                    if (FileCounter == 100)
-                    {
-                        FileCounter = 0;
-                        bw.ReportProgress(0);
-                    }
-                    if (FileCounter % 2 == 0)
-                    {
-                        System.Threading.Thread.Sleep(1);
-                    }
-                }
-                
+                bool skipDir = false;
                 foreach (string excl in Main.excludedDirs)
                 {
                     string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
                     if (_excl.Contains("\\"))
                     {
                         if (dir.ToLower().EndsWith(_excl))
-                            continue;
+                        {
+                            skipDir = true;
+                            break;
+                        }
                     }
                     else
                     {
-                        if (_excl == Path.GetDirectoryName(dir).ToLower())
-                            continue;
+                        if (_excl == Path.GetFileName(dir).ToLower())
+                        {
+                            skipDir = true;
+                            break;
+                        }
                     }
                 }
 
-                GetFiles(dir);
+                if (!skipDir)
+                {
+                    GetFiles(dir);
+                }
             }
         }
         void bw_DoWork(object sender, DoWorkEventArgs e)
