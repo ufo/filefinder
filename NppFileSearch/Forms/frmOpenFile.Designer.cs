@@ -68,11 +68,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbxFiles.DisplayMember = "Text";
+            this.lbxFiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lbxFiles.FormattingEnabled = true;
             this.lbxFiles.Location = new System.Drawing.Point(12, 126);
             this.lbxFiles.Name = "lbxFiles";
             this.lbxFiles.Size = new System.Drawing.Size(514, 251);
             this.lbxFiles.TabIndex = 2;
+            this.lbxFiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbxFiles_DrawItem);
             this.lbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
             this.lbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
             this.lbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
@@ -169,7 +171,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.MinimumSize = new System.Drawing.Size(555, 444);
             this.Name = "frmOpenFile";
-            this.Opacity = 0.9D;
+            this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select file to open";

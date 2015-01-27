@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -110,10 +111,9 @@ namespace NppFileSearch
                     if ((Main.filePathFormat == Main.FilePathFormat.FullPathFileNameFirst) ||
                         (Main.filePathFormat == Main.FilePathFormat.RelativePathFileNameFirst))
                     {
-                        //f = f.Replace("...", ",,,");
                         string dirName = Path.GetDirectoryName(f);
                         if (((dirName.Length == 1) && (dirName[0] == '\\')) ||
-                            ((dirName.Length > 1) && dirName.StartsWith("\\\\")))
+                            ((dirName.Length > 1) && (f[0] == '\\') && (f[1] != '\\')))
                         {
                             dirName = dirName.Substring(1);
                         }
@@ -127,12 +127,12 @@ namespace NppFileSearch
                     else if (Main.filePathFormat == Main.FilePathFormat.RelativePath)
                     {
                         if (((f.Length == 1) && (f[0] == '\\')) ||
-                            ((f.Length > 1) && f.StartsWith("\\\\")))
+                            ((f.Length > 1) && (f[0] == '\\') && (f[1] != '\\')))
                         {
                             f = f.Substring(1);
                         }
                     }
-                    TextRenderer.MeasureText(f, Font, new System.Drawing.Size(tbxFullSelectedPath.Width - 20, 0),
+                    TextRenderer.MeasureText(f, lbxFiles.Font, new System.Drawing.Size(tbxFullSelectedPath.Width - 20, 0),
                         TextFormatFlags.ModifyString | TextFormatFlags.PathEllipsis);
                     FormattedFiles[file]["TrimmedDisplay"] = f;
                 }
@@ -355,6 +355,38 @@ namespace NppFileSearch
             {
                 KeySendToLbx = false;
                 tbxSearch.Focus();
+            }
+        }
+
+        private void lbxFiles_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            e.DrawBackground();
+            e.DrawFocusRectangle();
+            ListViewItem lvi = lbxFiles.Items[e.Index] as ListViewItem;
+            String txt = lvi.Text;
+
+            int fontSwitchIndex;
+            SolidBrush firstBrush;
+            SolidBrush secondBrush;
+            if ((Main.filePathFormat == Main.FilePathFormat.FullPath) ||
+                (Main.filePathFormat == Main.FilePathFormat.RelativePath))
+            {
+                fontSwitchIndex = txt.LastIndexOf('\\') + 1;
+                firstBrush = new SolidBrush(Color.FromKnownColor(KnownColor.GrayText));
+                secondBrush = new SolidBrush(ForeColor);
+            }
+            else
+            {
+                fontSwitchIndex = txt.IndexOf(" (");
+                firstBrush = new SolidBrush(ForeColor);
+                secondBrush = new SolidBrush(Color.FromKnownColor(KnownColor.GrayText));
+            }
+
+            e.Graphics.DrawString(txt.Substring(0, fontSwitchIndex), lbxFiles.Font, firstBrush, e.Bounds.X, e.Bounds.Y);
+            if (txt.Length > fontSwitchIndex)
+            {
+                int pos = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font).Width;
+                e.Graphics.DrawString(txt.Substring(fontSwitchIndex), lbxFiles.Font, secondBrush, pos, e.Bounds.Y);
             }
         }
     }
