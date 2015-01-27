@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
 
@@ -52,6 +53,7 @@ namespace NppFileSearch
             Text = string.Format("{0}: {1}", CallerName, Text);
             Width = Main.windowWidth;
             Height = Main.windowHeight;
+            btnCaseSensitiveSearch.Checked = Main.caseSensitiveSearch;
         }
 
         void InitList()
@@ -132,7 +134,7 @@ namespace NppFileSearch
                             f = f.Substring(1);
                         }
                     }
-                    TextRenderer.MeasureText(f, lbxFiles.Font, new System.Drawing.Size(tbxFullSelectedPath.Width - 20, 0),
+                    TextRenderer.MeasureText(f, lbxFiles.Font, new System.Drawing.Size(lbxFiles.ClientSize.Width, 0),
                         TextFormatFlags.ModifyString | TextFormatFlags.PathEllipsis);
                     FormattedFiles[file]["TrimmedDisplay"] = f;
                 }
@@ -316,6 +318,7 @@ namespace NppFileSearch
         {
             ListViewItem lvi = (ListViewItem)lbxFiles.SelectedItem;
             tbxFullSelectedPath.Text = (string)lvi.Tag;
+            lbxFiles.Invalidate();
         }
         private void lbxFiles_DoubleClick(object sender, EventArgs e)
         {
@@ -358,6 +361,12 @@ namespace NppFileSearch
             }
         }
 
+        private void btnCaseSensitiveSearch_Click(object sender, EventArgs e)
+        {
+            Main.caseSensitiveSearch = btnCaseSensitiveSearch.Checked;
+            UpdateListBox();
+        }
+
         private void lbxFiles_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index >= 0)
@@ -368,21 +377,30 @@ namespace NppFileSearch
                 String txt = lvi.Text;
 
                 int fontSwitchIndex;
-                SolidBrush firstBrush;
-                SolidBrush secondBrush;
+                Color firstColor;
+                Color secondColor;
+                Color dimmedForeColor = Color.FromArgb(
+                            127 - ((127 - ForeColor.R) / 2),
+                            127 - ((127 - ForeColor.G) / 2),
+                            127 - ((127 - ForeColor.B) / 2));
+                Color dimmedHighlightText = Color.FromArgb(
+                            127 - ((127 - SystemColors.HighlightText.R) / 2),
+                            127 - ((127 - SystemColors.HighlightText.G) / 2),
+                            127 - ((127 - SystemColors.HighlightText.B) / 2));
+
                 if ((Main.filePathFormat == Main.FilePathFormat.FullPath) ||
                     (Main.filePathFormat == Main.FilePathFormat.RelativePath))
                 {
                     fontSwitchIndex = txt.LastIndexOf('\\') + 1;
                     if (e.Index == lbxFiles.SelectedIndex)
                     {
-                        firstBrush = new SolidBrush(Color.FromArgb(192, Color.FromKnownColor(KnownColor.HighlightText)));
-                        secondBrush = new SolidBrush(Color.FromKnownColor(KnownColor.HighlightText));
+                        firstColor = dimmedHighlightText;
+                        secondColor = SystemColors.HighlightText;
                     }
                     else
                     {
-                        firstBrush = new SolidBrush(Color.FromArgb(192, ForeColor));
-                        secondBrush = new SolidBrush(ForeColor);
+                        firstColor = dimmedForeColor;
+                        secondColor = ForeColor;
                     }
                 }
                 else
@@ -390,23 +408,25 @@ namespace NppFileSearch
                     fontSwitchIndex = txt.IndexOf(" (");
                     if (e.Index == lbxFiles.SelectedIndex)
                     {
-                        firstBrush = new SolidBrush(Color.FromKnownColor(KnownColor.HighlightText));
-                        secondBrush = new SolidBrush(Color.FromArgb(192, Color.FromKnownColor(KnownColor.HighlightText)));
+                        firstColor = SystemColors.HighlightText;
+                        secondColor = dimmedHighlightText;
                     }
                     else
                     {
-                        firstBrush = new SolidBrush(ForeColor);
-                        secondBrush = new SolidBrush(Color.FromArgb(192, ForeColor));
+                        firstColor = ForeColor;
+                        secondColor = dimmedForeColor;
                     }
                 }
                 if (fontSwitchIndex < 0)
                     fontSwitchIndex = txt.Length;
 
-                e.Graphics.DrawString(txt.Substring(0, fontSwitchIndex), lbxFiles.Font, firstBrush, e.Bounds.X, e.Bounds.Y);
+                TextRenderer.DrawText(e.Graphics, txt.Substring(0, fontSwitchIndex),
+                    lbxFiles.Font, e.Bounds.Location, firstColor);
                 if (txt.Length > fontSwitchIndex)
                 {
-                    int pos = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font).Width;
-                    e.Graphics.DrawString(txt.Substring(fontSwitchIndex), lbxFiles.Font, secondBrush, pos, e.Bounds.Y);
+                    SizeF sf = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font);
+                    TextRenderer.DrawText(e.Graphics, txt.Substring(fontSwitchIndex), lbxFiles.Font,
+                        new Point((int)sf.Width, e.Bounds.Y), secondColor);
                 }
             }
         }

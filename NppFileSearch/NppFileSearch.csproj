@@ -109,6 +109,9 @@
   <ItemGroup>
     <None Include="Properties\search.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\case_sensitive.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>

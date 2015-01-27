@@ -35,6 +35,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
@@ -117,6 +118,7 @@
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btnCaseSensitiveSearch,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
@@ -125,6 +127,15 @@
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(539, 22);
             this.statusStrip.TabIndex = 9;
+            // 
+            // btnCaseSensitiveSearch
+            // 
+            this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCaseSensitiveSearch.Image = global::NppFileSearch.Properties.Resources.case_sensitive;
+            this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
+            this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
+            this.btnCaseSensitiveSearch.Text = "Case sensitive search";
             // 
             // lblProgress
             // 
@@ -145,7 +156,7 @@
             // lblEmpty
             // 
             this.lblEmpty.Name = "lblEmpty";
-            this.lblEmpty.Size = new System.Drawing.Size(456, 17);
+            this.lblEmpty.Size = new System.Drawing.Size(433, 17);
             this.lblEmpty.Spring = true;
             // 
             // lblResult
@@ -197,5 +208,6 @@
         private System.Windows.Forms.ToolStripProgressBar pbProgress;
         private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
         private System.Windows.Forms.ToolStripStatusLabel lblResult;
+        private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
     }
 }
