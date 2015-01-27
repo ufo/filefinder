@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using NppPluginNET;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace NppFileSearch
 {
@@ -57,11 +56,11 @@ namespace NppFileSearch
         internal static void CommandMenuInit()
         {
             PluginBase.SetCommand(0, OPENFROMFILEHISTORY, OpenFromFileHistory,
-                new ShortcutKey(true, true, true, Keys.H));
+                new ShortcutKey(true, false, true, Keys.H));
             PluginBase.SetCommand(1, OPENFROMCURRENTFOLDERSTRUCTURE, OpenFromCurrentFolderStructure,
-                new ShortcutKey(true, true, true, Keys.D));
+                new ShortcutKey(true, false, true, Keys.O));
             PluginBase.SetCommand(2, OPENLASTCLOSEDFILE, OpenLastClosedFile,
-                new ShortcutKey(true, true, true, Keys.L));
+                new ShortcutKey(true, false, true, Keys.L));
             PluginBase.SetCommand(3, "", null);
             PluginBase.SetCommand(4, "Options", ShowOptions);
             PluginBase.SetCommand(5, "", null);

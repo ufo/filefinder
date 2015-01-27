@@ -360,33 +360,54 @@ namespace NppFileSearch
 
         private void lbxFiles_DrawItem(object sender, DrawItemEventArgs e)
         {
-            e.DrawBackground();
-            e.DrawFocusRectangle();
-            ListViewItem lvi = lbxFiles.Items[e.Index] as ListViewItem;
-            String txt = lvi.Text;
+            if (e.Index >= 0)
+            {
+                e.DrawBackground();
+                e.DrawFocusRectangle();
+                ListViewItem lvi = lbxFiles.Items[e.Index] as ListViewItem;
+                String txt = lvi.Text;
 
-            int fontSwitchIndex;
-            SolidBrush firstBrush;
-            SolidBrush secondBrush;
-            if ((Main.filePathFormat == Main.FilePathFormat.FullPath) ||
-                (Main.filePathFormat == Main.FilePathFormat.RelativePath))
-            {
-                fontSwitchIndex = txt.LastIndexOf('\\') + 1;
-                firstBrush = new SolidBrush(Color.FromKnownColor(KnownColor.GrayText));
-                secondBrush = new SolidBrush(ForeColor);
-            }
-            else
-            {
-                fontSwitchIndex = txt.IndexOf(" (");
-                firstBrush = new SolidBrush(ForeColor);
-                secondBrush = new SolidBrush(Color.FromKnownColor(KnownColor.GrayText));
-            }
+                int fontSwitchIndex;
+                SolidBrush firstBrush;
+                SolidBrush secondBrush;
+                if ((Main.filePathFormat == Main.FilePathFormat.FullPath) ||
+                    (Main.filePathFormat == Main.FilePathFormat.RelativePath))
+                {
+                    fontSwitchIndex = txt.LastIndexOf('\\') + 1;
+                    if (e.Index == lbxFiles.SelectedIndex)
+                    {
+                        firstBrush = new SolidBrush(Color.FromArgb(192, Color.FromKnownColor(KnownColor.HighlightText)));
+                        secondBrush = new SolidBrush(Color.FromKnownColor(KnownColor.HighlightText));
+                    }
+                    else
+                    {
+                        firstBrush = new SolidBrush(Color.FromArgb(192, ForeColor));
+                        secondBrush = new SolidBrush(ForeColor);
+                    }
+                }
+                else
+                {
+                    fontSwitchIndex = txt.IndexOf(" (");
+                    if (e.Index == lbxFiles.SelectedIndex)
+                    {
+                        firstBrush = new SolidBrush(Color.FromKnownColor(KnownColor.HighlightText));
+                        secondBrush = new SolidBrush(Color.FromArgb(192, Color.FromKnownColor(KnownColor.HighlightText)));
+                    }
+                    else
+                    {
+                        firstBrush = new SolidBrush(ForeColor);
+                        secondBrush = new SolidBrush(Color.FromArgb(192, ForeColor));
+                    }
+                }
+                if (fontSwitchIndex < 0)
+                    fontSwitchIndex = txt.Length;
 
-            e.Graphics.DrawString(txt.Substring(0, fontSwitchIndex), lbxFiles.Font, firstBrush, e.Bounds.X, e.Bounds.Y);
-            if (txt.Length > fontSwitchIndex)
-            {
-                int pos = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font).Width;
-                e.Graphics.DrawString(txt.Substring(fontSwitchIndex), lbxFiles.Font, secondBrush, pos, e.Bounds.Y);
+                e.Graphics.DrawString(txt.Substring(0, fontSwitchIndex), lbxFiles.Font, firstBrush, e.Bounds.X, e.Bounds.Y);
+                if (txt.Length > fontSwitchIndex)
+                {
+                    int pos = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font).Width;
+                    e.Graphics.DrawString(txt.Substring(fontSwitchIndex), lbxFiles.Font, secondBrush, pos, e.Bounds.Y);
+                }
             }
         }
     }
