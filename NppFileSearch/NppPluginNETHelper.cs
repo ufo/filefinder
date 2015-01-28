@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace NppPluginNET
@@ -2188,6 +2189,13 @@ namespace NppPluginNET
 
         [DllImport("kernel32")]
         public static extern void OutputDebugString(string lpOutputString);
+
+        public static bool FitsFileMask(string sFileName, string sFileMask)
+        {
+            String convertedMask = "^" + Regex.Escape(sFileMask).Replace("\\*", ".*").Replace("\\?", ".") + "$";
+            Regex regexMask = new Regex(convertedMask, RegexOptions.IgnoreCase);
+            return regexMask.IsMatch(sFileName);
+        }
     }
 
     public class ClikeStringArray : IDisposable

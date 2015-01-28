@@ -117,22 +117,26 @@ namespace NppFileSearch
                         foreach (string excl in Main.HistoryExcludedDirs)
                         {
                             string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
-                            if (_excl.Contains("\\"))
+                            if (_excl.Contains(":") || _excl.StartsWith("\\"))
+                            {
+                                if (dir.ToLower().StartsWith(_excl))
+                                    skipFile = true;
+                            }
+                            else if (_excl.Contains("\\"))
                             {
                                 if (dir.ToLower().EndsWith(_excl))
-                                {
                                     skipFile = true;
-                                    break;
-                                }
                             }
                             else
                             {
+                                //string[] _excls = _excl.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
+                                //string startsWith = "";
+                                //string endsWith = "";
                                 if (_excl == Path.GetFileName(dir).ToLower())
-                                {
                                     skipFile = true;
-                                    break;
-                                }
                             }
+                            if (skipFile)
+                                break;
                         }
 
                         if (!skipFile)

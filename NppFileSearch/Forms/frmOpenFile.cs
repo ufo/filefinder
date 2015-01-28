@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using NppPluginNET;
 
 namespace NppFileSearch
 {
@@ -240,12 +241,23 @@ namespace NppFileSearch
                     break;
                 }
 
-                if ((Main.DirSearchExcludedFileExts.Count == 0) ||
-                    (!Main.DirSearchExcludedFileExts.Contains(Path.GetExtension(file).ToLower())))
+                if (Main.DirSearchExcludedFileExts.Count > 0)
                 {
-                    lock (allFiles)
+                    bool skipFile = false;
+                    foreach (string _excl in Main.DirSearchExcludedFileExts)
                     {
-                        allFiles.Add(file);
+                        if (Win32.FitsFileMask(Path.GetFileName(file), _excl))
+                        {
+                            skipFile = true;
+                            break;
+                        }
+                    }
+                    if (!skipFile)
+                    {
+                        lock (allFiles)
+                        {
+                            allFiles.Add(file);
+                        }
                     }
                 }
 
