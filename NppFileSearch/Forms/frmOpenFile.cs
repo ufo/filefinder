@@ -18,6 +18,18 @@ namespace NppFileSearch
         string lcaDirPath; // least common ancestor
         
         BackgroundWorker bw = null;
+        int FileCounter;
+
+        Dictionary<Keys, string> EventKeys2SendKeys = new Dictionary<Keys, string>()
+        {
+            {Keys.Up, "{UP}"},
+            {Keys.Down, "{DOWN}"},
+            {Keys.PageUp, "{PGUP}"},
+            {Keys.PageDown, "{PGDN}"},
+            {Keys.Home, "{HOME}"},
+            {Keys.End, "{END}"},
+        };
+        bool KeySendToLbx = false;
 
         public frmOpenFile(string callerName, List<string> files)
         {
@@ -26,6 +38,8 @@ namespace NppFileSearch
             CallerName = callerName;
             Files = files;
             InitForm();
+
+            StartBackgroundWorker(null);
         }
         public frmOpenFile(string callerName, string folderPath)
         {
@@ -35,17 +49,9 @@ namespace NppFileSearch
             Files = new List<string>();
             InitForm();
 
-            lblProgress.Visible = true;
-            pbProgress.Visible = true;
-            pbProgress.Enabled = true;
+            btnCheckFilesExist.Visible = false;
 
-            bw = new BackgroundWorker();
-            bw.WorkerReportsProgress = true;
-            bw.WorkerSupportsCancellation = true;
-            bw.DoWork += bw_DoWork;
-            bw.ProgressChanged += bw_ProgressChanged;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
-            bw.RunWorkerAsync(folderPath);
+            StartBackgroundWorker(folderPath);
         }
 
         void InitForm()
@@ -54,6 +60,21 @@ namespace NppFileSearch
             Width = Main.windowWidth;
             Height = Main.windowHeight;
             btnCaseSensitiveSearch.Checked = Main.caseSensitiveSearch;
+            btnCheckFilesExist.Checked = Main.autoCheckFilesExist;
+        }
+        private void frmOpenFile_Load(object sender, EventArgs e)
+        {
+            InitList();
+            UpdateListBox();
+        }
+        private void frmOpenFile_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if ((bw != null) && bw.IsBusy)
+            {
+                bw.CancelAsync();
+            }
+            Main.windowWidth = Width;
+            Main.windowHeight = Height;
         }
 
         void InitList()
@@ -140,7 +161,6 @@ namespace NppFileSearch
                 }
             }
         }
-
         void UpdateListBox()
         {
             string pattern = tbxSearch.Text.Trim();
@@ -202,7 +222,22 @@ namespace NppFileSearch
             lblResult.Text = string.Format("Result: {0} / {1}", lbxFiles.Items.Count, FormattedFiles.Count);
         }
 
-        int FileCounter = 0;
+        void StartBackgroundWorker(object bwParam)
+        {
+            lblProgress.Visible = true;
+            pbProgress.Visible = true;
+            pbProgress.Enabled = true;
+
+            FileCounter = 0;
+
+            bw = new BackgroundWorker();
+            bw.WorkerReportsProgress = true;
+            bw.WorkerSupportsCancellation = true;
+            bw.DoWork += bw_DoWork;
+            bw.ProgressChanged += bw_ProgressChanged;
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.RunWorkerAsync(bwParam);
+        }
         void GetFiles(string folderPath)
         {
             foreach (string file in Directory.GetFiles(folderPath))
@@ -268,12 +303,55 @@ namespace NppFileSearch
                 }
             }
         }
+        void CheckFilesExist()
+        {
+            if (btnCheckFilesExist.Checked)
+            {
+                string[] _files;
+                lock (Files)
+                {
+                    _files = Files.ToArray();
+                }
+                foreach (string file in _files)
+                {
+                    if (bw.CancellationPending == true)
+                    {
+                        break;
+                    }
+
+                    if (!File.Exists(file))
+                    {
+                        lock (Files)
+                        {
+                            Files.Remove(file);
+                        }
+                    }
+
+                    FileCounter++;
+                    if (FileCounter == 10)
+                    {
+                        FileCounter = 0;
+                        bw.ReportProgress(0);
+                    }
+                    if (FileCounter % 2 == 0)
+                    {
+                        System.Threading.Thread.Sleep(1);
+                    }
+                }
+            }
+        }
         void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-                string folderPath = (string)e.Argument;
-                GetFiles(folderPath);
+                if (e.Argument is string)
+                {
+                    GetFiles((string)e.Argument);
+                }
+                else
+                {
+                    CheckFilesExist();
+                }
             }
             catch (Exception ex)
             {
@@ -294,26 +372,10 @@ namespace NppFileSearch
             UpdateListBox();
         }
 
-        private void frmOpenFile_Load(object sender, EventArgs e)
-        {
-            InitList();
-            UpdateListBox();
-        }
-        private void frmOpenFile_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if ((bw != null) && bw.IsBusy)
-            {
-                bw.CancelAsync();
-            }
-            Main.windowWidth = Width;
-            Main.windowHeight = Height;
-        }
-
         private void tbxSearch_TextChanged(object sender, EventArgs e)
         {
             UpdateListBox();
         }
-
         private void lbxFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListViewItem lvi = (ListViewItem)lbxFiles.SelectedItem;
@@ -332,17 +394,6 @@ namespace NppFileSearch
             InitList();
             UpdateListBox();
         }
-
-        Dictionary<Keys, string> EventKeys2SendKeys = new Dictionary<Keys, string>()
-        {
-            {Keys.Up, "{UP}"},
-            {Keys.Down, "{DOWN}"},
-            {Keys.PageUp, "{PGUP}"},
-            {Keys.PageDown, "{PGDN}"},
-            {Keys.Home, "{HOME}"},
-            {Keys.End, "{END}"},
-        };
-        bool KeySendToLbx = false;
         private void tbxSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (EventKeys2SendKeys.ContainsKey(e.KeyCode))
@@ -360,13 +411,16 @@ namespace NppFileSearch
                 tbxSearch.Focus();
             }
         }
-
         private void btnCaseSensitiveSearch_Click(object sender, EventArgs e)
         {
             Main.caseSensitiveSearch = btnCaseSensitiveSearch.Checked;
             UpdateListBox();
         }
-
+        private void btnCheckFilesExist_Click(object sender, EventArgs e)
+        {
+            Main.autoCheckFilesExist = btnCheckFilesExist.Checked;
+            StartBackgroundWorker(null);
+        }
         private void lbxFiles_DrawItem(object sender, DrawItemEventArgs e)
         {
             if (e.Index >= 0)

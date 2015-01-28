@@ -35,6 +35,7 @@ namespace NppFileSearch
         internal static int windowWidth;
         internal static int windowHeight;
         internal static int maxHistoryLength;
+        internal static bool autoCheckFilesExist;
         internal static bool caseSensitiveSearch;
         internal static List<string> includedFileExts;
         internal static List<string> excludedDirs;
@@ -98,6 +99,7 @@ namespace NppFileSearch
             idTbbFunction = Win32.GetPrivateProfileInt("Options", "TbbFunction", 1/*OPENFROMFILEHISTORY*/, iniFilePath);
             maxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             caseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
+            autoCheckFilesExist = (Win32.GetPrivateProfileInt("Options", "AutoCheckFilesExist", 0, iniFilePath) == 1);
             filePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "FilePathFormat", 0, iniFilePath);
 
             string filterFilePath = Path.Combine(pluginConfigFolder, PluginName + ".included-file-exts.txt");
@@ -109,7 +111,7 @@ namespace NppFileSearch
                 new List<string>(File.ReadAllLines(filterFilePath)) :
                 new List<string>() { };
 
-            historyFilePath = Path.Combine(pluginConfigFolder, PluginName + ".txt");
+            historyFilePath = Path.Combine(pluginConfigFolder, PluginName + ".history.txt");
             if (File.Exists(historyFilePath))
             {
                 RecentFiles = new List<string>(File.ReadAllLines(historyFilePath));
@@ -122,6 +124,7 @@ namespace NppFileSearch
             Win32.WritePrivateProfileString("Options", "TbbFunction", idTbbFunction.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", maxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", caseSensitiveSearch ? "1" : "0", iniFilePath);
+            Win32.WritePrivateProfileString("Options", "AutoCheckFilesExist", autoCheckFilesExist ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "FilePathFormat", ((int)filePathFormat).ToString(), iniFilePath);
 
             File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + ".included-file-exts.txt"), includedFileExts);
@@ -199,8 +202,7 @@ namespace NppFileSearch
         internal static void ShowOptions()
         {
             frmOptions frmOptions = new frmOptions();
-            
-            frmOptions.nudMaxHistoryLength.Value = maxHistoryLength;
+
             frmOptions.cbxTbbFunction.Items.AddRange(TbbFunctions.ToArray());
             frmOptions.cbxTbbFunction.SelectedIndex = idTbbFunction;
             frmOptions.cbxCaseSensitiveSearch.Checked = caseSensitiveSearch;
@@ -209,21 +211,28 @@ namespace NppFileSearch
                 frmOptions.cbxFilePathFormat.Items.Add(frmt);
             }
             frmOptions.cbxFilePathFormat.SelectedIndex = (int)filePathFormat;
-            frmOptions.tbxIncludedFileExt.Lines = includedFileExts.ToArray();
+
+            frmOptions.nudMaxHistoryLength.Value = maxHistoryLength;
+            frmOptions.cbxAutoCheckFilesExist.Checked = autoCheckFilesExist;
+
+            frmOptions.tbxIncludedFileExts.Lines = includedFileExts.ToArray();
             frmOptions.tbxExcludedDirs.Lines = excludedDirs.ToArray();
 
             if (frmOptions.ShowDialog() == DialogResult.OK)
             {
+                idTbbFunction = frmOptions.cbxTbbFunction.SelectedIndex;
+                caseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
+                filePathFormat = (FilePathFormat)frmOptions.cbxFilePathFormat.SelectedIndex;
+
                 maxHistoryLength = (int)frmOptions.nudMaxHistoryLength.Value;
                 if (RecentFiles.Count > maxHistoryLength)
                 {
                     RecentFiles.RemoveRange(maxHistoryLength,
                         RecentFiles.Count - maxHistoryLength);
                 }
-                idTbbFunction = frmOptions.cbxTbbFunction.SelectedIndex;
-                caseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
-                filePathFormat = (FilePathFormat)frmOptions.cbxFilePathFormat.SelectedIndex;
-                includedFileExts = new List<string>(frmOptions.tbxIncludedFileExt.Lines);
+                autoCheckFilesExist = frmOptions.cbxAutoCheckFilesExist.Checked;
+
+                includedFileExts = new List<string>(frmOptions.tbxIncludedFileExts.Lines);
                 excludedDirs = new List<string>(frmOptions.tbxExcludedDirs.Lines);
             }
         }

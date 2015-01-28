@@ -40,6 +40,7 @@
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnCheckFilesExist = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,6 +120,7 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCaseSensitiveSearch,
+            this.btnCheckFilesExist,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
@@ -130,33 +132,35 @@
             // 
             // btnCaseSensitiveSearch
             // 
+            this.btnCaseSensitiveSearch.CheckOnClick = true;
             this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnCaseSensitiveSearch.Image = global::NppFileSearch.Properties.Resources.case_sensitive;
             this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
             this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
             this.btnCaseSensitiveSearch.Text = "Case sensitive search";
+            this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
             // 
             // lblProgress
             // 
             this.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblProgress.Name = "lblProgress";
-            this.lblProgress.Size = new System.Drawing.Size(110, 17);
-            this.lblProgress.Text = "Searching for files...";
+            this.lblProgress.Size = new System.Drawing.Size(83, 17);
+            this.lblProgress.Text = "Updating list...";
             this.lblProgress.Visible = false;
             // 
             // pbProgress
             // 
             this.pbProgress.Enabled = false;
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(200, 16);
+            this.pbProgress.Size = new System.Drawing.Size(227, 16);
             this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.pbProgress.Visible = false;
             // 
             // lblEmpty
             // 
             this.lblEmpty.Name = "lblEmpty";
-            this.lblEmpty.Size = new System.Drawing.Size(433, 17);
+            this.lblEmpty.Size = new System.Drawing.Size(410, 17);
             this.lblEmpty.Spring = true;
             // 
             // lblResult
@@ -164,6 +168,17 @@
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(68, 17);
             this.lblResult.Text = "Result: 0 / 0";
+            // 
+            // btnCheckFilesExist
+            // 
+            this.btnCheckFilesExist.CheckOnClick = true;
+            this.btnCheckFilesExist.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCheckFilesExist.Image = global::NppFileSearch.Properties.Resources.file_check;
+            this.btnCheckFilesExist.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCheckFilesExist.Name = "btnCheckFilesExist";
+            this.btnCheckFilesExist.Size = new System.Drawing.Size(23, 20);
+            this.btnCheckFilesExist.Text = "Check if files exist";
+            this.btnCheckFilesExist.Click += new System.EventHandler(this.btnCheckFilesExist_Click);
             // 
             // frmOpenFile
             // 
@@ -209,5 +224,6 @@
         private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
         private System.Windows.Forms.ToolStripStatusLabel lblResult;
         private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
+        private System.Windows.Forms.ToolStripButton btnCheckFilesExist;
     }
 }
