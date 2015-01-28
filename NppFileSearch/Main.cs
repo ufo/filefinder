@@ -111,16 +111,16 @@ namespace NppFileSearch
             string configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_FILE_EXTS);
             DirSearchExcludedFileExts = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>() { };
+                new List<string>() { ".com", ".dll", ".exe", ".lib", ".obj", ".pyc", ".pyd", ".pyo" };
             configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_DIRS);
             DirSearchExcludedDirs = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>() { };
+                new List<string>() { ".git", ".hg", ".svn" };
 
             configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_EXCLUDED_DIRS);
             HistoryExcludedDirs = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>();
+                new List<string>() { "%temp%" };
             configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES);
             HistoryFiles = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
