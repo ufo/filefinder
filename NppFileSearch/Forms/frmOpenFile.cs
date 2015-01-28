@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using NppPluginNET;
 
 namespace NppFileSearch
 {
@@ -18,6 +17,7 @@ namespace NppFileSearch
         List<ListViewItem> listBoxItems = new List<ListViewItem>();
 
         string lcaDirPath; // least common ancestor
+        FileMaskMatcher fileMaskMatcher;
         
         BackgroundWorker bw = null;
         int fileCounter;
@@ -42,8 +42,8 @@ namespace NppFileSearch
 
             callerName = name;
             allFiles = files;
+            fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
             InitForm();
-
             StartBackgroundWorker(null);
         }
         public frmOpenFile(string name, string folderPath)
@@ -52,10 +52,9 @@ namespace NppFileSearch
 
             callerName = name;
             allFiles = new List<string>();
+            fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
             InitForm();
-
             btnCheckFilesExist.Visible = false;
-
             StartBackgroundWorker(folderPath);
         }
         void InitForm()
@@ -241,23 +240,11 @@ namespace NppFileSearch
                     break;
                 }
 
-                if (Main.DirSearchExcludedFileExts.Count > 0)
+                if (!fileMaskMatcher.IsMatch(Path.GetFileName(file), FileMaskMatcher.MatchType.FileName))
                 {
-                    bool skipFile = false;
-                    foreach (string _excl in Main.DirSearchExcludedFileExts)
+                    lock (allFiles)
                     {
-                        if (Win32.FitsFileMask(Path.GetFileName(file), _excl))
-                        {
-                            skipFile = true;
-                            break;
-                        }
-                    }
-                    if (!skipFile)
-                    {
-                        lock (allFiles)
-                        {
-                            allFiles.Add(file);
-                        }
+                        allFiles.Add(file);
                     }
                 }
 
@@ -280,29 +267,7 @@ namespace NppFileSearch
                     break;
                 }
 
-                bool skipDir = false;
-                foreach (string excl in Main.DirSearchExcludedDirs)
-                {
-                    string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
-                    if (_excl.Contains("\\"))
-                    {
-                        if (dir.ToLower().EndsWith(_excl))
-                        {
-                            skipDir = true;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (_excl == Path.GetFileName(dir).ToLower())
-                        {
-                            skipDir = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!skipDir)
+                if (!fileMaskMatcher.IsMatch(dir, FileMaskMatcher.MatchType.Directory))
                 {
                     GetFiles(dir);
                 }
@@ -325,7 +290,8 @@ namespace NppFileSearch
                     }
 
                     System.Threading.Thread.Sleep(10);
-                    if (!File.Exists(file))
+                    if (fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FullPath) ||
+                        !File.Exists(file))
                     {
                         lock (allFiles)
                         {

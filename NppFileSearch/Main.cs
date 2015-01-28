@@ -37,17 +37,22 @@ namespace NppFileSearch
         
         internal static bool CaseSensitiveSearch;
 
-        const string PATHEXT_DIR_SEARCH_EXCLUDED_FILE_EXTS = ".dir-search-excluded-file-exts.txt";
-        const string PATHEXT_DIR_SEARCH_EXCLUDED_DIRS = ".dir-search-excluded-dirs.txt";
-        internal static List<string> DirSearchExcludedFileExts;
-        internal static List<string> DirSearchExcludedDirs;
+        const string PATH_EXT_DIR_SEARCH_EXCLUSIONS = ".dir-search-exclusions.txt";
+        internal static List<string> DirSearchExclusions;
+        static string[] DEFAULT_DIR_SEARCH_EXCLUSIONS = new string[]
+        {
+            ".git", ".hg", ".svn",
+            "*.com", "*.dll", "*.exe", "*.lib",
+            "*.obj", "*.pyc", "*.pyd", "*.pyo"
+        };
 
         const string PATH_EXT_HISTORY_FILES = ".history-files.txt";
-        const string PATH_EXT_HISTORY_EXCLUDED_DIRS = ".history-excluded-dirs.txt";
+        internal static List<string> HistoryFiles;
+        const string PATH_EXT_HISTORY_EXCLUSIONS = ".history-exclusions.txt";
+        internal static List<string> HistoryExclusions;
+        static string[] DEFAULT_HISTORY_EXCLUSIONS = new string[] { "%temp%" };
         internal static int MaxHistoryLength;
         internal static bool AutoCheckFilesExist;
-        internal static List<string> HistoryExcludedDirs;
-        internal static List<string> HistoryFiles;
 
         internal enum FilePathFormat
         {
@@ -108,23 +113,18 @@ namespace NppFileSearch
             AutoCheckFilesExist = (Win32.GetPrivateProfileInt("Options", "AutoCheckFilesExist", 0, iniFilePath) == 1);
             DisplayedFilePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "DisplayedFilePathFormat", 0, iniFilePath);
 
-            string configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_FILE_EXTS);
-            DirSearchExcludedFileExts = File.Exists(configFilePath) ?
-                new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>() { ".com", ".dll", ".exe", ".lib", ".obj", ".pyc", ".pyd", ".pyo" };
-            configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_DIRS);
-            DirSearchExcludedDirs = File.Exists(configFilePath) ?
-                new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>() { ".git", ".hg", ".svn" };
-
-            configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_EXCLUDED_DIRS);
-            HistoryExcludedDirs = File.Exists(configFilePath) ?
-                new List<string>(File.ReadAllLines(configFilePath)) :
-                new List<string>() { "%temp%" };
-            configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES);
+            string configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES);
             HistoryFiles = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
                 new List<string>();
+            configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_EXCLUSIONS);
+            HistoryExclusions = File.Exists(configFilePath) ?
+                new List<string>(File.ReadAllLines(configFilePath)) :
+                new List<string>(DEFAULT_HISTORY_EXCLUSIONS);
+            configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS);
+            DirSearchExclusions = File.Exists(configFilePath) ?
+                new List<string>(File.ReadAllLines(configFilePath)) :
+                new List<string>(DEFAULT_DIR_SEARCH_EXCLUSIONS);
         }
         internal static void SaveSettings()
         {
@@ -136,11 +136,9 @@ namespace NppFileSearch
             Win32.WritePrivateProfileString("Options", "AutoCheckFilesExist", AutoCheckFilesExist ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "DisplayedFilePathFormat", ((int)DisplayedFilePathFormat).ToString(), iniFilePath);
 
-            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_FILE_EXTS), DirSearchExcludedFileExts);
-            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATHEXT_DIR_SEARCH_EXCLUDED_DIRS), DirSearchExcludedDirs);
-
-            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_EXCLUDED_DIRS), HistoryExcludedDirs);
             File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
+            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_EXCLUSIONS), HistoryExclusions);
+            File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS), DirSearchExclusions);
         }
         #endregion
 
@@ -199,8 +197,20 @@ namespace NppFileSearch
                     string filePath = HistoryFiles[0];
                     if (!string.IsNullOrEmpty(filePath))
                     {
-                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
                         HistoryFiles.Remove(filePath);
+
+                        if (Main.AutoCheckFilesExist)
+                        {
+                            FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
+                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath) ||
+                                !File.Exists(filePath))
+                            {
+                                OpenLastClosedFile();
+                                return;
+                            }
+                        }
+
+                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
                     }
                 }
             }
@@ -224,10 +234,9 @@ namespace NppFileSearch
 
             frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
             frmOptions.cbxAutoCheckFilesExist.Checked = AutoCheckFilesExist;
-            frmOptions.tbxHistoryExcludedDirs.Lines = HistoryExcludedDirs.ToArray();
+            frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
 
-            frmOptions.tbxDirSearchExcludedFileExts.Lines = DirSearchExcludedFileExts.ToArray();
-            frmOptions.tbxDirSearchExcludedDirs.Lines = DirSearchExcludedDirs.ToArray();
+            frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
 
             if (frmOptions.ShowDialog() == DialogResult.OK)
             {
@@ -242,10 +251,9 @@ namespace NppFileSearch
                         HistoryFiles.Count - MaxHistoryLength);
                 }
                 AutoCheckFilesExist = frmOptions.cbxAutoCheckFilesExist.Checked;
-                HistoryExcludedDirs = new List<string>(frmOptions.tbxHistoryExcludedDirs.Lines);
+                HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
 
-                DirSearchExcludedFileExts = new List<string>(frmOptions.tbxDirSearchExcludedFileExts.Lines);
-                DirSearchExcludedDirs = new List<string>(frmOptions.tbxDirSearchExcludedDirs.Lines);
+                DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
             }
         }
         internal static void ShowHelp()

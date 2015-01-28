@@ -114,9 +114,9 @@ namespace NppFileSearch
                     {
                         string dir = Path.GetDirectoryName(filePath);
                         bool skipFile = false;
-                        foreach (string excl in Main.HistoryExcludedDirs)
+                        foreach (string excl in Main.HistoryExclusions)
                         {
-                            string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
+                            string _excl = Environment.ExpandEnvironmentVariables(excl);
                             if (_excl.Contains(":") || _excl.StartsWith("\\"))
                             {
                                 if (dir.ToLower().StartsWith(_excl))
