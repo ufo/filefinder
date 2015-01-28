@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
 
@@ -14,11 +13,13 @@ namespace NppFileSearch
         
         List<string> Files;
         Dictionary<string, Dictionary<string, string>> FormattedFiles;
+        List<ListViewItem> ListBoxItems = new List<ListViewItem>();
 
         string lcaDirPath; // least common ancestor
         
         BackgroundWorker bw = null;
-        int FileCounter;
+        int fileCounter;
+        bool updatingListBox = false;
 
         Dictionary<Keys, string> EventKeys2SendKeys = new Dictionary<Keys, string>()
         {
@@ -167,8 +168,10 @@ namespace NppFileSearch
             string oldSelection = tbxFullSelectedPath.Text;
             tbxFullSelectedPath.Text = "";
 
+            updatingListBox = true;
             lbxFiles.BeginUpdate();
             lbxFiles.Items.Clear();
+            ListBoxItems.Clear();
 
             if (string.IsNullOrEmpty(pattern))
             {
@@ -176,7 +179,8 @@ namespace NppFileSearch
                 {
                     ListViewItem lvi = new ListViewItem(FormattedFiles[file]["TrimmedDisplay"]);
                     lvi.Tag = file;
-                    lbxFiles.Items.Add(lvi);
+                    lbxFiles.Items.Add("");
+                    ListBoxItems.Add(lvi);
                     if (file == oldSelection)
                     {
                         lbxFiles.SelectedIndex = lbxFiles.Items.Count - 1;
@@ -203,7 +207,8 @@ namespace NppFileSearch
                     {
                         ListViewItem lvi = new ListViewItem(FormattedFiles[file]["TrimmedDisplay"]);
                         lvi.Tag = file;
-                        lbxFiles.Items.Add(lvi);
+                        lbxFiles.Items.Add("");
+                        ListBoxItems.Add(lvi);
                         if (file == oldSelection)
                         {
                             lbxFiles.SelectedIndex = lbxFiles.Items.Count - 1;
@@ -218,6 +223,7 @@ namespace NppFileSearch
             }
 
             lbxFiles.EndUpdate();
+            updatingListBox = false;
 
             lblResult.Text = string.Format("Result: {0} / {1}", lbxFiles.Items.Count, FormattedFiles.Count);
         }
@@ -228,7 +234,7 @@ namespace NppFileSearch
             pbProgress.Visible = true;
             pbProgress.Enabled = true;
 
-            FileCounter = 0;
+            fileCounter = 0;
 
             bw = new BackgroundWorker();
             bw.WorkerReportsProgress = true;
@@ -256,15 +262,15 @@ namespace NppFileSearch
                     }
                 }
 
-                FileCounter++;
-                if (FileCounter == 100)
+                fileCounter++;
+                if (fileCounter == 100)
                 {
-                    FileCounter = 0;
+                    fileCounter = 0;
                     bw.ReportProgress(0);
                 }
-                if (FileCounter % 2 == 0)
+                while (updatingListBox)
                 {
-                    System.Threading.Thread.Sleep(1);
+                    System.Threading.Thread.Sleep(200);
                 }
             }
 
@@ -319,6 +325,7 @@ namespace NppFileSearch
                         break;
                     }
 
+                    System.Threading.Thread.Sleep(100);
                     if (!File.Exists(file))
                     {
                         lock (Files)
@@ -327,15 +334,15 @@ namespace NppFileSearch
                         }
                     }
 
-                    FileCounter++;
-                    if (FileCounter == 10)
+                    fileCounter++;
+                    if (fileCounter == 10)
                     {
-                        FileCounter = 0;
+                        fileCounter = 0;
                         bw.ReportProgress(0);
                     }
-                    if (FileCounter % 2 == 0)
+                    while (updatingListBox)
                     {
-                        System.Threading.Thread.Sleep(1);
+                        System.Threading.Thread.Sleep(200);
                     }
                 }
             }
@@ -378,7 +385,7 @@ namespace NppFileSearch
         }
         private void lbxFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListViewItem lvi = (ListViewItem)lbxFiles.SelectedItem;
+            ListViewItem lvi = ListBoxItems[lbxFiles.SelectedIndex];
             tbxFullSelectedPath.Text = (string)lvi.Tag;
             lbxFiles.Invalidate();
         }
@@ -427,7 +434,7 @@ namespace NppFileSearch
             {
                 e.DrawBackground();
                 e.DrawFocusRectangle();
-                ListViewItem lvi = lbxFiles.Items[e.Index] as ListViewItem;
+                ListViewItem lvi = ListBoxItems[e.Index] as ListViewItem;
                 String txt = lvi.Text;
 
                 int fontSwitchIndex;

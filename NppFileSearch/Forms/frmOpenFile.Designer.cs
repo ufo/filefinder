@@ -36,11 +36,11 @@
             this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
+            this.btnCheckFilesExist = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnCheckFilesExist = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -141,6 +141,17 @@
             this.btnCaseSensitiveSearch.Text = "Case sensitive search";
             this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
             // 
+            // btnCheckFilesExist
+            // 
+            this.btnCheckFilesExist.CheckOnClick = true;
+            this.btnCheckFilesExist.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCheckFilesExist.Image = global::NppFileSearch.Properties.Resources.file_check;
+            this.btnCheckFilesExist.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCheckFilesExist.Name = "btnCheckFilesExist";
+            this.btnCheckFilesExist.Size = new System.Drawing.Size(23, 20);
+            this.btnCheckFilesExist.Text = "Check if files exist";
+            this.btnCheckFilesExist.Click += new System.EventHandler(this.btnCheckFilesExist_Click);
+            // 
             // lblProgress
             // 
             this.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -168,17 +179,6 @@
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(68, 17);
             this.lblResult.Text = "Result: 0 / 0";
-            // 
-            // btnCheckFilesExist
-            // 
-            this.btnCheckFilesExist.CheckOnClick = true;
-            this.btnCheckFilesExist.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCheckFilesExist.Image = global::NppFileSearch.Properties.Resources.file_check;
-            this.btnCheckFilesExist.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnCheckFilesExist.Name = "btnCheckFilesExist";
-            this.btnCheckFilesExist.Size = new System.Drawing.Size(23, 20);
-            this.btnCheckFilesExist.Text = "Check if files exist";
-            this.btnCheckFilesExist.Click += new System.EventHandler(this.btnCheckFilesExist_Click);
             // 
             // frmOpenFile
             // 
