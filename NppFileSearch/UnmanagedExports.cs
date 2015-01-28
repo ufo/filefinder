@@ -104,7 +104,7 @@ namespace NppFileSearch
                     string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
                     if (File.Exists(filePath))
                     {
-                        Main.RecentFiles.Remove(filePath);
+                        Main.HistoryFiles.Remove(filePath);
                     }
                 }
                 else if (nc.nmhdr.code == (uint)NppMsg.NPPN_FILEBEFORECLOSE)
@@ -112,11 +112,37 @@ namespace NppFileSearch
                     string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
                     if (File.Exists(filePath))
                     {
-                        Main.RecentFiles.Insert(0, filePath);
-                        if (Main.RecentFiles.Count > Main.maxHistoryLength)
+                        string dir = Path.GetDirectoryName(filePath);
+                        bool skipFile = false;
+                        foreach (string excl in Main.HistoryExcludedDirs)
                         {
-                            Main.RecentFiles.RemoveRange(Main.maxHistoryLength,
-                                Main.RecentFiles.Count - Main.maxHistoryLength);
+                            string _excl = Environment.ExpandEnvironmentVariables(excl).ToLower();
+                            if (_excl.Contains("\\"))
+                            {
+                                if (dir.ToLower().EndsWith(_excl))
+                                {
+                                    skipFile = true;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (_excl == Path.GetFileName(dir).ToLower())
+                                {
+                                    skipFile = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!skipFile)
+                        {
+                            Main.HistoryFiles.Insert(0, filePath);
+                            if (Main.HistoryFiles.Count > Main.MaxHistoryLength)
+                            {
+                                Main.HistoryFiles.RemoveRange(Main.MaxHistoryLength,
+                                    Main.HistoryFiles.Count - Main.MaxHistoryLength);
+                            }
                         }
                     }
                 }
