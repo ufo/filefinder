@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblTbbFunction = new System.Windows.Forms.Label();
-            this.cbxTbbFunction = new System.Windows.Forms.ComboBox();
+            this.components = new System.ComponentModel.Container();
+            this.lblToolbarButtons = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.lblMaxHistoryLength = new System.Windows.Forms.Label();
@@ -45,31 +45,26 @@
             this.lblHistoryExclusions = new System.Windows.Forms.Label();
             this.cbxAutoInvalidateFilename = new System.Windows.Forms.CheckBox();
             this.gbxCommon = new System.Windows.Forms.GroupBox();
+            this.btnOpenFromDirectoryGreedy = new System.Windows.Forms.CheckBox();
+            this.btnSearchInDirectoryExplicitly = new System.Windows.Forms.CheckBox();
+            this.btnOpenFromFileHistory = new System.Windows.Forms.CheckBox();
+            this.btnOpenLastClosedFile = new System.Windows.Forms.CheckBox();
+            this.ttOptions = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).BeginInit();
             this.gbxDirectorySearch.SuspendLayout();
             this.gbxHistorySearch.SuspendLayout();
             this.gbxCommon.SuspendLayout();
             this.SuspendLayout();
             // 
-            // lblTbbFunction
+            // lblToolbarButtons
             // 
-            this.lblTbbFunction.AutoSize = true;
-            this.lblTbbFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTbbFunction.Location = new System.Drawing.Point(7, 25);
-            this.lblTbbFunction.Name = "lblTbbFunction";
-            this.lblTbbFunction.Size = new System.Drawing.Size(155, 13);
-            this.lblTbbFunction.TabIndex = 0;
-            this.lblTbbFunction.Text = "Toolbar button (restart required)";
-            // 
-            // cbxTbbFunction
-            // 
-            this.cbxTbbFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxTbbFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxTbbFunction.FormattingEnabled = true;
-            this.cbxTbbFunction.Location = new System.Drawing.Point(180, 22);
-            this.cbxTbbFunction.Name = "cbxTbbFunction";
-            this.cbxTbbFunction.Size = new System.Drawing.Size(127, 21);
-            this.cbxTbbFunction.TabIndex = 1;
+            this.lblToolbarButtons.AutoSize = true;
+            this.lblToolbarButtons.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblToolbarButtons.Location = new System.Drawing.Point(7, 25);
+            this.lblToolbarButtons.Name = "lblToolbarButtons";
+            this.lblToolbarButtons.Size = new System.Drawing.Size(160, 13);
+            this.lblToolbarButtons.TabIndex = 0;
+            this.lblToolbarButtons.Text = "Toolbar buttons (restart required)";
             // 
             // btnCancel
             // 
@@ -231,8 +226,11 @@
             // 
             // gbxCommon
             // 
-            this.gbxCommon.Controls.Add(this.lblTbbFunction);
-            this.gbxCommon.Controls.Add(this.cbxTbbFunction);
+            this.gbxCommon.Controls.Add(this.btnOpenLastClosedFile);
+            this.gbxCommon.Controls.Add(this.btnOpenFromFileHistory);
+            this.gbxCommon.Controls.Add(this.btnSearchInDirectoryExplicitly);
+            this.gbxCommon.Controls.Add(this.btnOpenFromDirectoryGreedy);
+            this.gbxCommon.Controls.Add(this.lblToolbarButtons);
             this.gbxCommon.Controls.Add(this.cbxCaseSensitiveSearch);
             this.gbxCommon.Controls.Add(this.cbxDisplayedFilePathFormat);
             this.gbxCommon.Controls.Add(this.lblDisplayedFilePathFormat);
@@ -243,6 +241,54 @@
             this.gbxCommon.TabIndex = 18;
             this.gbxCommon.TabStop = false;
             this.gbxCommon.Text = "Common";
+            // 
+            // btnOpenFromDirectoryGreedy
+            // 
+            this.btnOpenFromDirectoryGreedy.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnOpenFromDirectoryGreedy.AutoSize = true;
+            this.btnOpenFromDirectoryGreedy.Image = global::NppFileSearch.Properties.Resources.open_from_directory_greedy;
+            this.btnOpenFromDirectoryGreedy.Location = new System.Drawing.Point(180, 20);
+            this.btnOpenFromDirectoryGreedy.Name = "btnOpenFromDirectoryGreedy";
+            this.btnOpenFromDirectoryGreedy.Size = new System.Drawing.Size(22, 22);
+            this.btnOpenFromDirectoryGreedy.TabIndex = 14;
+            this.ttOptions.SetToolTip(this.btnOpenFromDirectoryGreedy, "Open from directory (greedy)...");
+            this.btnOpenFromDirectoryGreedy.UseVisualStyleBackColor = true;
+            // 
+            // btnSearchInDirectoryExplicitly
+            // 
+            this.btnSearchInDirectoryExplicitly.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnSearchInDirectoryExplicitly.AutoSize = true;
+            this.btnSearchInDirectoryExplicitly.Image = global::NppFileSearch.Properties.Resources.search_in_directory_explicitly;
+            this.btnSearchInDirectoryExplicitly.Location = new System.Drawing.Point(215, 20);
+            this.btnSearchInDirectoryExplicitly.Name = "btnSearchInDirectoryExplicitly";
+            this.btnSearchInDirectoryExplicitly.Size = new System.Drawing.Size(22, 22);
+            this.btnSearchInDirectoryExplicitly.TabIndex = 15;
+            this.ttOptions.SetToolTip(this.btnSearchInDirectoryExplicitly, "Search in directory (explicitly)...");
+            this.btnSearchInDirectoryExplicitly.UseVisualStyleBackColor = true;
+            // 
+            // btnOpenFromFileHistory
+            // 
+            this.btnOpenFromFileHistory.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnOpenFromFileHistory.AutoSize = true;
+            this.btnOpenFromFileHistory.Image = global::NppFileSearch.Properties.Resources.open_from_file_history;
+            this.btnOpenFromFileHistory.Location = new System.Drawing.Point(250, 20);
+            this.btnOpenFromFileHistory.Name = "btnOpenFromFileHistory";
+            this.btnOpenFromFileHistory.Size = new System.Drawing.Size(22, 22);
+            this.btnOpenFromFileHistory.TabIndex = 16;
+            this.ttOptions.SetToolTip(this.btnOpenFromFileHistory, "Open from file history...");
+            this.btnOpenFromFileHistory.UseVisualStyleBackColor = true;
+            // 
+            // btnOpenLastClosedFile
+            // 
+            this.btnOpenLastClosedFile.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnOpenLastClosedFile.AutoSize = true;
+            this.btnOpenLastClosedFile.Image = global::NppFileSearch.Properties.Resources.open_last_closed_file;
+            this.btnOpenLastClosedFile.Location = new System.Drawing.Point(285, 20);
+            this.btnOpenLastClosedFile.Name = "btnOpenLastClosedFile";
+            this.btnOpenLastClosedFile.Size = new System.Drawing.Size(22, 22);
+            this.btnOpenLastClosedFile.TabIndex = 17;
+            this.ttOptions.SetToolTip(this.btnOpenLastClosedFile, "Open last closed file");
+            this.btnOpenLastClosedFile.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -275,10 +321,9 @@
 
         #endregion
 
-        private System.Windows.Forms.Label lblTbbFunction;
+        private System.Windows.Forms.Label lblToolbarButtons;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnSave;
-        public System.Windows.Forms.ComboBox cbxTbbFunction;
         private System.Windows.Forms.Label lblMaxHistoryLength;
         public System.Windows.Forms.NumericUpDown nudMaxHistoryLength;
         public System.Windows.Forms.CheckBox cbxCaseSensitiveSearch;
@@ -292,5 +337,10 @@
         private System.Windows.Forms.GroupBox gbxCommon;
         public System.Windows.Forms.TextBox tbxHistoryExclusions;
         private System.Windows.Forms.Label lblHistoryExclusions;
+        public System.Windows.Forms.CheckBox btnOpenFromDirectoryGreedy;
+        public System.Windows.Forms.CheckBox btnOpenLastClosedFile;
+        public System.Windows.Forms.CheckBox btnOpenFromFileHistory;
+        public System.Windows.Forms.CheckBox btnSearchInDirectoryExplicitly;
+        private System.Windows.Forms.ToolTip ttOptions;
     }
 }

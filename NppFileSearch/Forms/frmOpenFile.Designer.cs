@@ -28,19 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbxSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
-            this.lbxFiles = new System.Windows.Forms.ListBox();
+            this.LbxFiles = new System.Windows.Forms.ListBox();
             this.btnOpenSelected = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnAutoInvalidateFilename = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
+            this.btnFolderUp = new System.Windows.Forms.Button();
+            this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
+            this.btnAutoInvalidateFilenames = new System.Windows.Forms.ToolStripButton();
+            this.ttOpenFile = new System.Windows.Forms.ToolTip(this.components);
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,7 +53,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxSearch.Location = new System.Drawing.Point(12, 34);
             this.tbxSearch.Name = "tbxSearch";
-            this.tbxSearch.Size = new System.Drawing.Size(302, 20);
+            this.tbxSearch.Size = new System.Drawing.Size(278, 20);
             this.tbxSearch.TabIndex = 0;
             this.tbxSearch.TextChanged += new System.EventHandler(this.tbxSearch_TextChanged);
             this.tbxSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxSearch_KeyDown);
@@ -64,30 +67,31 @@
             this.lblSearch.TabIndex = 1;
             this.lblSearch.Text = "Enter search fragments (separated by spaces):";
             // 
-            // lbxFiles
+            // LbxFiles
             // 
-            this.lbxFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.LbxFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbxFiles.DisplayMember = "Text";
-            this.lbxFiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.lbxFiles.FormattingEnabled = true;
-            this.lbxFiles.ItemHeight = 17;
-            this.lbxFiles.Location = new System.Drawing.Point(12, 126);
-            this.lbxFiles.Name = "lbxFiles";
-            this.lbxFiles.Size = new System.Drawing.Size(514, 242);
-            this.lbxFiles.TabIndex = 2;
-            this.lbxFiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbxFiles_DrawItem);
-            this.lbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
-            this.lbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
-            this.lbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
-            this.lbxFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxFiles_KeyDown);
+            this.LbxFiles.DisplayMember = "Text";
+            this.LbxFiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.LbxFiles.FormattingEnabled = true;
+            this.LbxFiles.ItemHeight = 17;
+            this.LbxFiles.Location = new System.Drawing.Point(12, 126);
+            this.LbxFiles.Name = "LbxFiles";
+            this.LbxFiles.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.LbxFiles.Size = new System.Drawing.Size(514, 242);
+            this.LbxFiles.TabIndex = 2;
+            this.LbxFiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbxFiles_DrawItem);
+            this.LbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
+            this.LbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
+            this.LbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
+            this.LbxFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxFiles_KeyDown);
             // 
             // btnOpenSelected
             // 
             this.btnOpenSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOpenSelected.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOpenSelected.Location = new System.Drawing.Point(328, 32);
+            this.btnOpenSelected.Location = new System.Drawing.Point(335, 32);
             this.btnOpenSelected.Name = "btnOpenSelected";
             this.btnOpenSelected.Size = new System.Drawing.Size(93, 23);
             this.btnOpenSelected.TabIndex = 4;
@@ -121,37 +125,16 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCaseSensitiveSearch,
-            this.btnAutoInvalidateFilename,
+            this.btnAutoInvalidateFilenames,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
             this.lblResult});
             this.statusStrip.Location = new System.Drawing.Point(0, 383);
             this.statusStrip.Name = "statusStrip";
+            this.statusStrip.ShowItemToolTips = true;
             this.statusStrip.Size = new System.Drawing.Size(539, 22);
             this.statusStrip.TabIndex = 9;
-            // 
-            // btnCaseSensitiveSearch
-            // 
-            this.btnCaseSensitiveSearch.CheckOnClick = true;
-            this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCaseSensitiveSearch.Image = global::NppFileSearch.Properties.Resources.case_sensitive;
-            this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
-            this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
-            this.btnCaseSensitiveSearch.Text = "Case sensitive search";
-            this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
-            // 
-            // btnAutoInvalidateFilename
-            // 
-            this.btnAutoInvalidateFilename.CheckOnClick = true;
-            this.btnAutoInvalidateFilename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAutoInvalidateFilename.Image = global::NppFileSearch.Properties.Resources.file_check;
-            this.btnAutoInvalidateFilename.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnAutoInvalidateFilename.Name = "btnAutoInvalidateFilename";
-            this.btnAutoInvalidateFilename.Size = new System.Drawing.Size(23, 20);
-            this.btnAutoInvalidateFilename.Text = "Auto invalidate filename";
-            this.btnAutoInvalidateFilename.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
             // 
             // lblProgress
             // 
@@ -181,6 +164,41 @@
             this.lblResult.Size = new System.Drawing.Size(68, 17);
             this.lblResult.Text = "Result: 0 / 0";
             // 
+            // btnFolderUp
+            // 
+            this.btnFolderUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFolderUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btnFolderUp.Image = global::NppFileSearch.Properties.Resources.folder_up;
+            this.btnFolderUp.Location = new System.Drawing.Point(296, 32);
+            this.btnFolderUp.Name = "btnFolderUp";
+            this.btnFolderUp.Size = new System.Drawing.Size(24, 23);
+            this.btnFolderUp.TabIndex = 10;
+            this.ttOpenFile.SetToolTip(this.btnFolderUp, "Up to parent folder (Alt + Up Arrow)");
+            this.btnFolderUp.UseVisualStyleBackColor = true;
+            this.btnFolderUp.Click += new System.EventHandler(this.btnFolderUp_Click);
+            // 
+            // btnCaseSensitiveSearch
+            // 
+            this.btnCaseSensitiveSearch.CheckOnClick = true;
+            this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCaseSensitiveSearch.Image = global::NppFileSearch.Properties.Resources.case_sensitive;
+            this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
+            this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
+            this.btnCaseSensitiveSearch.Text = "Case sensitive search";
+            this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
+            // 
+            // btnAutoInvalidateFilenames
+            // 
+            this.btnAutoInvalidateFilenames.CheckOnClick = true;
+            this.btnAutoInvalidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAutoInvalidateFilenames.Image = global::NppFileSearch.Properties.Resources.file_check;
+            this.btnAutoInvalidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAutoInvalidateFilenames.Name = "btnAutoInvalidateFilenames";
+            this.btnAutoInvalidateFilenames.Size = new System.Drawing.Size(23, 20);
+            this.btnAutoInvalidateFilenames.Text = "Auto invalidate filenames";
+            this.btnAutoInvalidateFilenames.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
+            // 
             // frmOpenFile
             // 
             this.AcceptButton = this.btnOpenSelected;
@@ -188,11 +206,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(539, 405);
+            this.Controls.Add(this.btnFolderUp);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.tbxFullSelectedPath);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpenSelected);
-            this.Controls.Add(this.lbxFiles);
+            this.Controls.Add(this.LbxFiles);
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.tbxSearch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
@@ -215,16 +234,18 @@
 
         private System.Windows.Forms.TextBox tbxSearch;
         private System.Windows.Forms.Label lblSearch;
-        private System.Windows.Forms.ListBox lbxFiles;
         private System.Windows.Forms.Button btnOpenSelected;
         private System.Windows.Forms.Button btnCancel;
-        public System.Windows.Forms.TextBox tbxFullSelectedPath;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel lblProgress;
         private System.Windows.Forms.ToolStripProgressBar pbProgress;
         private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
         private System.Windows.Forms.ToolStripStatusLabel lblResult;
         private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
-        private System.Windows.Forms.ToolStripButton btnAutoInvalidateFilename;
+        private System.Windows.Forms.ToolStripButton btnAutoInvalidateFilenames;
+        public System.Windows.Forms.ListBox LbxFiles;
+        private System.Windows.Forms.TextBox tbxFullSelectedPath;
+        private System.Windows.Forms.Button btnFolderUp;
+        private System.Windows.Forms.ToolTip ttOpenFile;
     }
 }

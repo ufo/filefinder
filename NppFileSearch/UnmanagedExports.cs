@@ -38,10 +38,11 @@ namespace NppFileSearch
             return PluginBase._funcItems.NativePointer;
         }
 
-        const int NPEM_NPPFILESEARCH_DIRECTORY = 0x0101;
-        const int NPEM_NPPFILESEARCH_STRINGLIST = 0x0102;
-        const int NPEM_NPPFILESEARCH_HISTORY = 0x0103;
-        const int NPEM_NPPFILESEARCH_LASTCLOSED = 0x0104;
+        const int NPEM_NPPFILESEARCH_OPEN_FROM_DIRECTORY_GREEDY = 0x0101;
+        const int NPEM_NPPFILESEARCH_OPEN_FROM_STRINGLIST_GREEDY = 0x0102;
+        const int NPEM_NPPFILESEARCH_SEARCH_IN_DIRECTORY_EXPLICITLY = 0x0103;
+        const int NPEM_NPPFILESEARCH_OPEN_FROM_HISTORY = 0x0104;
+        const int NPEM_NPPFILESEARCH_OPEN_LAST_CLOSED_FILE = 0x0105;
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
@@ -52,20 +53,34 @@ namespace NppFileSearch
                     CommunicationInfo communicationInfo = (CommunicationInfo)Marshal.PtrToStructure(
                         (IntPtr)lParam, typeof(CommunicationInfo));
                     string srcModuleName = Marshal.PtrToStringAuto(communicationInfo.srcModuleName);
-                    if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_HISTORY)
+                    if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_OPEN_FROM_DIRECTORY_GREEDY)
+                    {
+                        string dirPath = Marshal.PtrToStringAuto(communicationInfo.info);
+                        bool openFiles = false;
+                        List<string> selectedFiles = Main.OpenFromDirectoryGreedy(srcModuleName, dirPath, openFiles);
+                    }
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_OPEN_FROM_STRINGLIST_GREEDY)
+                    {
+                        List<string> lstFiles = new ClikeStringArray(communicationInfo.info).ManagedStringsUnicode;
+                        bool openFiles = false;
+                        List<string> selectedFiles = Main.OpenFromStringListGreedy(srcModuleName, lstFiles, openFiles);
+                    }
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_SEARCH_IN_DIRECTORY_EXPLICITLY)
+                    {
+                        string dirPath = Marshal.PtrToStringAuto(communicationInfo.info);
+                        bool openFiles = false;
+                        bool skipFolderBrowser = false;
+                        List<string> selectedFiles = Main.SearchInDirectoryExplicitly(srcModuleName, dirPath, skipFolderBrowser, openFiles);
+                    }
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_OPEN_FROM_HISTORY)
                     {
                         Main.OpenFromFileHistory();
                     }
-                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_STRINGLIST)
+                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_OPEN_LAST_CLOSED_FILE)
                     {
-                        List<string> lstFiles = new ClikeStringArray(communicationInfo.info).ManagedStringsUnicode;
-                        Main.OpenFromStringList(srcModuleName, lstFiles);
+                        Main.OpenLastClosedFile();
                     }
-                    else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_DIRECTORY)
-                    {
-                        string folderPath = Marshal.PtrToStringAuto(communicationInfo.info);
-                        Main.OpenFromDirectory(srcModuleName, folderPath);
-                    }
+
                 }
             }
             catch (Exception ex)
@@ -114,7 +129,7 @@ namespace NppFileSearch
                     if (File.Exists(filePath))
                     {
                         bool skipFile = false;
-                        if (Main.AutoInvalidateFilename)
+                        if (Main.AutoInvalidateFilenames)
                         {
                             FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
                             if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath))

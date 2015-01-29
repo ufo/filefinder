@@ -20,6 +20,7 @@ namespace NppFileSearch
 
         string lcaDirPath; // least common ancestor
         FileMaskMatcher fileMaskMatcher;
+        string topLevelDir;
         
         BackgroundWorker bw = null;
         int fileCounter;
@@ -30,24 +31,23 @@ namespace NppFileSearch
             {Keys.Up, "{UP}"},
             {Keys.Down, "{DOWN}"},
             {Keys.PageUp, "{PGUP}"},
-            {Keys.PageDown, "{PGDN}"},
-            {Keys.Home, "{HOME}"},
-            {Keys.End, "{END}"},
+            {Keys.PageDown, "{PGDN}"}
         };
         bool KeySendToLbx = false;
         #endregion
 
         #region " StartUp/CleanUp "
-        public frmOpenFile(string name, string folderPath)
+        public frmOpenFile(string name, string dirPath)
         {
             InitializeComponent();
 
             callerName = name;
+            topLevelDir = dirPath;
             allFiles = new List<string>();
             fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
             InitForm();
-            btnAutoInvalidateFilename.Visible = false;
-            StartBackgroundWorker(folderPath);
+            btnAutoInvalidateFilenames.Visible = false;
+            StartBackgroundWorker(dirPath);
         }
         public frmOpenFile(string name, List<string> files)
         {
@@ -57,15 +57,16 @@ namespace NppFileSearch
             allFiles = files;
             fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
             InitForm();
+            btnFolderUp.Visible = false;
             StartBackgroundWorker(null);
         }
         void InitForm()
         {
             Text = string.Format("{0}: {1}", callerName, Text);
-            Width = Main.WindowWidth;
-            Height = Main.WindowHeight;
+            Width = Main.OpenFileDialogWidth;
+            Height = Main.OpenFileDialogHeight;
             btnCaseSensitiveSearch.Checked = Main.CaseSensitiveSearch;
-            btnAutoInvalidateFilename.Checked = Main.AutoInvalidateFilename;
+            btnAutoInvalidateFilenames.Checked = Main.AutoInvalidateFilenames;
             if (iconCache == null)
             {
                 iconCache = new ImageList();
@@ -84,8 +85,8 @@ namespace NppFileSearch
             {
                 bw.CancelAsync();
             }
-            Main.WindowWidth = Width;
-            Main.WindowHeight = Height;
+            Main.OpenFileDialogWidth = Width;
+            Main.OpenFileDialogHeight = Height;
         }
         #endregion
 
@@ -168,8 +169,8 @@ namespace NppFileSearch
                             f = f.Substring(1);
                         }
                     }
-                    TextRenderer.MeasureText(f, lbxFiles.Font,
-                        new System.Drawing.Size(lbxFiles.ClientSize.Width - iconCache.ImageSize.Width - 1, 0),
+                    TextRenderer.MeasureText(f, LbxFiles.Font,
+                        new System.Drawing.Size(LbxFiles.ClientSize.Width - iconCache.ImageSize.Width - 1, 0),
                         TextFormatFlags.ModifyString | TextFormatFlags.PathEllipsis);
                     formattedFiles[file]["TrimmedDisplay"] = f;
                 }
@@ -182,8 +183,8 @@ namespace NppFileSearch
             tbxFullSelectedPath.Text = "";
 
             updatingListBox = true;
-            lbxFiles.BeginUpdate();
-            lbxFiles.Items.Clear();
+            LbxFiles.BeginUpdate();
+            LbxFiles.Items.Clear();
             listBoxItems.Clear();
 
             if (string.IsNullOrEmpty(pattern))
@@ -192,11 +193,11 @@ namespace NppFileSearch
                 {
                     ListViewItem lvi = new ListViewItem(formattedFiles[file]["TrimmedDisplay"]);
                     lvi.Tag = file;
-                    lbxFiles.Items.Add("");
+                    LbxFiles.Items.Add("");
                     listBoxItems.Add(lvi);
                     if (file == oldSelection)
                     {
-                        lbxFiles.SelectedIndex = lbxFiles.Items.Count - 1;
+                        LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
                     }
                 }
             }
@@ -220,29 +221,29 @@ namespace NppFileSearch
                     {
                         ListViewItem lvi = new ListViewItem(formattedFiles[file]["TrimmedDisplay"]);
                         lvi.Tag = file;
-                        lbxFiles.Items.Add("");
+                        LbxFiles.Items.Add("");
                         listBoxItems.Add(lvi);
                         if (file == oldSelection)
                         {
-                            lbxFiles.SelectedIndex = lbxFiles.Items.Count - 1;
+                            LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
                         }
                     }
                 }
             }
 
-            if ((lbxFiles.SelectedItem == null) && (lbxFiles.Items.Count > 0))
+            if ((LbxFiles.SelectedItem == null) && (LbxFiles.Items.Count > 0))
             {
-                lbxFiles.SelectedIndex = 0;
+                LbxFiles.SelectedIndex = 0;
             }
 
-            lbxFiles.EndUpdate();
+            LbxFiles.EndUpdate();
             updatingListBox = false;
 
-            lblResult.Text = string.Format("Result: {0} / {1}", lbxFiles.Items.Count, formattedFiles.Count);
+            lblResult.Text = string.Format("Result: {0} / {1}", LbxFiles.Items.Count, formattedFiles.Count);
         }
-        void GetFiles(string folderPath)
+        void GetFiles(string dirPath)
         {
-            foreach (string file in Directory.GetFiles(folderPath))
+            foreach (string file in Directory.GetFiles(dirPath))
             {
                 if (bw.CancellationPending == true)
                 {
@@ -269,7 +270,7 @@ namespace NppFileSearch
                 }
             }
 
-            foreach (string dir in Directory.GetDirectories(folderPath))
+            foreach (string dir in Directory.GetDirectories(dirPath))
             {
                 if (bw.CancellationPending == true)
                 {
@@ -284,7 +285,7 @@ namespace NppFileSearch
         }
         void InvalidateFilename()
         {
-            if (btnAutoInvalidateFilename.Checked)
+            if (btnAutoInvalidateFilenames.Checked)
             {
                 string[] _files;
                 lock (allFiles)
@@ -376,13 +377,14 @@ namespace NppFileSearch
         #region " ListBox events "
         private void lbxFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListViewItem lvi = listBoxItems[lbxFiles.SelectedIndex];
+            ListViewItem lvi = listBoxItems[LbxFiles.SelectedIndex];
             tbxFullSelectedPath.Text = (string)lvi.Tag;
-            lbxFiles.Invalidate();
+            tbxFullSelectedPath.Enabled = (LbxFiles.SelectedIndices.Count == 1);
+            LbxFiles.Invalidate();
         }
         private void lbxFiles_DoubleClick(object sender, EventArgs e)
         {
-            if (lbxFiles.SelectedItem != null)
+            if (LbxFiles.SelectedItem != null)
             {
                 btnOpenSelected.PerformClick();
             }
@@ -438,7 +440,7 @@ namespace NppFileSearch
                     (Main.DisplayedFilePathFormat == Main.FilePathFormat.RelativePath))
                 {
                     fontSwitchIndex = txt.LastIndexOf('\\') + 1;
-                    if (e.Index == lbxFiles.SelectedIndex)
+                    if (LbxFiles.SelectedIndices.Contains(e.Index))
                     {
                         firstColor = dimmedHighlightText;
                         secondColor = SystemColors.HighlightText;
@@ -452,7 +454,7 @@ namespace NppFileSearch
                 else
                 {
                     fontSwitchIndex = txt.IndexOf(" (");
-                    if (e.Index == lbxFiles.SelectedIndex)
+                    if (LbxFiles.SelectedIndices.Contains(e.Index))
                     {
                         firstColor = SystemColors.HighlightText;
                         secondColor = dimmedHighlightText;
@@ -467,11 +469,11 @@ namespace NppFileSearch
                     fontSwitchIndex = txt.Length;
 
                 TextRenderer.DrawText(e.Graphics, txt.Substring(0, fontSwitchIndex),
-                    lbxFiles.Font, new Point(e.Bounds.Location.X + 17, e.Bounds.Location.Y), firstColor);
+                    LbxFiles.Font, new Point(e.Bounds.Location.X + 17, e.Bounds.Location.Y), firstColor);
                 if (txt.Length > fontSwitchIndex)
                 {
-                    SizeF sf = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font);
-                    TextRenderer.DrawText(e.Graphics, txt.Substring(fontSwitchIndex), lbxFiles.Font,
+                    SizeF sf = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), LbxFiles.Font);
+                    TextRenderer.DrawText(e.Graphics, txt.Substring(fontSwitchIndex), LbxFiles.Font,
                         new Point((int)sf.Width + 17, e.Bounds.Y), secondColor);
                 }
             }
@@ -481,10 +483,14 @@ namespace NppFileSearch
         #region " Other events "
         private void tbxSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (EventKeys2SendKeys.ContainsKey(e.KeyCode))
+            if (btnFolderUp.Visible && (e.Modifiers == Keys.Alt) && (e.KeyCode == Keys.Up))
+            {
+                btnFolderUp.PerformClick();
+            }
+            else if (EventKeys2SendKeys.ContainsKey(e.KeyCode))
             {
                 KeySendToLbx = true;
-                lbxFiles.Focus();
+                LbxFiles.Focus();
                 SendKeys.Send(EventKeys2SendKeys[e.KeyCode]);
             }
         }
@@ -499,8 +505,20 @@ namespace NppFileSearch
         }
         private void btnAutoInvalidateFilename_Click(object sender, EventArgs e)
         {
-            Main.AutoInvalidateFilename = btnAutoInvalidateFilename.Checked;
+            Main.AutoInvalidateFilenames = btnAutoInvalidateFilenames.Checked;
             StartBackgroundWorker(null);
+        }
+        private void btnFolderUp_Click(object sender, EventArgs e)
+        {
+            string parentDir = Path.GetDirectoryName(topLevelDir);
+            if (parentDir != topLevelDir)
+            {
+                bw.CancelAsync();
+                bw.Dispose();
+                topLevelDir = parentDir;
+                allFiles = new List<string>();
+                StartBackgroundWorker(topLevelDir);
+            }
         }
         #endregion
     }
