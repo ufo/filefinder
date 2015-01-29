@@ -327,10 +327,10 @@ namespace NppFileSearch
         }
         static List<string> showFrmOpenFile(frmOpenFile frmOpenFile, bool openFiles)
         {
-            List<string> selectedFiles = null;
+            List<string> selectedFiles = new List<string>();
             if (frmOpenFile.ShowDialog() == DialogResult.OK)
             {
-                selectedFiles = null; // TODO
+                selectedFiles = frmOpenFile.SelectedFiles;
                 if (openFiles)
                 {
                     foreach (string filePath in selectedFiles)

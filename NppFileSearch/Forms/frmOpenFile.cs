@@ -15,6 +15,7 @@ namespace NppFileSearch
         List<string> allFiles;
         Dictionary<string, Dictionary<string, string>> formattedFiles;
         List<ListViewItem> listBoxItems = new List<ListViewItem>();
+        internal List<string> SelectedFiles;
 
         static ImageList iconCache = null;
 
@@ -85,6 +86,14 @@ namespace NppFileSearch
             {
                 bw.CancelAsync();
             }
+
+            SelectedFiles = new List<string>();
+            foreach (int index in LbxFiles.SelectedIndices)
+            {
+                ListViewItem lvi = listBoxItems[index];
+                SelectedFiles.Add((string)lvi.Tag);
+            }
+
             Main.OpenFileDialogWidth = Width;
             Main.OpenFileDialogHeight = Height;
         }
