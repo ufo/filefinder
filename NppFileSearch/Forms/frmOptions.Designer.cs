@@ -43,7 +43,7 @@
             this.gbxHistorySearch = new System.Windows.Forms.GroupBox();
             this.tbxHistoryExclusions = new System.Windows.Forms.TextBox();
             this.lblHistoryExclusions = new System.Windows.Forms.Label();
-            this.cbxAutoCheckFilesExist = new System.Windows.Forms.CheckBox();
+            this.cbxAutoInvalidateFilename = new System.Windows.Forms.CheckBox();
             this.gbxCommon = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).BeginInit();
             this.gbxDirectorySearch.SuspendLayout();
@@ -57,26 +57,24 @@
             this.lblTbbFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTbbFunction.Location = new System.Drawing.Point(7, 25);
             this.lblTbbFunction.Name = "lblTbbFunction";
-            this.lblTbbFunction.Size = new System.Drawing.Size(196, 13);
+            this.lblTbbFunction.Size = new System.Drawing.Size(155, 13);
             this.lblTbbFunction.TabIndex = 0;
-            this.lblTbbFunction.Text = "Toolbar button function (restart required)";
+            this.lblTbbFunction.Text = "Toolbar button (restart required)";
             // 
             // cbxTbbFunction
             // 
-            this.cbxTbbFunction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxTbbFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxTbbFunction.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxTbbFunction.FormattingEnabled = true;
-            this.cbxTbbFunction.Location = new System.Drawing.Point(221, 22);
+            this.cbxTbbFunction.Location = new System.Drawing.Point(180, 22);
             this.cbxTbbFunction.Name = "cbxTbbFunction";
-            this.cbxTbbFunction.Size = new System.Drawing.Size(178, 21);
+            this.cbxTbbFunction.Size = new System.Drawing.Size(127, 21);
             this.cbxTbbFunction.TabIndex = 1;
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(331, 565);
+            this.btnCancel.Location = new System.Drawing.Point(578, 287);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(89, 23);
             this.btnCancel.TabIndex = 7;
@@ -85,9 +83,8 @@
             // 
             // btnSave
             // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(233, 565);
+            this.btnSave.Location = new System.Drawing.Point(474, 287);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(89, 23);
             this.btnSave.TabIndex = 6;
@@ -106,40 +103,36 @@
             // 
             // nudMaxHistoryLength
             // 
-            this.nudMaxHistoryLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMaxHistoryLength.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudMaxHistoryLength.Location = new System.Drawing.Point(221, 29);
+            this.nudMaxHistoryLength.Location = new System.Drawing.Point(180, 29);
             this.nudMaxHistoryLength.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.nudMaxHistoryLength.Name = "nudMaxHistoryLength";
-            this.nudMaxHistoryLength.Size = new System.Drawing.Size(178, 20);
+            this.nudMaxHistoryLength.Size = new System.Drawing.Size(127, 20);
             this.nudMaxHistoryLength.TabIndex = 9;
             // 
             // cbxCaseSensitiveSearch
             // 
-            this.cbxCaseSensitiveSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxCaseSensitiveSearch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbxCaseSensitiveSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxCaseSensitiveSearch.Location = new System.Drawing.Point(6, 53);
             this.cbxCaseSensitiveSearch.Name = "cbxCaseSensitiveSearch";
-            this.cbxCaseSensitiveSearch.Size = new System.Drawing.Size(393, 24);
+            this.cbxCaseSensitiveSearch.Size = new System.Drawing.Size(301, 24);
             this.cbxCaseSensitiveSearch.TabIndex = 10;
             this.cbxCaseSensitiveSearch.Text = "Case sensitive search filter";
             this.cbxCaseSensitiveSearch.UseVisualStyleBackColor = true;
             // 
             // cbxDisplayedFilePathFormat
             // 
-            this.cbxDisplayedFilePathFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbxDisplayedFilePathFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxDisplayedFilePathFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxDisplayedFilePathFormat.FormattingEnabled = true;
-            this.cbxDisplayedFilePathFormat.Location = new System.Drawing.Point(221, 87);
+            this.cbxDisplayedFilePathFormat.Location = new System.Drawing.Point(180, 87);
             this.cbxDisplayedFilePathFormat.Name = "cbxDisplayedFilePathFormat";
-            this.cbxDisplayedFilePathFormat.Size = new System.Drawing.Size(178, 21);
+            this.cbxDisplayedFilePathFormat.Size = new System.Drawing.Size(127, 21);
             this.cbxDisplayedFilePathFormat.TabIndex = 12;
             // 
             // lblDisplayedFilePathFormat
@@ -157,9 +150,9 @@
             this.gbxDirectorySearch.Controls.Add(this.tbxDirSearchExclusions);
             this.gbxDirectorySearch.Controls.Add(this.lblDirSearchExclusions);
             this.gbxDirectorySearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbxDirectorySearch.Location = new System.Drawing.Point(12, 390);
+            this.gbxDirectorySearch.Location = new System.Drawing.Point(12, 151);
             this.gbxDirectorySearch.Name = "gbxDirectorySearch";
-            this.gbxDirectorySearch.Size = new System.Drawing.Size(408, 159);
+            this.gbxDirectorySearch.Size = new System.Drawing.Size(320, 159);
             this.gbxDirectorySearch.TabIndex = 15;
             this.gbxDirectorySearch.TabStop = false;
             this.gbxDirectorySearch.Text = "Directory search";
@@ -167,20 +160,18 @@
             // tbxDirSearchExclusions
             // 
             this.tbxDirSearchExclusions.AcceptsReturn = true;
-            this.tbxDirSearchExclusions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxDirSearchExclusions.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbxDirSearchExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxDirSearchExclusions.Location = new System.Drawing.Point(221, 28);
+            this.tbxDirSearchExclusions.Location = new System.Drawing.Point(180, 28);
             this.tbxDirSearchExclusions.Multiline = true;
             this.tbxDirSearchExclusions.Name = "tbxDirSearchExclusions";
             this.tbxDirSearchExclusions.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxDirSearchExclusions.Size = new System.Drawing.Size(178, 115);
+            this.tbxDirSearchExclusions.Size = new System.Drawing.Size(127, 115);
             this.tbxDirSearchExclusions.TabIndex = 14;
             this.tbxDirSearchExclusions.WordWrap = false;
             // 
             // lblDirSearchExclusions
             // 
-            this.lblDirSearchExclusions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDirSearchExclusions.AutoSize = true;
             this.lblDirSearchExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDirSearchExclusions.Location = new System.Drawing.Point(7, 31);
@@ -193,13 +184,13 @@
             // 
             this.gbxHistorySearch.Controls.Add(this.tbxHistoryExclusions);
             this.gbxHistorySearch.Controls.Add(this.lblHistoryExclusions);
-            this.gbxHistorySearch.Controls.Add(this.cbxAutoCheckFilesExist);
+            this.gbxHistorySearch.Controls.Add(this.cbxAutoInvalidateFilename);
             this.gbxHistorySearch.Controls.Add(this.lblMaxHistoryLength);
             this.gbxHistorySearch.Controls.Add(this.nudMaxHistoryLength);
             this.gbxHistorySearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbxHistorySearch.Location = new System.Drawing.Point(12, 151);
+            this.gbxHistorySearch.Location = new System.Drawing.Point(347, 12);
             this.gbxHistorySearch.Name = "gbxHistorySearch";
-            this.gbxHistorySearch.Size = new System.Drawing.Size(408, 224);
+            this.gbxHistorySearch.Size = new System.Drawing.Size(320, 224);
             this.gbxHistorySearch.TabIndex = 17;
             this.gbxHistorySearch.TabStop = false;
             this.gbxHistorySearch.Text = "History search";
@@ -207,20 +198,18 @@
             // tbxHistoryExclusions
             // 
             this.tbxHistoryExclusions.AcceptsReturn = true;
-            this.tbxHistoryExclusions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbxHistoryExclusions.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbxHistoryExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbxHistoryExclusions.Location = new System.Drawing.Point(221, 92);
+            this.tbxHistoryExclusions.Location = new System.Drawing.Point(180, 92);
             this.tbxHistoryExclusions.Multiline = true;
             this.tbxHistoryExclusions.Name = "tbxHistoryExclusions";
             this.tbxHistoryExclusions.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxHistoryExclusions.Size = new System.Drawing.Size(178, 115);
+            this.tbxHistoryExclusions.Size = new System.Drawing.Size(127, 115);
             this.tbxHistoryExclusions.TabIndex = 14;
             this.tbxHistoryExclusions.WordWrap = false;
             // 
             // lblHistoryExclusions
             // 
-            this.lblHistoryExclusions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblHistoryExclusions.AutoSize = true;
             this.lblHistoryExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHistoryExclusions.Location = new System.Drawing.Point(7, 95);
@@ -229,18 +218,16 @@
             this.lblHistoryExclusions.TabIndex = 16;
             this.lblHistoryExclusions.Text = "Excluded directories / filenames";
             // 
-            // cbxAutoCheckFilesExist
+            // cbxAutoInvalidateFilename
             // 
-            this.cbxAutoCheckFilesExist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbxAutoCheckFilesExist.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbxAutoCheckFilesExist.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxAutoCheckFilesExist.Location = new System.Drawing.Point(6, 59);
-            this.cbxAutoCheckFilesExist.Name = "cbxAutoCheckFilesExist";
-            this.cbxAutoCheckFilesExist.Size = new System.Drawing.Size(393, 24);
-            this.cbxAutoCheckFilesExist.TabIndex = 11;
-            this.cbxAutoCheckFilesExist.Text = "Auto check if files exist";
-            this.cbxAutoCheckFilesExist.UseVisualStyleBackColor = true;
+            this.cbxAutoInvalidateFilename.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbxAutoInvalidateFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxAutoInvalidateFilename.Location = new System.Drawing.Point(6, 59);
+            this.cbxAutoInvalidateFilename.Name = "cbxAutoInvalidateFilename";
+            this.cbxAutoInvalidateFilename.Size = new System.Drawing.Size(301, 24);
+            this.cbxAutoInvalidateFilename.TabIndex = 11;
+            this.cbxAutoInvalidateFilename.Text = "Auto invalidate filename";
+            this.cbxAutoInvalidateFilename.UseVisualStyleBackColor = true;
             // 
             // gbxCommon
             // 
@@ -252,7 +239,7 @@
             this.gbxCommon.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbxCommon.Location = new System.Drawing.Point(12, 12);
             this.gbxCommon.Name = "gbxCommon";
-            this.gbxCommon.Size = new System.Drawing.Size(408, 124);
+            this.gbxCommon.Size = new System.Drawing.Size(320, 124);
             this.gbxCommon.TabIndex = 18;
             this.gbxCommon.TabStop = false;
             this.gbxCommon.Text = "Common";
@@ -263,7 +250,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(433, 602);
+            this.ClientSize = new System.Drawing.Size(682, 324);
             this.Controls.Add(this.gbxCommon);
             this.Controls.Add(this.gbxHistorySearch);
             this.Controls.Add(this.gbxDirectorySearch);
@@ -301,7 +288,7 @@
         public System.Windows.Forms.TextBox tbxDirSearchExclusions;
         private System.Windows.Forms.GroupBox gbxHistorySearch;
         private System.Windows.Forms.Label lblDirSearchExclusions;
-        public System.Windows.Forms.CheckBox cbxAutoCheckFilesExist;
+        public System.Windows.Forms.CheckBox cbxAutoInvalidateFilename;
         private System.Windows.Forms.GroupBox gbxCommon;
         public System.Windows.Forms.TextBox tbxHistoryExclusions;
         private System.Windows.Forms.Label lblHistoryExclusions;

@@ -38,9 +38,10 @@ namespace NppFileSearch
             return PluginBase._funcItems.NativePointer;
         }
 
-        const int NPEM_NPPFILESEARCH_HISTORY = 0x0101;
+        const int NPEM_NPPFILESEARCH_DIRECTORY = 0x0101;
         const int NPEM_NPPFILESEARCH_STRINGLIST = 0x0102;
-        const int NPEM_NPPFILESEARCH_DIRECTORY = 0x0103;
+        const int NPEM_NPPFILESEARCH_HISTORY = 0x0103;
+        const int NPEM_NPPFILESEARCH_LASTCLOSED = 0x0104;
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
@@ -112,33 +113,15 @@ namespace NppFileSearch
                     string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
                     if (File.Exists(filePath))
                     {
-                        string dir = Path.GetDirectoryName(filePath);
                         bool skipFile = false;
-                        foreach (string excl in Main.HistoryExclusions)
+                        if (Main.AutoInvalidateFilename)
                         {
-                            string _excl = Environment.ExpandEnvironmentVariables(excl);
-                            if (_excl.Contains(":") || _excl.StartsWith("\\"))
+                            FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
+                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath))
                             {
-                                if (dir.ToLower().StartsWith(_excl))
-                                    skipFile = true;
+                                skipFile = true;
                             }
-                            else if (_excl.Contains("\\"))
-                            {
-                                if (dir.ToLower().EndsWith(_excl))
-                                    skipFile = true;
-                            }
-                            else
-                            {
-                                //string[] _excls = _excl.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
-                                //string startsWith = "";
-                                //string endsWith = "";
-                                if (_excl == Path.GetFileName(dir).ToLower())
-                                    skipFile = true;
-                            }
-                            if (skipFile)
-                                break;
                         }
-
                         if (!skipFile)
                         {
                             Main.HistoryFiles.Insert(0, filePath);

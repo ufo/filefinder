@@ -38,6 +38,17 @@ namespace NppFileSearch
         #endregion
 
         #region " StartUp/CleanUp "
+        public frmOpenFile(string name, string folderPath)
+        {
+            InitializeComponent();
+
+            callerName = name;
+            allFiles = new List<string>();
+            fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
+            InitForm();
+            btnAutoInvalidateFilename.Visible = false;
+            StartBackgroundWorker(folderPath);
+        }
         public frmOpenFile(string name, List<string> files)
         {
             InitializeComponent();
@@ -48,24 +59,13 @@ namespace NppFileSearch
             InitForm();
             StartBackgroundWorker(null);
         }
-        public frmOpenFile(string name, string folderPath)
-        {
-            InitializeComponent();
-
-            callerName = name;
-            allFiles = new List<string>();
-            fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
-            InitForm();
-            btnCheckFilesExist.Visible = false;
-            StartBackgroundWorker(folderPath);
-        }
         void InitForm()
         {
             Text = string.Format("{0}: {1}", callerName, Text);
             Width = Main.WindowWidth;
             Height = Main.WindowHeight;
             btnCaseSensitiveSearch.Checked = Main.CaseSensitiveSearch;
-            btnCheckFilesExist.Checked = Main.AutoCheckFilesExist;
+            btnAutoInvalidateFilename.Checked = Main.AutoInvalidateFilename;
             if (iconCache == null)
             {
                 iconCache = new ImageList();
@@ -282,9 +282,9 @@ namespace NppFileSearch
                 }
             }
         }
-        void CheckFilesExist()
+        void InvalidateFilename()
         {
-            if (btnCheckFilesExist.Checked)
+            if (btnAutoInvalidateFilename.Checked)
             {
                 string[] _files;
                 lock (allFiles)
@@ -350,7 +350,7 @@ namespace NppFileSearch
                 }
                 else
                 {
-                    CheckFilesExist();
+                    InvalidateFilename();
                 }
             }
             catch (Exception ex)
@@ -391,15 +391,6 @@ namespace NppFileSearch
         {
             InitList();
             UpdateListBox();
-        }
-        private void tbxSearch_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (EventKeys2SendKeys.ContainsKey(e.KeyCode))
-            {
-                KeySendToLbx = true;
-                lbxFiles.Focus();
-                SendKeys.Send(EventKeys2SendKeys[e.KeyCode]);
-            }
         }
         private void lbxFiles_KeyDown(object sender, KeyEventArgs e)
         {
@@ -488,6 +479,15 @@ namespace NppFileSearch
         #endregion
 
         #region " Other events "
+        private void tbxSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (EventKeys2SendKeys.ContainsKey(e.KeyCode))
+            {
+                KeySendToLbx = true;
+                lbxFiles.Focus();
+                SendKeys.Send(EventKeys2SendKeys[e.KeyCode]);
+            }
+        }
         private void tbxSearch_TextChanged(object sender, EventArgs e)
         {
             UpdateListBox();
@@ -497,9 +497,9 @@ namespace NppFileSearch
             Main.CaseSensitiveSearch = btnCaseSensitiveSearch.Checked;
             UpdateListBox();
         }
-        private void btnCheckFilesExist_Click(object sender, EventArgs e)
+        private void btnAutoInvalidateFilename_Click(object sender, EventArgs e)
         {
-            Main.AutoCheckFilesExist = btnCheckFilesExist.Checked;
+            Main.AutoInvalidateFilename = btnAutoInvalidateFilename.Checked;
             StartBackgroundWorker(null);
         }
         #endregion

@@ -15,17 +15,19 @@ namespace NppFileSearch
         #region " Fields "
         internal const string PluginName = "NppFileSearch";
 
-        const string OPENFROMFILEHISTORY = "Open from file history...";
-        const string OPENFROMCURRENTFOLDERSTRUCTURE = "Open from current folder structure...";
-        const string OPENLASTCLOSEDFILE = "Open last closed file";
-        static List<string> TbbFunctions = new List<string>()
+        const string OPEN_FROM_CURRENT_DIRECTORY_GREEDY = "Open from directory (greedy)...";
+        const string OPEN_FROM_CURRENT_DIRECTORY_EXPLICIT = "Open from directory (explicit)...";
+        const string OPEN_FROM_FILE_HISTORY = "Open from file history...";
+        const string OPEN_LAST_CLOSED_FILE = "Open last closed file";
+        enum ToolbarButtonFunctions
         {
-            "None",
-            OPENFROMFILEHISTORY,
-            OPENFROMCURRENTFOLDERSTRUCTURE,
-            OPENLASTCLOSEDFILE
-        };
-        static int idTbbFunction;
+            OpenFromDirectoryGreedy = 0,
+            OpenFromDirectoryExplicit = 1,
+            // separator = 2,
+            OpenFromFileHistory = 3,
+            OpenLastClosedFile = 4
+        }
+        static int tbbFunction;
         static Bitmap tbBmp = Properties.Resources.search;
 
         static string pluginFolder;
@@ -52,7 +54,7 @@ namespace NppFileSearch
         internal static List<string> HistoryExclusions;
         static string[] DEFAULT_HISTORY_EXCLUSIONS = new string[] { "%temp%" };
         internal static int MaxHistoryLength;
-        internal static bool AutoCheckFilesExist;
+        internal static bool AutoInvalidateFilename;
 
         internal enum FilePathFormat
         {
@@ -67,28 +69,35 @@ namespace NppFileSearch
         #region " StartUp/CleanUp "
         internal static void CommandMenuInit()
         {
-            PluginBase.SetCommand(0, OPENFROMFILEHISTORY, OpenFromFileHistory,
-                new ShortcutKey(true, false, true, Keys.H));
-            PluginBase.SetCommand(1, OPENFROMCURRENTFOLDERSTRUCTURE, OpenFromCurrentFolderStructure,
+            PluginBase.SetCommand((int)ToolbarButtonFunctions.OpenFromDirectoryGreedy,
+                OPEN_FROM_CURRENT_DIRECTORY_GREEDY, OpenFromCurrentDirectoryGreedy,
                 new ShortcutKey(true, false, true, Keys.O));
-            PluginBase.SetCommand(2, OPENLASTCLOSEDFILE, OpenLastClosedFile,
+            PluginBase.SetCommand((int)ToolbarButtonFunctions.OpenFromDirectoryExplicit,
+                OPEN_FROM_CURRENT_DIRECTORY_EXPLICIT, OpenFromCurrentDirectoryExplicit,
+                new ShortcutKey(true, true, true, Keys.O));
+            PluginBase.SetCommand(2, "", null);
+            PluginBase.SetCommand((int)ToolbarButtonFunctions.OpenFromFileHistory,
+                OPEN_FROM_FILE_HISTORY, OpenFromFileHistory,
+                new ShortcutKey(true, false, true, Keys.H));
+            PluginBase.SetCommand((int)ToolbarButtonFunctions.OpenLastClosedFile,
+                OPEN_LAST_CLOSED_FILE, OpenLastClosedFile,
                 new ShortcutKey(true, false, true, Keys.L));
-            PluginBase.SetCommand(3, "", null);
-            PluginBase.SetCommand(4, "Options", ShowOptions);
             PluginBase.SetCommand(5, "", null);
-            PluginBase.SetCommand(6, "Help", ShowHelp);
-            PluginBase.SetCommand(7, "About", ShowAbout);
+            PluginBase.SetCommand(6, "Options", ShowOptions);
+            PluginBase.SetCommand(7, "", null);
+            PluginBase.SetCommand(8, "Help", ShowHelp);
+            PluginBase.SetCommand(9, "About", ShowAbout);
         }
         internal static void SetToolBarIcon()
         {
-            if (idTbbFunction > 0)
+            if (tbbFunction >= 0)
             {
                 toolbarIcons tbIcons = new toolbarIcons();
                 tbIcons.hToolbarBmp = tbBmp.GetHbitmap();
                 IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
                 Marshal.StructureToPtr(tbIcons, pTbIcons, false);
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON,
-                    PluginBase._funcItems.Items[idTbbFunction - 1]._cmdID, pTbIcons);
+                    PluginBase._funcItems.Items[tbbFunction]._cmdID, pTbIcons);
                 Marshal.FreeHGlobal(pTbIcons);
             }
         }
@@ -107,10 +116,11 @@ namespace NppFileSearch
             if (WindowWidth < 0) WindowWidth = 0;
             WindowHeight = Win32.GetPrivateProfileInt("Window", "Height", 0, iniFilePath);
             if (WindowHeight < 0) WindowHeight = 0;
-            idTbbFunction = Win32.GetPrivateProfileInt("Options", "TbbFunction", 1/*OPENFROMFILEHISTORY*/, iniFilePath);
+            tbbFunction = Win32.GetPrivateProfileInt("Options", "TbbFunction",
+                (int)ToolbarButtonFunctions.OpenFromFileHistory, iniFilePath);
             MaxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             CaseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
-            AutoCheckFilesExist = (Win32.GetPrivateProfileInt("Options", "AutoCheckFilesExist", 0, iniFilePath) == 1);
+            AutoInvalidateFilename = (Win32.GetPrivateProfileInt("Options", "AutoInvalidateFilename", 0, iniFilePath) == 1);
             DisplayedFilePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "DisplayedFilePathFormat", 0, iniFilePath);
 
             string configFilePath = Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES);
@@ -130,10 +140,10 @@ namespace NppFileSearch
         {
             Win32.WritePrivateProfileString("Window", "Width", WindowWidth.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Window", "Height", WindowHeight.ToString(), iniFilePath);
-            Win32.WritePrivateProfileString("Options", "TbbFunction", idTbbFunction.ToString(), iniFilePath);
+            Win32.WritePrivateProfileString("Options", "TbbFunction", tbbFunction.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", MaxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", CaseSensitiveSearch ? "1" : "0", iniFilePath);
-            Win32.WritePrivateProfileString("Options", "AutoCheckFilesExist", AutoCheckFilesExist ? "1" : "0", iniFilePath);
+            Win32.WritePrivateProfileString("Options", "AutoInvalidateFilename", AutoInvalidateFilename ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "DisplayedFilePathFormat", ((int)DisplayedFilePathFormat).ToString(), iniFilePath);
 
             File.WriteAllLines(Path.Combine(pluginConfigFolder, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
@@ -143,22 +153,7 @@ namespace NppFileSearch
         #endregion
 
         #region " Menu functions "
-        internal static void OpenFromFileHistory()
-        {
-            try
-            {
-                string filePath = OpenFromStringList("File history", HistoryFiles);
-                if (!string.IsNullOrEmpty(filePath))
-                {
-                    HistoryFiles.Remove(filePath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        internal static void OpenFromCurrentFolderStructure()
+        internal static void OpenFromCurrentDirectoryGreedy()
         {
             try
             {
@@ -188,6 +183,24 @@ namespace NppFileSearch
                 MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        internal static void OpenFromCurrentDirectoryExplicit()
+        {
+        }
+        internal static void OpenFromFileHistory()
+        {
+            try
+            {
+                string filePath = OpenFromStringList("File history", HistoryFiles);
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    HistoryFiles.Remove(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         internal static void OpenLastClosedFile()
         {
             try
@@ -199,7 +212,7 @@ namespace NppFileSearch
                     {
                         HistoryFiles.Remove(filePath);
 
-                        if (Main.AutoCheckFilesExist)
+                        if (Main.AutoInvalidateFilename)
                         {
                             FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
                             if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath) ||
@@ -223,8 +236,12 @@ namespace NppFileSearch
         {
             frmOptions frmOptions = new frmOptions();
 
-            frmOptions.cbxTbbFunction.Items.AddRange(TbbFunctions.ToArray());
-            frmOptions.cbxTbbFunction.SelectedIndex = idTbbFunction;
+            frmOptions.cbxTbbFunction.Items.Add("");
+            foreach (string func in Enum.GetNames(typeof(ToolbarButtonFunctions)))
+            {
+                frmOptions.cbxTbbFunction.Items.Add(func);
+            }
+            frmOptions.cbxTbbFunction.SelectedIndex = tbbFunction;
             frmOptions.cbxCaseSensitiveSearch.Checked = CaseSensitiveSearch;
             foreach (string frmt in Enum.GetNames(typeof(FilePathFormat)))
             {
@@ -233,14 +250,16 @@ namespace NppFileSearch
             frmOptions.cbxDisplayedFilePathFormat.SelectedIndex = (int)DisplayedFilePathFormat;
 
             frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
-            frmOptions.cbxAutoCheckFilesExist.Checked = AutoCheckFilesExist;
+            frmOptions.cbxAutoInvalidateFilename.Checked = AutoInvalidateFilename;
             frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
 
             frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
 
             if (frmOptions.ShowDialog() == DialogResult.OK)
             {
-                idTbbFunction = frmOptions.cbxTbbFunction.SelectedIndex;
+                tbbFunction = (frmOptions.cbxTbbFunction.SelectedIndex > 0) ?
+                    (int)Enum.Parse(typeof(ToolbarButtonFunctions), frmOptions.cbxTbbFunction.Text) :
+                    -1;
                 CaseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
                 DisplayedFilePathFormat = (FilePathFormat)frmOptions.cbxDisplayedFilePathFormat.SelectedIndex;
 
@@ -250,7 +269,7 @@ namespace NppFileSearch
                     HistoryFiles.RemoveRange(MaxHistoryLength,
                         HistoryFiles.Count - MaxHistoryLength);
                 }
-                AutoCheckFilesExist = frmOptions.cbxAutoCheckFilesExist.Checked;
+                AutoInvalidateFilename = frmOptions.cbxAutoInvalidateFilename.Checked;
                 HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
 
                 DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
@@ -270,6 +289,18 @@ namespace NppFileSearch
         #endregion
 
         #region " API functions "
+        internal static void OpenFromDirectory(string frmTitlePrefix, string folderPath)
+        {
+            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, folderPath);
+            if (frmOpenFile.ShowDialog() == DialogResult.OK)
+            {
+                string filePath = frmOpenFile.tbxFullSelectedPath.Text;
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                }
+            }
+        }
         internal static string OpenFromStringList(string frmTitlePrefix, List<string> lstFiles)
         {
             frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, HistoryFiles);
@@ -283,18 +314,6 @@ namespace NppFileSearch
                 }
             }
             return null;
-        }
-        internal static void OpenFromDirectory(string frmTitlePrefix, string folderPath)
-        {
-            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, folderPath);
-            if (frmOpenFile.ShowDialog() == DialogResult.OK)
-            {
-                string filePath = frmOpenFile.tbxFullSelectedPath.Text;
-                if (!string.IsNullOrEmpty(filePath))
-                {
-                    Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
-                }
-            }
         }
         #endregion
     }

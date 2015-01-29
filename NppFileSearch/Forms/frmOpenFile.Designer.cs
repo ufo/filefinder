@@ -36,7 +36,7 @@
             this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnCheckFilesExist = new System.Windows.Forms.ToolStripButton();
+            this.btnAutoInvalidateFilename = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
@@ -121,7 +121,7 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCaseSensitiveSearch,
-            this.btnCheckFilesExist,
+            this.btnAutoInvalidateFilename,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
@@ -142,16 +142,16 @@
             this.btnCaseSensitiveSearch.Text = "Case sensitive search";
             this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
             // 
-            // btnCheckFilesExist
+            // btnAutoInvalidateFilename
             // 
-            this.btnCheckFilesExist.CheckOnClick = true;
-            this.btnCheckFilesExist.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCheckFilesExist.Image = global::NppFileSearch.Properties.Resources.file_check;
-            this.btnCheckFilesExist.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnCheckFilesExist.Name = "btnCheckFilesExist";
-            this.btnCheckFilesExist.Size = new System.Drawing.Size(23, 20);
-            this.btnCheckFilesExist.Text = "Check if files exist";
-            this.btnCheckFilesExist.Click += new System.EventHandler(this.btnCheckFilesExist_Click);
+            this.btnAutoInvalidateFilename.CheckOnClick = true;
+            this.btnAutoInvalidateFilename.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAutoInvalidateFilename.Image = global::NppFileSearch.Properties.Resources.file_check;
+            this.btnAutoInvalidateFilename.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAutoInvalidateFilename.Name = "btnAutoInvalidateFilename";
+            this.btnAutoInvalidateFilename.Size = new System.Drawing.Size(23, 20);
+            this.btnAutoInvalidateFilename.Text = "Auto invalidate filename";
+            this.btnAutoInvalidateFilename.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
             // 
             // lblProgress
             // 
@@ -225,6 +225,6 @@
         private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
         private System.Windows.Forms.ToolStripStatusLabel lblResult;
         private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
-        private System.Windows.Forms.ToolStripButton btnCheckFilesExist;
+        private System.Windows.Forms.ToolStripButton btnAutoInvalidateFilename;
     }
 }
