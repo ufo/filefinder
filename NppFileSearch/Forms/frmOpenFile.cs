@@ -16,6 +16,8 @@ namespace NppFileSearch
         Dictionary<string, Dictionary<string, string>> formattedFiles;
         List<ListViewItem> listBoxItems = new List<ListViewItem>();
 
+        static ImageList iconCache = null;
+
         string lcaDirPath; // least common ancestor
         FileMaskMatcher fileMaskMatcher;
         
@@ -64,6 +66,12 @@ namespace NppFileSearch
             Height = Main.WindowHeight;
             btnCaseSensitiveSearch.Checked = Main.CaseSensitiveSearch;
             btnCheckFilesExist.Checked = Main.AutoCheckFilesExist;
+            if (iconCache == null)
+            {
+                iconCache = new ImageList();
+                iconCache.ImageSize = new Size(16, 16);
+                iconCache.TransparentColor = Color.Black;
+            }
         }
         private void frmOpenFile_Load(object sender, EventArgs e)
         {
@@ -160,7 +168,8 @@ namespace NppFileSearch
                             f = f.Substring(1);
                         }
                     }
-                    TextRenderer.MeasureText(f, lbxFiles.Font, new System.Drawing.Size(lbxFiles.ClientSize.Width, 0),
+                    TextRenderer.MeasureText(f, lbxFiles.Font,
+                        new System.Drawing.Size(lbxFiles.ClientSize.Width - iconCache.ImageSize.Width - 1, 0),
                         TextFormatFlags.ModifyString | TextFormatFlags.PathEllipsis);
                     formattedFiles[file]["TrimmedDisplay"] = f;
                 }
@@ -409,6 +418,19 @@ namespace NppFileSearch
                 ListViewItem lvi = listBoxItems[e.Index] as ListViewItem;
                 String txt = lvi.Text;
 
+                string filePath = (string)lvi.Tag;
+                string fileExt = Path.GetExtension(filePath).ToLower();
+                if (string.IsNullOrEmpty(fileExt))
+                    fileExt = "-";
+                int imgIndex = iconCache.Images.IndexOfKey(fileExt);
+                if (imgIndex < 0)
+                {
+                    Bitmap bmp = SHGetIcon.GetBmp(filePath, true);
+                    iconCache.Images.Add(fileExt, bmp);
+                    imgIndex = iconCache.Images.IndexOfKey(fileExt);
+                }
+                iconCache.Draw(e.Graphics, new Point(e.Bounds.Location.X + 1, e.Bounds.Location.Y), imgIndex);
+
                 int fontSwitchIndex;
                 Color firstColor;
                 Color secondColor;
@@ -454,12 +476,12 @@ namespace NppFileSearch
                     fontSwitchIndex = txt.Length;
 
                 TextRenderer.DrawText(e.Graphics, txt.Substring(0, fontSwitchIndex),
-                    lbxFiles.Font, e.Bounds.Location, firstColor);
+                    lbxFiles.Font, new Point(e.Bounds.Location.X + 17, e.Bounds.Location.Y), firstColor);
                 if (txt.Length > fontSwitchIndex)
                 {
                     SizeF sf = TextRenderer.MeasureText(txt.Substring(0, fontSwitchIndex), lbxFiles.Font);
                     TextRenderer.DrawText(e.Graphics, txt.Substring(fontSwitchIndex), lbxFiles.Font,
-                        new Point((int)sf.Width, e.Bounds.Y), secondColor);
+                        new Point((int)sf.Width + 17, e.Bounds.Y), secondColor);
                 }
             }
         }

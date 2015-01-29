@@ -72,9 +72,10 @@
             this.lbxFiles.DisplayMember = "Text";
             this.lbxFiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lbxFiles.FormattingEnabled = true;
+            this.lbxFiles.ItemHeight = 17;
             this.lbxFiles.Location = new System.Drawing.Point(12, 126);
             this.lbxFiles.Name = "lbxFiles";
-            this.lbxFiles.Size = new System.Drawing.Size(514, 251);
+            this.lbxFiles.Size = new System.Drawing.Size(514, 242);
             this.lbxFiles.TabIndex = 2;
             this.lbxFiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbxFiles_DrawItem);
             this.lbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
