@@ -1,4 +1,4 @@
-﻿namespace NppFileSearch
+﻿namespace FileFinder
 {
     partial class frmOptions
     {
@@ -246,7 +246,7 @@
             // 
             this.btnOpenFromDirectoryGreedy.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnOpenFromDirectoryGreedy.AutoSize = true;
-            this.btnOpenFromDirectoryGreedy.Image = global::NppFileSearch.Properties.Resources.open_from_directory_greedy;
+            this.btnOpenFromDirectoryGreedy.Image = global::FileFinder.Properties.Resources.open_from_directory_greedy;
             this.btnOpenFromDirectoryGreedy.Location = new System.Drawing.Point(180, 20);
             this.btnOpenFromDirectoryGreedy.Name = "btnOpenFromDirectoryGreedy";
             this.btnOpenFromDirectoryGreedy.Size = new System.Drawing.Size(22, 22);
@@ -258,7 +258,7 @@
             // 
             this.btnSearchInDirectoryExplicitly.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnSearchInDirectoryExplicitly.AutoSize = true;
-            this.btnSearchInDirectoryExplicitly.Image = global::NppFileSearch.Properties.Resources.search_in_directory_explicitly;
+            this.btnSearchInDirectoryExplicitly.Image = global::FileFinder.Properties.Resources.search_in_directory_explicitly;
             this.btnSearchInDirectoryExplicitly.Location = new System.Drawing.Point(215, 20);
             this.btnSearchInDirectoryExplicitly.Name = "btnSearchInDirectoryExplicitly";
             this.btnSearchInDirectoryExplicitly.Size = new System.Drawing.Size(22, 22);
@@ -270,7 +270,7 @@
             // 
             this.btnOpenFromFileHistory.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnOpenFromFileHistory.AutoSize = true;
-            this.btnOpenFromFileHistory.Image = global::NppFileSearch.Properties.Resources.open_from_file_history;
+            this.btnOpenFromFileHistory.Image = global::FileFinder.Properties.Resources.open_from_file_history;
             this.btnOpenFromFileHistory.Location = new System.Drawing.Point(250, 20);
             this.btnOpenFromFileHistory.Name = "btnOpenFromFileHistory";
             this.btnOpenFromFileHistory.Size = new System.Drawing.Size(22, 22);
@@ -282,7 +282,7 @@
             // 
             this.btnOpenLastClosedFile.Appearance = System.Windows.Forms.Appearance.Button;
             this.btnOpenLastClosedFile.AutoSize = true;
-            this.btnOpenLastClosedFile.Image = global::NppFileSearch.Properties.Resources.open_last_closed_file;
+            this.btnOpenLastClosedFile.Image = global::FileFinder.Properties.Resources.open_last_closed_file;
             this.btnOpenLastClosedFile.Location = new System.Drawing.Point(285, 20);
             this.btnOpenLastClosedFile.Name = "btnOpenLastClosedFile";
             this.btnOpenLastClosedFile.Size = new System.Drawing.Size(22, 22);
@@ -307,7 +307,7 @@
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "NppFileSearch";
+            this.Text = "FileFinder";
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).EndInit();
             this.gbxDirectorySearch.ResumeLayout(false);
             this.gbxDirectorySearch.PerformLayout();

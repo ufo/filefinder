@@ -8,12 +8,12 @@ using System.Text;
 using System.Windows.Forms;
 using NppPluginNET;
 
-namespace NppFileSearch
+namespace FileFinder
 {
     class Main
     {
         #region " Fields "
-        internal const string PluginName = "NppFileSearch";
+        internal const string PluginName = "FileFinder";
 
         static string pluginDir;
         static string pluginConfigDir;

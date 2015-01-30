@@ -1,4 +1,4 @@
-﻿namespace NppFileSearch
+﻿namespace FileFinder
 {
     partial class frmOpenFile
     {
@@ -156,7 +156,7 @@
             // 
             this.btnFolderUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnFolderUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnFolderUp.Image = global::NppFileSearch.Properties.Resources.folder_up;
+            this.btnFolderUp.Image = global::FileFinder.Properties.Resources.folder_up;
             this.btnFolderUp.Location = new System.Drawing.Point(296, 32);
             this.btnFolderUp.Name = "btnFolderUp";
             this.btnFolderUp.Size = new System.Drawing.Size(24, 23);
@@ -169,7 +169,7 @@
             // 
             this.btnCaseSensitiveSearch.CheckOnClick = true;
             this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCaseSensitiveSearch.Image = global::NppFileSearch.Properties.Resources.case_sensitive;
+            this.btnCaseSensitiveSearch.Image = global::FileFinder.Properties.Resources.case_sensitive;
             this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
             this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
@@ -180,7 +180,7 @@
             // 
             this.btnAutoInvalidateFilenames.CheckOnClick = true;
             this.btnAutoInvalidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAutoInvalidateFilenames.Image = global::NppFileSearch.Properties.Resources.file_check;
+            this.btnAutoInvalidateFilenames.Image = global::FileFinder.Properties.Resources.file_check;
             this.btnAutoInvalidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnAutoInvalidateFilenames.Name = "btnAutoInvalidateFilenames";
             this.btnAutoInvalidateFilenames.Size = new System.Drawing.Size(23, 20);

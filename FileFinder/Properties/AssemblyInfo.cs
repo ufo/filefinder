@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NppFileSearch")]
+[assembly: AssemblyTitle("FileFinder")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("pu55y.com")]
-[assembly: AssemblyProduct("NppFileSearch")]
+[assembly: AssemblyProduct("FileFinder")]
 [assembly: AssemblyCopyright("Copyleft © ufo 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

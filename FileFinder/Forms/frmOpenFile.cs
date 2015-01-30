@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
-namespace NppFileSearch
+namespace FileFinder
 {
     public partial class frmOpenFile : Form
     {

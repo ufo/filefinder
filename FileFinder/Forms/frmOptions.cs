@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace NppFileSearch
+namespace FileFinder
 {
     public partial class frmOptions : Form
     {

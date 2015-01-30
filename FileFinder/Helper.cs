@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
-namespace NppFileSearch
+namespace FileFinder
 {
     class FileMaskMatcher
     {
