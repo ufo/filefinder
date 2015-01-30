@@ -34,7 +34,6 @@
             this.LbxFiles = new System.Windows.Forms.ListBox();
             this.btnOpenSelected = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.tbxFullSelectedPath = new System.Windows.Forms.TextBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
@@ -44,6 +43,7 @@
             this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
             this.btnAutoInvalidateFilenames = new System.Windows.Forms.ToolStripButton();
             this.ttOpenFile = new System.Windows.Forms.ToolTip(this.components);
+            this.rbxFullSelectedPath = new System.Windows.Forms.RichTextBox();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -108,18 +108,6 @@
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // tbxFullSelectedPath
-            // 
-            this.tbxFullSelectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxFullSelectedPath.Location = new System.Drawing.Point(12, 62);
-            this.tbxFullSelectedPath.Multiline = true;
-            this.tbxFullSelectedPath.Name = "tbxFullSelectedPath";
-            this.tbxFullSelectedPath.ReadOnly = true;
-            this.tbxFullSelectedPath.Size = new System.Drawing.Size(514, 56);
-            this.tbxFullSelectedPath.TabIndex = 6;
-            this.tbxFullSelectedPath.TabStop = false;
             // 
             // statusStrip
             // 
@@ -199,6 +187,20 @@
             this.btnAutoInvalidateFilenames.Text = "Auto invalidate filenames";
             this.btnAutoInvalidateFilenames.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
             // 
+            // rbxFullSelectedPath
+            // 
+            this.rbxFullSelectedPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rbxFullSelectedPath.DetectUrls = false;
+            this.rbxFullSelectedPath.Location = new System.Drawing.Point(12, 62);
+            this.rbxFullSelectedPath.Name = "rbxFullSelectedPath";
+            this.rbxFullSelectedPath.ReadOnly = true;
+            this.rbxFullSelectedPath.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.rbxFullSelectedPath.Size = new System.Drawing.Size(514, 56);
+            this.rbxFullSelectedPath.TabIndex = 11;
+            this.rbxFullSelectedPath.Text = "";
+            this.rbxFullSelectedPath.TextChanged += new System.EventHandler(this.rbxFullSelectedPath_TextChanged);
+            // 
             // frmOpenFile
             // 
             this.AcceptButton = this.btnOpenSelected;
@@ -206,9 +208,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(539, 405);
+            this.Controls.Add(this.rbxFullSelectedPath);
             this.Controls.Add(this.btnFolderUp);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.tbxFullSelectedPath);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpenSelected);
             this.Controls.Add(this.LbxFiles);
@@ -244,8 +246,8 @@
         private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
         private System.Windows.Forms.ToolStripButton btnAutoInvalidateFilenames;
         public System.Windows.Forms.ListBox LbxFiles;
-        private System.Windows.Forms.TextBox tbxFullSelectedPath;
         private System.Windows.Forms.Button btnFolderUp;
         private System.Windows.Forms.ToolTip ttOpenFile;
+        public System.Windows.Forms.RichTextBox rbxFullSelectedPath;
     }
 }

@@ -24,6 +24,7 @@ namespace NppFileSearch
         string topLevelDir;
         
         BackgroundWorker bw = null;
+        bool formShown = false;
         int fileCounter;
         bool updatingListBox = false;
 
@@ -79,12 +80,16 @@ namespace NppFileSearch
         {
             InitList();
             UpdateListBox();
+            formShown = true;
         }
         private void frmOpenFile_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if ((bw != null) && bw.IsBusy)
+            if (bw != null)
             {
                 bw.CancelAsync();
+                while (bw.IsBusy)
+                    Application.DoEvents();
+                bw.Dispose();
             }
 
             SelectedFiles = new List<string>();
@@ -188,8 +193,8 @@ namespace NppFileSearch
         void UpdateListBox()
         {
             string pattern = tbxSearch.Text.Trim();
-            string oldSelection = tbxFullSelectedPath.Text;
-            tbxFullSelectedPath.Text = "";
+            string oldSelection = rbxFullSelectedPath.Text;
+            rbxFullSelectedPath.Text = "";
 
             updatingListBox = true;
             LbxFiles.BeginUpdate();
@@ -252,11 +257,17 @@ namespace NppFileSearch
         }
         void GetFiles(string dirPath)
         {
-            foreach (string file in Directory.GetFiles(dirPath))
+            string[] dirFiles = new string[] { };
+            try
+            {
+                dirFiles = Directory.GetFiles(dirPath);
+            }
+            catch (UnauthorizedAccessException) { }
+            foreach (string file in dirFiles)
             {
                 if (bw.CancellationPending == true)
                 {
-                    break;
+                    return;
                 }
 
                 if (!fileMaskMatcher.IsMatch(Path.GetFileName(file), FileMaskMatcher.MatchType.FileName))
@@ -275,15 +286,25 @@ namespace NppFileSearch
                 }
                 while (updatingListBox)
                 {
+                    if (bw.CancellationPending == true)
+                    {
+                        return;
+                    }
                     System.Threading.Thread.Sleep(200);
                 }
             }
 
-            foreach (string dir in Directory.GetDirectories(dirPath))
+            string[] dirs = new string[] { };
+            try
+            {
+                dirs = Directory.GetDirectories(dirPath);
+            }
+            catch (UnauthorizedAccessException) { }
+            foreach (string dir in dirs)
             {
                 if (bw.CancellationPending == true)
                 {
-                    break;
+                    return;
                 }
 
                 if (!fileMaskMatcher.IsMatch(dir, FileMaskMatcher.MatchType.Directory))
@@ -354,6 +375,10 @@ namespace NppFileSearch
         {
             try
             {
+                while (!formShown)
+                {
+                    System.Threading.Thread.Sleep(200);
+                }
                 if (e.Argument is string)
                 {
                     GetFiles((string)e.Argument);
@@ -387,8 +412,8 @@ namespace NppFileSearch
         private void lbxFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             ListViewItem lvi = listBoxItems[LbxFiles.SelectedIndex];
-            tbxFullSelectedPath.Text = (string)lvi.Tag;
-            tbxFullSelectedPath.Enabled = (LbxFiles.SelectedIndices.Count == 1);
+            rbxFullSelectedPath.Text = (string)lvi.Tag;
+            rbxFullSelectedPath.Enabled = (LbxFiles.SelectedIndices.Count == 1);
             LbxFiles.Invalidate();
         }
         private void lbxFiles_DoubleClick(object sender, EventArgs e)
@@ -507,6 +532,45 @@ namespace NppFileSearch
         {
             UpdateListBox();
         }
+        void colorPartOfPath(int start, int length, Color bkColor, Color fgColor)
+        {
+            rbxFullSelectedPath.SelectionStart = start;
+            rbxFullSelectedPath.SelectionLength = length;
+            rbxFullSelectedPath.SelectionBackColor = bkColor;
+            rbxFullSelectedPath.SelectionColor = fgColor;
+        }
+        private void rbxFullSelectedPath_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(topLevelDir) && !string.IsNullOrEmpty(rbxFullSelectedPath.Text))
+            {
+                string filePath = rbxFullSelectedPath.Text;
+                bool highlight = (LbxFiles.SelectedIndices.Count == 1);
+                colorPartOfPath(0, filePath.Length,
+                    rbxFullSelectedPath.BackColor,
+                    highlight ? rbxFullSelectedPath.ForeColor : Color.FromKnownColor(KnownColor.ControlDarkDark));
+                if (highlight)
+                {
+                    int fileNameIndex = topLevelDir.TrimEnd(new char[] { '\\' }).Length + 1;
+                    string[] dirNames = filePath.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                    int dirNameIndex = 0;
+                    foreach (string dirName in dirNames)
+                    {
+                        dirNameIndex = filePath.IndexOf(dirName, dirNameIndex);
+                        if ((dirNameIndex < 0) || (dirNameIndex >= fileNameIndex))
+                        {
+                            break;
+                        }
+                        colorPartOfPath(dirNameIndex, dirName.Length,
+                            Color.FromKnownColor(KnownColor.Highlight),
+                            Color.FromKnownColor(KnownColor.HighlightText));
+                        //colorPartOfPath(dirNameIndex + dirName.Length, 1,
+                        //    rbxFullSelectedPath.BackColor,
+                        //    rbxFullSelectedPath.BackColor);
+                        dirNameIndex++;
+                    }
+                }
+            }
+        }
         private void btnCaseSensitiveSearch_Click(object sender, EventArgs e)
         {
             Main.CaseSensitiveSearch = btnCaseSensitiveSearch.Checked;
@@ -520,10 +584,15 @@ namespace NppFileSearch
         private void btnFolderUp_Click(object sender, EventArgs e)
         {
             string parentDir = Path.GetDirectoryName(topLevelDir);
-            if (parentDir != topLevelDir)
+            if (!string.IsNullOrEmpty(parentDir) && (parentDir != topLevelDir))
             {
-                bw.CancelAsync();
-                bw.Dispose();
+                if (bw != null)
+                {
+                    bw.CancelAsync();
+                    while (bw.IsBusy)
+                        Application.DoEvents();
+                    bw.Dispose();
+                }
                 topLevelDir = parentDir;
                 allFiles = new List<string>();
                 StartBackgroundWorker(topLevelDir);
