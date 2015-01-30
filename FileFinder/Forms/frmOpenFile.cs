@@ -36,8 +36,7 @@ namespace FileFinder
         
         BackgroundWorker bw = null;
         bool formShown = false;
-        int fileCounter;
-        int dirCounter;
+        int updateCounter;
         bool updatingListBox = false;
 
         Dictionary<Keys, string> EventKeys2SendKeys = new Dictionary<Keys, string>()
@@ -361,10 +360,10 @@ namespace FileFinder
         }
         bool updateProgressBar(int counterLimit)
         {
-            fileCounter++;
-            if (fileCounter == counterLimit)
+            updateCounter++;
+            if (updateCounter == counterLimit)
             {
-                fileCounter = 0;
+                updateCounter = 0;
                 bw.ReportProgress(0);
             }
             while (updatingListBox)
@@ -386,7 +385,7 @@ namespace FileFinder
             pbProgress.Visible = true;
             pbProgress.Enabled = true;
 
-            fileCounter = 0;
+            updateCounter = 0;
 
             bw = new BackgroundWorker();
             bw.WorkerReportsProgress = true;

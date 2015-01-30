@@ -249,56 +249,75 @@ namespace FileFinder
         }
         internal static void ShowOptions()
         {
-            frmOptions frmOptions = new frmOptions();
-
-            frmOptions.btnOpenFromDirectoryGreedy.Checked = showTbOpenFromDirectoryGreedy;
-            frmOptions.btnSearchInDirectoryExplicitly.Checked = showTbSearchInDirectoryExplicitly;
-            frmOptions.btnOpenFromFileHistory.Checked = showTbOpenFromFileHistory;
-            frmOptions.btnOpenLastClosedFile.Checked = showTbOpenLastClosedFile;
-            frmOptions.cbxCaseSensitiveSearch.Checked = CaseSensitiveSearch;
-            foreach (string frmt in Enum.GetNames(typeof(FilePathFormat)))
+            try
             {
-                frmOptions.cbxDisplayedFilePathFormat.Items.Add(frmt);
-            }
-            frmOptions.cbxDisplayedFilePathFormat.SelectedIndex = (int)DisplayedFilePathFormat;
+                frmOptions frmOptions = new frmOptions();
 
-            frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
-            frmOptions.cbxAutoInvalidateFilename.Checked = AutoInvalidateFilenames;
-            frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
-
-            frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
-
-            if (frmOptions.ShowDialog() == DialogResult.OK)
-            {
-                showTbOpenFromDirectoryGreedy = frmOptions.btnOpenFromDirectoryGreedy.Checked;
-                showTbSearchInDirectoryExplicitly = frmOptions.btnSearchInDirectoryExplicitly.Checked;
-                showTbOpenFromFileHistory = frmOptions.btnOpenFromFileHistory.Checked;
-                showTbOpenLastClosedFile = frmOptions.btnOpenLastClosedFile.Checked;
-                CaseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
-                DisplayedFilePathFormat = (FilePathFormat)frmOptions.cbxDisplayedFilePathFormat.SelectedIndex;
-
-                MaxHistoryLength = (int)frmOptions.nudMaxHistoryLength.Value;
-                if (HistoryFiles.Count > MaxHistoryLength)
+                frmOptions.btnOpenFromDirectoryGreedy.Checked = showTbOpenFromDirectoryGreedy;
+                frmOptions.btnSearchInDirectoryExplicitly.Checked = showTbSearchInDirectoryExplicitly;
+                frmOptions.btnOpenFromFileHistory.Checked = showTbOpenFromFileHistory;
+                frmOptions.btnOpenLastClosedFile.Checked = showTbOpenLastClosedFile;
+                frmOptions.cbxCaseSensitiveSearch.Checked = CaseSensitiveSearch;
+                foreach (string frmt in Enum.GetNames(typeof(FilePathFormat)))
                 {
-                    HistoryFiles.RemoveRange(MaxHistoryLength,
-                        HistoryFiles.Count - MaxHistoryLength);
+                    frmOptions.cbxDisplayedFilePathFormat.Items.Add(frmt);
                 }
-                AutoInvalidateFilenames = frmOptions.cbxAutoInvalidateFilename.Checked;
-                HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
+                frmOptions.cbxDisplayedFilePathFormat.SelectedIndex = (int)DisplayedFilePathFormat;
 
-                DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
+                frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
+                frmOptions.cbxAutoInvalidateFilename.Checked = AutoInvalidateFilenames;
+                frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
+
+                frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
+
+                if (frmOptions.ShowDialog() == DialogResult.OK)
+                {
+                    showTbOpenFromDirectoryGreedy = frmOptions.btnOpenFromDirectoryGreedy.Checked;
+                    showTbSearchInDirectoryExplicitly = frmOptions.btnSearchInDirectoryExplicitly.Checked;
+                    showTbOpenFromFileHistory = frmOptions.btnOpenFromFileHistory.Checked;
+                    showTbOpenLastClosedFile = frmOptions.btnOpenLastClosedFile.Checked;
+                    CaseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
+                    DisplayedFilePathFormat = (FilePathFormat)frmOptions.cbxDisplayedFilePathFormat.SelectedIndex;
+
+                    MaxHistoryLength = (int)frmOptions.nudMaxHistoryLength.Value;
+                    if (HistoryFiles.Count > MaxHistoryLength)
+                    {
+                        HistoryFiles.RemoveRange(MaxHistoryLength,
+                            HistoryFiles.Count - MaxHistoryLength);
+                    }
+                    AutoInvalidateFilenames = frmOptions.cbxAutoInvalidateFilename.Checked;
+                    HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
+
+                    DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         internal static void ShowHelp()
         {
-            string filePath = Path.Combine(pluginDir, "doc", PluginName + ".README.txt");
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+            try
+            {
+                string filePath = Path.Combine(pluginDir, "doc", PluginName + ".README.txt");
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         internal static void ShowAbout()
         {
-            string txt = string.Format("Version: {0}\nAuthor: ufo",
-                Assembly.GetExecutingAssembly().GetName().Version.ToString(2));
-            MessageBox.Show(txt, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                new frmAbout().ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         #endregion
 
