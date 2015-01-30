@@ -46,6 +46,9 @@ namespace FileFinder
             "*.com", "*.dll", "*.exe", "*.lib",
             "*.obj", "*.pyc", "*.pyd", "*.pyo"
         };
+        const string PATH_EXT_DIR_SEARCH_PATTERNS = ".dir-search-patterns.txt";
+        internal static AutoCompleteStringCollection LastSearchPatterns;
+        internal const int MAX_LAST_SEARCH_PATTERNS = 100;
 
         const string PATH_EXT_HISTORY_FILES = ".history-files.txt";
         internal static List<string> HistoryFiles;
@@ -138,6 +141,18 @@ namespace FileFinder
             DirSearchExclusions = File.Exists(configFilePath) ?
                 new List<string>(File.ReadAllLines(configFilePath)) :
                 new List<string>(DEFAULT_DIR_SEARCH_EXCLUSIONS);
+            configFilePath = Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS);
+            LastSearchPatterns = new AutoCompleteStringCollection();
+            if (File.Exists(configFilePath))
+            {
+                foreach (string pat in File.ReadAllLines(configFilePath))
+                {
+                    if (!string.IsNullOrEmpty(pat))
+                    {
+                        LastSearchPatterns.Add(pat);
+                    }
+                }
+            }
         }
         internal static void SaveSettings()
         {
@@ -157,6 +172,12 @@ namespace FileFinder
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_EXCLUSIONS), HistoryExclusions);
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS), DirSearchExclusions);
+            List<string> _lastSearchPatterns = new List<string>();
+            foreach (string pat in LastSearchPatterns)
+	        {
+                _lastSearchPatterns.Add(pat);
+        	}
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS), _lastSearchPatterns);
         }
         #endregion
 
@@ -194,7 +215,7 @@ namespace FileFinder
                 {
                     rootDir = Path.GetDirectoryName(filePath);
                 }
-                SearchInDirectoryExplicitly("File search", rootDir, "readme.txt", true, true);
+                SearchInDirectoryExplicitly("File search", rootDir, null, true, true);
             }
             catch (Exception ex)
             {
@@ -347,7 +368,13 @@ namespace FileFinder
             }
             if (string.IsNullOrEmpty(searchPattern))
             {
-                // TODO: show dialog?
+                frmFilenamePattern frmFilenamePattern = new frmFilenamePattern();
+                frmFilenamePattern.tbxPattern.AutoCompleteCustomSource = LastSearchPatterns;
+                if (frmFilenamePattern.ShowDialog() != DialogResult.OK)
+                {
+                    return new List<string>();
+                }
+                searchPattern = frmFilenamePattern.tbxPattern.Text.Trim();
             }
             frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, rootDir, searchPattern);
             return showFrmOpenFile(frmOpenFile, openFiles);

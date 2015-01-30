@@ -204,7 +204,14 @@ namespace FileFinder
         {
             string pattern = tbxSearch.Text.Trim();
             string oldSelection = rbxFullSelectedPath.Text;
-            rbxFullSelectedPath.Text = "";
+            if (directorySearch != null)
+            {
+                rbxFullSelectedPath.Text = directorySearch.Directory;
+            }
+            else
+            {
+                rbxFullSelectedPath.Text = "";
+            }
 
             updatingListBox = true;
             LbxFiles.BeginUpdate();

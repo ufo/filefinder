@@ -35,13 +35,13 @@
             this.btnOpenSelected = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
+            this.btnAutoInvalidateFilenames = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblResult = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnFolderUp = new System.Windows.Forms.Button();
-            this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnAutoInvalidateFilenames = new System.Windows.Forms.ToolStripButton();
             this.ttOpenFile = new System.Windows.Forms.ToolTip(this.components);
             this.rbxFullSelectedPath = new System.Windows.Forms.RichTextBox();
             this.statusStrip.SuspendLayout();
@@ -124,6 +124,28 @@
             this.statusStrip.Size = new System.Drawing.Size(539, 22);
             this.statusStrip.TabIndex = 9;
             // 
+            // btnCaseSensitiveSearch
+            // 
+            this.btnCaseSensitiveSearch.CheckOnClick = true;
+            this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCaseSensitiveSearch.Image = global::FileFinder.Properties.Resources.case_sensitive;
+            this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
+            this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
+            this.btnCaseSensitiveSearch.Text = "Case sensitive search";
+            this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
+            // 
+            // btnAutoInvalidateFilenames
+            // 
+            this.btnAutoInvalidateFilenames.CheckOnClick = true;
+            this.btnAutoInvalidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAutoInvalidateFilenames.Image = global::FileFinder.Properties.Resources.file_check;
+            this.btnAutoInvalidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAutoInvalidateFilenames.Name = "btnAutoInvalidateFilenames";
+            this.btnAutoInvalidateFilenames.Size = new System.Drawing.Size(23, 20);
+            this.btnAutoInvalidateFilenames.Text = "Auto invalidate filenames";
+            this.btnAutoInvalidateFilenames.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
+            // 
             // lblProgress
             // 
             this.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -164,28 +186,6 @@
             this.ttOpenFile.SetToolTip(this.btnFolderUp, "Up to parent folder (Alt + Up Arrow)");
             this.btnFolderUp.UseVisualStyleBackColor = true;
             this.btnFolderUp.Click += new System.EventHandler(this.btnFolderUp_Click);
-            // 
-            // btnCaseSensitiveSearch
-            // 
-            this.btnCaseSensitiveSearch.CheckOnClick = true;
-            this.btnCaseSensitiveSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnCaseSensitiveSearch.Image = global::FileFinder.Properties.Resources.case_sensitive;
-            this.btnCaseSensitiveSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnCaseSensitiveSearch.Name = "btnCaseSensitiveSearch";
-            this.btnCaseSensitiveSearch.Size = new System.Drawing.Size(23, 20);
-            this.btnCaseSensitiveSearch.Text = "Case sensitive search";
-            this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
-            // 
-            // btnAutoInvalidateFilenames
-            // 
-            this.btnAutoInvalidateFilenames.CheckOnClick = true;
-            this.btnAutoInvalidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAutoInvalidateFilenames.Image = global::FileFinder.Properties.Resources.file_check;
-            this.btnAutoInvalidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnAutoInvalidateFilenames.Name = "btnAutoInvalidateFilenames";
-            this.btnAutoInvalidateFilenames.Size = new System.Drawing.Size(23, 20);
-            this.btnAutoInvalidateFilenames.Text = "Auto invalidate filenames";
-            this.btnAutoInvalidateFilenames.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
             // 
             // rbxFullSelectedPath
             // 
