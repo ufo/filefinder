@@ -21,11 +21,23 @@ namespace NppFileSearch
 
         string lcaDirPath; // least common ancestor
         FileMaskMatcher fileMaskMatcher;
-        string topLevelDir;
+
+        class DirectorySearch
+        {
+            public DirectorySearch(string directory, string searchPattern)
+            {
+                Directory = directory;
+                SearchPattern = searchPattern;
+            }
+            public string Directory;
+            public string SearchPattern;
+        }
+        DirectorySearch directorySearch = null;
         
         BackgroundWorker bw = null;
         bool formShown = false;
         int fileCounter;
+        int dirCounter;
         bool updatingListBox = false;
 
         Dictionary<Keys, string> EventKeys2SendKeys = new Dictionary<Keys, string>()
@@ -39,17 +51,16 @@ namespace NppFileSearch
         #endregion
 
         #region " StartUp/CleanUp "
-        public frmOpenFile(string name, string dirPath)
+        public frmOpenFile(string name, string dirPath, string searchPattern)
         {
             InitializeComponent();
 
             callerName = name;
-            topLevelDir = dirPath;
             allFiles = new List<string>();
             fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
             InitForm();
             btnAutoInvalidateFilenames.Visible = false;
-            StartBackgroundWorker(dirPath);
+            StartBackgroundWorker(new DirectorySearch(dirPath, searchPattern));
         }
         public frmOpenFile(string name, List<string> files)
         {
@@ -255,12 +266,19 @@ namespace NppFileSearch
 
             lblResult.Text = string.Format("Result: {0} / {1}", LbxFiles.Items.Count, formattedFiles.Count);
         }
-        void GetFiles(string dirPath)
+        void GetFiles(string dirPath, string searchPattern)
         {
             string[] dirFiles = new string[] { };
             try
             {
-                dirFiles = Directory.GetFiles(dirPath);
+                if (string.IsNullOrEmpty(searchPattern))
+                {
+                    dirFiles = Directory.GetFiles(dirPath);
+                }
+                else
+                {
+                    dirFiles = Directory.GetFiles(dirPath, searchPattern);
+                }
             }
             catch (UnauthorizedAccessException) { }
             foreach (string file in dirFiles)
@@ -278,19 +296,9 @@ namespace NppFileSearch
                     }
                 }
 
-                fileCounter++;
-                if (fileCounter == 100)
+                if (!updateProgressBar(100))
                 {
-                    fileCounter = 0;
-                    bw.ReportProgress(0);
-                }
-                while (updatingListBox)
-                {
-                    if (bw.CancellationPending == true)
-                    {
-                        return;
-                    }
-                    System.Threading.Thread.Sleep(200);
+                    return;
                 }
             }
 
@@ -309,7 +317,12 @@ namespace NppFileSearch
 
                 if (!fileMaskMatcher.IsMatch(dir, FileMaskMatcher.MatchType.Directory))
                 {
-                    GetFiles(dir);
+                    GetFiles(dir, searchPattern);
+                }
+
+                if (!updateProgressBar(100))
+                {
+                    return;
                 }
             }
         }
@@ -339,18 +352,30 @@ namespace NppFileSearch
                         }
                     }
 
-                    fileCounter++;
-                    if (fileCounter == 10)
+                    if (!updateProgressBar(10))
                     {
-                        fileCounter = 0;
-                        bw.ReportProgress(0);
-                    }
-                    while (updatingListBox)
-                    {
-                        System.Threading.Thread.Sleep(200);
+                        return;
                     }
                 }
             }
+        }
+        bool updateProgressBar(int counterLimit)
+        {
+            fileCounter++;
+            if (fileCounter == counterLimit)
+            {
+                fileCounter = 0;
+                bw.ReportProgress(0);
+            }
+            while (updatingListBox)
+            {
+                if (bw.CancellationPending == true)
+                {
+                    return false;
+                }
+                System.Threading.Thread.Sleep(200);
+            }
+            return true;
         }
         #endregion
 
@@ -379,9 +404,10 @@ namespace NppFileSearch
                 {
                     System.Threading.Thread.Sleep(200);
                 }
-                if (e.Argument is string)
+                if (e.Argument is DirectorySearch)
                 {
-                    GetFiles((string)e.Argument);
+                    directorySearch = (DirectorySearch)e.Argument;
+                    GetFiles(directorySearch.Directory, directorySearch.SearchPattern);
                 }
                 else
                 {
@@ -425,8 +451,11 @@ namespace NppFileSearch
         }
         private void lbxFiles_SizeChanged(object sender, EventArgs e)
         {
-            InitList();
-            UpdateListBox();
+            if (formShown)
+            {
+                InitList();
+                UpdateListBox();
+            }
         }
         private void lbxFiles_KeyDown(object sender, KeyEventArgs e)
         {
@@ -541,7 +570,9 @@ namespace NppFileSearch
         }
         private void rbxFullSelectedPath_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(topLevelDir) && !string.IsNullOrEmpty(rbxFullSelectedPath.Text))
+            if ((directorySearch != null) &&
+                !string.IsNullOrEmpty(directorySearch.Directory) &&
+                !string.IsNullOrEmpty(rbxFullSelectedPath.Text))
             {
                 string filePath = rbxFullSelectedPath.Text;
                 bool highlight = (LbxFiles.SelectedIndices.Count == 1);
@@ -550,7 +581,7 @@ namespace NppFileSearch
                     highlight ? rbxFullSelectedPath.ForeColor : Color.FromKnownColor(KnownColor.ControlDarkDark));
                 if (highlight)
                 {
-                    int fileNameIndex = topLevelDir.TrimEnd(new char[] { '\\' }).Length + 1;
+                    int fileNameIndex = directorySearch.Directory.TrimEnd(new char[] { '\\' }).Length + 1;
                     string[] dirNames = filePath.Split(new char[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
                     int dirNameIndex = 0;
                     foreach (string dirName in dirNames)
@@ -583,19 +614,22 @@ namespace NppFileSearch
         }
         private void btnFolderUp_Click(object sender, EventArgs e)
         {
-            string parentDir = Path.GetDirectoryName(topLevelDir);
-            if (!string.IsNullOrEmpty(parentDir) && (parentDir != topLevelDir))
+            if (directorySearch != null)
             {
-                if (bw != null)
+                string parentDir = Path.GetDirectoryName(directorySearch.Directory);
+                if (!string.IsNullOrEmpty(parentDir) && (parentDir != directorySearch.Directory))
                 {
-                    bw.CancelAsync();
-                    while (bw.IsBusy)
-                        Application.DoEvents();
-                    bw.Dispose();
+                    if (bw != null)
+                    {
+                        bw.CancelAsync();
+                        while (bw.IsBusy)
+                            Application.DoEvents();
+                        bw.Dispose();
+                    }
+                    directorySearch.Directory = parentDir;
+                    allFiles = new List<string>();
+                    StartBackgroundWorker(directorySearch);
                 }
-                topLevelDir = parentDir;
-                allFiles = new List<string>();
-                StartBackgroundWorker(topLevelDir);
             }
         }
         #endregion

@@ -187,21 +187,14 @@ namespace NppFileSearch
         {
             try
             {
-                FolderBrowserDialog dlg = new FolderBrowserDialog();
-                dlg.Description = "Select the folder from where to start the recursive file search";
-                dlg.ShowNewFolderButton = false;
-
+                string rootDir = null;
                 uint bufID = (uint)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
                 string filePath = PluginBase.GetFilePathFromBufferID(bufID);
                 if (File.Exists(filePath))
                 {
-                    dlg.SelectedPath = Path.GetDirectoryName(filePath);
+                    rootDir = Path.GetDirectoryName(filePath);
                 }
-                
-                if (dlg.ShowDialog() == DialogResult.OK)
-                {
-                    string dir = dlg.SelectedPath;
-                }
+                SearchInDirectoryExplicitly("File search", rootDir, "readme.txt", true, true);
             }
             catch (Exception ex)
             {
@@ -312,7 +305,7 @@ namespace NppFileSearch
         #region " API functions "
         internal static List<string> OpenFromDirectoryGreedy(string frmTitlePrefix, string dirPath, bool openFiles)
         {
-            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, dirPath);
+            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, dirPath, null);
             return showFrmOpenFile(frmOpenFile, openFiles);
         }
         internal static List<string> OpenFromStringListGreedy(string frmTitlePrefix, List<string> lstFiles, bool openFiles)
@@ -320,10 +313,25 @@ namespace NppFileSearch
             frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, HistoryFiles);
             return showFrmOpenFile(frmOpenFile, openFiles);
         }
-        internal static List<string> SearchInDirectoryExplicitly(string frmTitlePrefix, string dirPath, bool skipFolderBrowser, bool openFiles)
+        internal static List<string> SearchInDirectoryExplicitly(string frmTitlePrefix, string rootDir, string searchPattern, bool showFolderBrowser, bool openFiles)
         {
-            //frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, dirPath, ???);
-            return null; // showFrmOpenFile(frmOpenFile, openFiles);
+            if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
+            {
+                FolderBrowserDialog dlg = new FolderBrowserDialog();
+                dlg.Description = "Select the folder from where to start the recursive file search";
+                dlg.ShowNewFolderButton = false;
+                dlg.SelectedPath = rootDir;
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    rootDir = dlg.SelectedPath;
+                }
+            }
+            if (string.IsNullOrEmpty(searchPattern))
+            {
+                // TODO: show dialog?
+            }
+            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, rootDir, searchPattern);
+            return showFrmOpenFile(frmOpenFile, openFiles);
         }
         static List<string> showFrmOpenFile(frmOpenFile frmOpenFile, bool openFiles)
         {

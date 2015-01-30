@@ -68,9 +68,11 @@ namespace NppFileSearch
                     else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_SEARCH_IN_DIRECTORY_EXPLICITLY)
                     {
                         string dirPath = Marshal.PtrToStringAuto(communicationInfo.info);
+                        string searchPattern = "";
+                        bool showFolderBrowser = true;
                         bool openFiles = false;
-                        bool skipFolderBrowser = false;
-                        List<string> selectedFiles = Main.SearchInDirectoryExplicitly(srcModuleName, dirPath, skipFolderBrowser, openFiles);
+                        List<string> selectedFiles = Main.SearchInDirectoryExplicitly(srcModuleName, dirPath,
+                            searchPattern, showFolderBrowser, openFiles);
                     }
                     else if (communicationInfo.internalMsg == NPEM_NPPFILESEARCH_OPEN_FROM_HISTORY)
                     {
