@@ -7,6 +7,8 @@ namespace FileFinder
         public frmOptions()
         {
             InitializeComponent();
+
+            Icon = Properties.Resources.filefinder;
         }
     }
 }

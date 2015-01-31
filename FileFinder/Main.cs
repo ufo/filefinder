@@ -369,12 +369,16 @@ namespace FileFinder
             if (string.IsNullOrEmpty(searchPattern))
             {
                 frmFilenamePattern frmFilenamePattern = new frmFilenamePattern();
-                frmFilenamePattern.tbxPattern.AutoCompleteCustomSource = LastSearchPatterns;
+                frmFilenamePattern.cbxPattern.AutoCompleteCustomSource = LastSearchPatterns;
+                foreach (string pat in LastSearchPatterns)
+                {
+                    frmFilenamePattern.cbxPattern.Items.Add(pat);
+                }
                 if (frmFilenamePattern.ShowDialog() != DialogResult.OK)
                 {
                     return new List<string>();
                 }
-                searchPattern = frmFilenamePattern.tbxPattern.Text.Trim();
+                searchPattern = frmFilenamePattern.cbxPattern.Text.Trim();
             }
             frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, rootDir, searchPattern);
             return showFrmOpenFile(frmOpenFile, openFiles);

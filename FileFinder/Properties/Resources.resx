@@ -121,6 +121,9 @@
   <data name="case_sensitive" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>case_sensitive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="filefinder" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>filefinder.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="file_check" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>file_check.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

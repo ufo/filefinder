@@ -302,7 +302,9 @@
             this.Controls.Add(this.gbxDirectorySearch);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmOptions";
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;

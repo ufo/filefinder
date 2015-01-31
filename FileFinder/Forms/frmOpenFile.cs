@@ -74,6 +74,7 @@ namespace FileFinder
         }
         void InitForm()
         {
+            Icon = Properties.Resources.filefinder;
             Text = string.Format("{0}: {1}", callerName, Text);
             Width = Main.OpenFileDialogWidth;
             Height = Main.OpenFileDialogHeight;

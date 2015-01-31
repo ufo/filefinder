@@ -216,7 +216,8 @@
             this.Controls.Add(this.LbxFiles);
             this.Controls.Add(this.lblSearch);
             this.Controls.Add(this.tbxSearch);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(555, 444);
             this.Name = "frmOpenFile";
             this.Opacity = 0.95D;

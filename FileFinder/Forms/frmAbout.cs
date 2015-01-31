@@ -10,6 +10,8 @@ namespace FileFinder
         {
             InitializeComponent();
 
+            Icon = Properties.Resources.filefinder;
+
             lblVersion.Text = string.Format("Version: {0}",
                 Assembly.GetExecutingAssembly().GetName().Version.ToString(2));
         }

@@ -95,7 +95,9 @@
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lblIssues);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmAbout";
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;

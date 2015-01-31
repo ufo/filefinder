@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace FileFinder
 {
@@ -8,9 +9,11 @@ namespace FileFinder
         {
             InitializeComponent();
 
+            Icon = Properties.Resources.filefinder;
+
             if (Main.LastSearchPatterns.Count > 0)
             {
-                tbxPattern.Text = Main.LastSearchPatterns[0];
+                cbxPattern.Text = Main.LastSearchPatterns[0];
             }
         }
 
@@ -18,7 +21,7 @@ namespace FileFinder
         {
             if (DialogResult == DialogResult.OK)
             {
-                string searchPattern = tbxPattern.Text.Trim();
+                string searchPattern = cbxPattern.Text.Trim();
                 if (!string.IsNullOrEmpty(searchPattern))
                 {
                     if (!Main.LastSearchPatterns.Contains(searchPattern))
