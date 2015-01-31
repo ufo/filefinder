@@ -58,7 +58,7 @@ namespace FileFinder
             allFiles = new List<string>();
             fileMaskMatcher = new FileMaskMatcher(Main.DirSearchExclusions);
             InitForm();
-            btnAutoInvalidateFilenames.Visible = false;
+            btnAutoValidateFilenames.Visible = false;
             StartBackgroundWorker(new DirectorySearch(dirPath, searchPattern));
         }
         public frmOpenFile(string name, List<string> files)
@@ -78,7 +78,7 @@ namespace FileFinder
             Width = Main.OpenFileDialogWidth;
             Height = Main.OpenFileDialogHeight;
             btnCaseSensitiveSearch.Checked = Main.CaseSensitiveSearch;
-            btnAutoInvalidateFilenames.Checked = Main.AutoInvalidateFilenames;
+            btnAutoValidateFilenames.Checked = Main.AutoValidateFilenames;
             if (iconCache == null)
             {
                 iconCache = new ImageList();
@@ -332,9 +332,9 @@ namespace FileFinder
                 }
             }
         }
-        void InvalidateFilename()
+        void ValidateFilenames()
         {
-            if (btnAutoInvalidateFilenames.Checked)
+            if (btnAutoValidateFilenames.Checked)
             {
                 string[] _files;
                 lock (allFiles)
@@ -417,7 +417,7 @@ namespace FileFinder
                 }
                 else
                 {
-                    InvalidateFilename();
+                    ValidateFilenames();
                 }
             }
             catch (Exception ex)
@@ -613,9 +613,9 @@ namespace FileFinder
             Main.CaseSensitiveSearch = btnCaseSensitiveSearch.Checked;
             UpdateListBox();
         }
-        private void btnAutoInvalidateFilename_Click(object sender, EventArgs e)
+        private void btnAutoValidateFilename_Click(object sender, EventArgs e)
         {
-            Main.AutoInvalidateFilenames = btnAutoInvalidateFilenames.Checked;
+            Main.AutoValidateFilenames = btnAutoValidateFilenames.Checked;
             StartBackgroundWorker(null);
         }
         private void btnFolderUp_Click(object sender, EventArgs e)

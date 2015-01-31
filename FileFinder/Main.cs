@@ -56,7 +56,7 @@ namespace FileFinder
         internal static List<string> HistoryExclusions;
         static string[] DEFAULT_HISTORY_EXCLUSIONS = new string[] { "%temp%" };
         internal static int MaxHistoryLength;
-        internal static bool AutoInvalidateFilenames;
+        internal static bool AutoValidateFilenames;
 
         internal enum FilePathFormat
         {
@@ -126,7 +126,7 @@ namespace FileFinder
             
             MaxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             CaseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
-            AutoInvalidateFilenames = (Win32.GetPrivateProfileInt("Options", "AutoInvalidateFilename", 0, iniFilePath) == 1);
+            AutoValidateFilenames = (Win32.GetPrivateProfileInt("Options", "AutoValidateFilenames", 0, iniFilePath) == 1);
             DisplayedFilePathFormat = (FilePathFormat)Win32.GetPrivateProfileInt("Options", "DisplayedFilePathFormat", 0, iniFilePath);
 
             string configFilePath = Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES);
@@ -166,7 +166,7 @@ namespace FileFinder
             
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", MaxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", CaseSensitiveSearch ? "1" : "0", iniFilePath);
-            Win32.WritePrivateProfileString("Options", "AutoInvalidateFilename", AutoInvalidateFilenames ? "1" : "0", iniFilePath);
+            Win32.WritePrivateProfileString("Options", "AutoValidateFilenames", AutoValidateFilenames ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "DisplayedFilePathFormat", ((int)DisplayedFilePathFormat).ToString(), iniFilePath);
 
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
@@ -197,7 +197,7 @@ namespace FileFinder
                 {
                     dirPath = Environment.CurrentDirectory;
                 }
-                OpenFromDirectoryGreedy("Current folder structure", dirPath, true);
+                OpenFromDirectoryGreedy("Recursive file search", dirPath, true);
             }
             catch (Exception ex)
             {
@@ -215,7 +215,7 @@ namespace FileFinder
                 {
                     rootDir = Path.GetDirectoryName(filePath);
                 }
-                SearchInDirectoryExplicitly("File search", rootDir, null, true, true);
+                SearchInDirectoryExplicitly("Recursive file search", rootDir, null, true, true);
             }
             catch (Exception ex)
             {
@@ -248,7 +248,7 @@ namespace FileFinder
                     {
                         HistoryFiles.Remove(filePath);
 
-                        if (Main.AutoInvalidateFilenames)
+                        if (Main.AutoValidateFilenames)
                         {
                             FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
                             if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath) ||
@@ -286,7 +286,7 @@ namespace FileFinder
                 frmOptions.cbxDisplayedFilePathFormat.SelectedIndex = (int)DisplayedFilePathFormat;
 
                 frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
-                frmOptions.cbxAutoInvalidateFilename.Checked = AutoInvalidateFilenames;
+                frmOptions.cbxAutoValidateFilenames.Checked = AutoValidateFilenames;
                 frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
 
                 frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
@@ -306,7 +306,7 @@ namespace FileFinder
                         HistoryFiles.RemoveRange(MaxHistoryLength,
                             HistoryFiles.Count - MaxHistoryLength);
                     }
-                    AutoInvalidateFilenames = frmOptions.cbxAutoInvalidateFilename.Checked;
+                    AutoValidateFilenames = frmOptions.cbxAutoValidateFilenames.Checked;
                     HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
 
                     DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);

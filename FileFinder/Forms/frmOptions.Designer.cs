@@ -43,12 +43,12 @@
             this.gbxHistorySearch = new System.Windows.Forms.GroupBox();
             this.tbxHistoryExclusions = new System.Windows.Forms.TextBox();
             this.lblHistoryExclusions = new System.Windows.Forms.Label();
-            this.cbxAutoInvalidateFilename = new System.Windows.Forms.CheckBox();
+            this.cbxAutoValidateFilenames = new System.Windows.Forms.CheckBox();
             this.gbxCommon = new System.Windows.Forms.GroupBox();
-            this.btnOpenFromDirectoryGreedy = new System.Windows.Forms.CheckBox();
-            this.btnSearchInDirectoryExplicitly = new System.Windows.Forms.CheckBox();
-            this.btnOpenFromFileHistory = new System.Windows.Forms.CheckBox();
             this.btnOpenLastClosedFile = new System.Windows.Forms.CheckBox();
+            this.btnOpenFromFileHistory = new System.Windows.Forms.CheckBox();
+            this.btnSearchInDirectoryExplicitly = new System.Windows.Forms.CheckBox();
+            this.btnOpenFromDirectoryGreedy = new System.Windows.Forms.CheckBox();
             this.ttOptions = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).BeginInit();
             this.gbxDirectorySearch.SuspendLayout();
@@ -62,9 +62,9 @@
             this.lblToolbarButtons.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblToolbarButtons.Location = new System.Drawing.Point(7, 25);
             this.lblToolbarButtons.Name = "lblToolbarButtons";
-            this.lblToolbarButtons.Size = new System.Drawing.Size(160, 13);
+            this.lblToolbarButtons.Size = new System.Drawing.Size(163, 13);
             this.lblToolbarButtons.TabIndex = 0;
-            this.lblToolbarButtons.Text = "Toolbar buttons (restart required)";
+            this.lblToolbarButtons.Text = "Tool bar buttons (restart required)";
             // 
             // btnCancel
             // 
@@ -171,15 +171,15 @@
             this.lblDirSearchExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDirSearchExclusions.Location = new System.Drawing.Point(7, 31);
             this.lblDirSearchExclusions.Name = "lblDirSearchExclusions";
-            this.lblDirSearchExclusions.Size = new System.Drawing.Size(157, 13);
+            this.lblDirSearchExclusions.Size = new System.Drawing.Size(160, 13);
             this.lblDirSearchExclusions.TabIndex = 16;
-            this.lblDirSearchExclusions.Text = "Excluded directories / filenames";
+            this.lblDirSearchExclusions.Text = "Excluded directories / file names";
             // 
             // gbxHistorySearch
             // 
             this.gbxHistorySearch.Controls.Add(this.tbxHistoryExclusions);
             this.gbxHistorySearch.Controls.Add(this.lblHistoryExclusions);
-            this.gbxHistorySearch.Controls.Add(this.cbxAutoInvalidateFilename);
+            this.gbxHistorySearch.Controls.Add(this.cbxAutoValidateFilenames);
             this.gbxHistorySearch.Controls.Add(this.lblMaxHistoryLength);
             this.gbxHistorySearch.Controls.Add(this.nudMaxHistoryLength);
             this.gbxHistorySearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -209,20 +209,20 @@
             this.lblHistoryExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHistoryExclusions.Location = new System.Drawing.Point(7, 95);
             this.lblHistoryExclusions.Name = "lblHistoryExclusions";
-            this.lblHistoryExclusions.Size = new System.Drawing.Size(157, 13);
+            this.lblHistoryExclusions.Size = new System.Drawing.Size(160, 13);
             this.lblHistoryExclusions.TabIndex = 16;
-            this.lblHistoryExclusions.Text = "Excluded directories / filenames";
+            this.lblHistoryExclusions.Text = "Excluded directories / file names";
             // 
-            // cbxAutoInvalidateFilename
+            // cbxAutoValidateFilenames
             // 
-            this.cbxAutoInvalidateFilename.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbxAutoInvalidateFilename.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbxAutoInvalidateFilename.Location = new System.Drawing.Point(6, 59);
-            this.cbxAutoInvalidateFilename.Name = "cbxAutoInvalidateFilename";
-            this.cbxAutoInvalidateFilename.Size = new System.Drawing.Size(301, 24);
-            this.cbxAutoInvalidateFilename.TabIndex = 11;
-            this.cbxAutoInvalidateFilename.Text = "Auto invalidate filename";
-            this.cbxAutoInvalidateFilename.UseVisualStyleBackColor = true;
+            this.cbxAutoValidateFilenames.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbxAutoValidateFilenames.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxAutoValidateFilenames.Location = new System.Drawing.Point(6, 59);
+            this.cbxAutoValidateFilenames.Name = "cbxAutoValidateFilenames";
+            this.cbxAutoValidateFilenames.Size = new System.Drawing.Size(301, 24);
+            this.cbxAutoValidateFilenames.TabIndex = 11;
+            this.cbxAutoValidateFilenames.Text = "Auto validate filenames";
+            this.cbxAutoValidateFilenames.UseVisualStyleBackColor = true;
             // 
             // gbxCommon
             // 
@@ -242,29 +242,17 @@
             this.gbxCommon.TabStop = false;
             this.gbxCommon.Text = "Common";
             // 
-            // btnOpenFromDirectoryGreedy
+            // btnOpenLastClosedFile
             // 
-            this.btnOpenFromDirectoryGreedy.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnOpenFromDirectoryGreedy.AutoSize = true;
-            this.btnOpenFromDirectoryGreedy.Image = global::FileFinder.Properties.Resources.open_from_directory_greedy;
-            this.btnOpenFromDirectoryGreedy.Location = new System.Drawing.Point(180, 20);
-            this.btnOpenFromDirectoryGreedy.Name = "btnOpenFromDirectoryGreedy";
-            this.btnOpenFromDirectoryGreedy.Size = new System.Drawing.Size(22, 22);
-            this.btnOpenFromDirectoryGreedy.TabIndex = 14;
-            this.ttOptions.SetToolTip(this.btnOpenFromDirectoryGreedy, "Open from directory (greedy)...");
-            this.btnOpenFromDirectoryGreedy.UseVisualStyleBackColor = true;
-            // 
-            // btnSearchInDirectoryExplicitly
-            // 
-            this.btnSearchInDirectoryExplicitly.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnSearchInDirectoryExplicitly.AutoSize = true;
-            this.btnSearchInDirectoryExplicitly.Image = global::FileFinder.Properties.Resources.search_in_directory_explicitly;
-            this.btnSearchInDirectoryExplicitly.Location = new System.Drawing.Point(215, 20);
-            this.btnSearchInDirectoryExplicitly.Name = "btnSearchInDirectoryExplicitly";
-            this.btnSearchInDirectoryExplicitly.Size = new System.Drawing.Size(22, 22);
-            this.btnSearchInDirectoryExplicitly.TabIndex = 15;
-            this.ttOptions.SetToolTip(this.btnSearchInDirectoryExplicitly, "Search in directory (explicitly)...");
-            this.btnSearchInDirectoryExplicitly.UseVisualStyleBackColor = true;
+            this.btnOpenLastClosedFile.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnOpenLastClosedFile.AutoSize = true;
+            this.btnOpenLastClosedFile.Image = global::FileFinder.Properties.Resources.open_last_closed_file;
+            this.btnOpenLastClosedFile.Location = new System.Drawing.Point(285, 20);
+            this.btnOpenLastClosedFile.Name = "btnOpenLastClosedFile";
+            this.btnOpenLastClosedFile.Size = new System.Drawing.Size(22, 22);
+            this.btnOpenLastClosedFile.TabIndex = 17;
+            this.ttOptions.SetToolTip(this.btnOpenLastClosedFile, "Open last closed file");
+            this.btnOpenLastClosedFile.UseVisualStyleBackColor = true;
             // 
             // btnOpenFromFileHistory
             // 
@@ -278,17 +266,29 @@
             this.ttOptions.SetToolTip(this.btnOpenFromFileHistory, "Open from file history...");
             this.btnOpenFromFileHistory.UseVisualStyleBackColor = true;
             // 
-            // btnOpenLastClosedFile
+            // btnSearchInDirectoryExplicitly
             // 
-            this.btnOpenLastClosedFile.Appearance = System.Windows.Forms.Appearance.Button;
-            this.btnOpenLastClosedFile.AutoSize = true;
-            this.btnOpenLastClosedFile.Image = global::FileFinder.Properties.Resources.open_last_closed_file;
-            this.btnOpenLastClosedFile.Location = new System.Drawing.Point(285, 20);
-            this.btnOpenLastClosedFile.Name = "btnOpenLastClosedFile";
-            this.btnOpenLastClosedFile.Size = new System.Drawing.Size(22, 22);
-            this.btnOpenLastClosedFile.TabIndex = 17;
-            this.ttOptions.SetToolTip(this.btnOpenLastClosedFile, "Open last closed file");
-            this.btnOpenLastClosedFile.UseVisualStyleBackColor = true;
+            this.btnSearchInDirectoryExplicitly.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnSearchInDirectoryExplicitly.AutoSize = true;
+            this.btnSearchInDirectoryExplicitly.Image = global::FileFinder.Properties.Resources.search_in_directory_explicitly;
+            this.btnSearchInDirectoryExplicitly.Location = new System.Drawing.Point(215, 20);
+            this.btnSearchInDirectoryExplicitly.Name = "btnSearchInDirectoryExplicitly";
+            this.btnSearchInDirectoryExplicitly.Size = new System.Drawing.Size(22, 22);
+            this.btnSearchInDirectoryExplicitly.TabIndex = 15;
+            this.ttOptions.SetToolTip(this.btnSearchInDirectoryExplicitly, "Search in directory (explicitly)...");
+            this.btnSearchInDirectoryExplicitly.UseVisualStyleBackColor = true;
+            // 
+            // btnOpenFromDirectoryGreedy
+            // 
+            this.btnOpenFromDirectoryGreedy.Appearance = System.Windows.Forms.Appearance.Button;
+            this.btnOpenFromDirectoryGreedy.AutoSize = true;
+            this.btnOpenFromDirectoryGreedy.Image = global::FileFinder.Properties.Resources.open_from_directory_greedy;
+            this.btnOpenFromDirectoryGreedy.Location = new System.Drawing.Point(180, 20);
+            this.btnOpenFromDirectoryGreedy.Name = "btnOpenFromDirectoryGreedy";
+            this.btnOpenFromDirectoryGreedy.Size = new System.Drawing.Size(22, 22);
+            this.btnOpenFromDirectoryGreedy.TabIndex = 14;
+            this.ttOptions.SetToolTip(this.btnOpenFromDirectoryGreedy, "Open from directory (greedy)...");
+            this.btnOpenFromDirectoryGreedy.UseVisualStyleBackColor = true;
             // 
             // frmOptions
             // 
@@ -333,7 +333,7 @@
         public System.Windows.Forms.TextBox tbxDirSearchExclusions;
         private System.Windows.Forms.GroupBox gbxHistorySearch;
         private System.Windows.Forms.Label lblDirSearchExclusions;
-        public System.Windows.Forms.CheckBox cbxAutoInvalidateFilename;
+        public System.Windows.Forms.CheckBox cbxAutoValidateFilenames;
         private System.Windows.Forms.GroupBox gbxCommon;
         public System.Windows.Forms.TextBox tbxHistoryExclusions;
         private System.Windows.Forms.Label lblHistoryExclusions;

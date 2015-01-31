@@ -32,15 +32,15 @@
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblAuthor = new System.Windows.Forms.Label();
             this.lblIssues = new System.Windows.Forms.LinkLabel();
+            this.lblProduct = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(138, 82);
+            this.btnOK.Location = new System.Drawing.Point(15, 113);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(113, 23);
             this.btnOK.TabIndex = 0;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -48,7 +48,7 @@
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(12, 15);
+            this.lblVersion.Location = new System.Drawing.Point(40, 37);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(63, 13);
             this.lblVersion.TabIndex = 1;
@@ -57,7 +57,7 @@
             // lblAuthor
             // 
             this.lblAuthor.AutoSize = true;
-            this.lblAuthor.Location = new System.Drawing.Point(12, 37);
+            this.lblAuthor.Location = new System.Drawing.Point(13, 60);
             this.lblAuthor.Name = "lblAuthor";
             this.lblAuthor.Size = new System.Drawing.Size(116, 13);
             this.lblAuthor.TabIndex = 2;
@@ -66,7 +66,7 @@
             // lblIssues
             // 
             this.lblIssues.AutoSize = true;
-            this.lblIssues.Location = new System.Drawing.Point(12, 60);
+            this.lblIssues.Location = new System.Drawing.Point(29, 83);
             this.lblIssues.Name = "lblIssues";
             this.lblIssues.Size = new System.Drawing.Size(85, 13);
             this.lblIssues.TabIndex = 4;
@@ -74,13 +74,23 @@
             this.lblIssues.Text = "Reporting issues";
             this.lblIssues.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblIssues_LinkClicked);
             // 
+            // lblProduct
+            // 
+            this.lblProduct.AutoSize = true;
+            this.lblProduct.Location = new System.Drawing.Point(45, 14);
+            this.lblProduct.Name = "lblProduct";
+            this.lblProduct.Size = new System.Drawing.Size(52, 13);
+            this.lblProduct.TabIndex = 5;
+            this.lblProduct.Text = "FileFinder";
+            // 
             // frmAbout
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(225, 117);
+            this.ClientSize = new System.Drawing.Size(143, 148);
+            this.Controls.Add(this.lblProduct);
             this.Controls.Add(this.lblAuthor);
             this.Controls.Add(this.lblVersion);
             this.Controls.Add(this.btnOK);
@@ -90,7 +100,7 @@
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "About FileFinder";
+            this.Text = "About";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -102,5 +112,6 @@
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Label lblAuthor;
         private System.Windows.Forms.LinkLabel lblIssues;
+        private System.Windows.Forms.Label lblProduct;
     }
 }

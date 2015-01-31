@@ -131,7 +131,7 @@ namespace FileFinder
                     if (File.Exists(filePath))
                     {
                         bool skipFile = false;
-                        if (Main.AutoInvalidateFilenames)
+                        if (Main.AutoValidateFilenames)
                         {
                             FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
                             if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath))

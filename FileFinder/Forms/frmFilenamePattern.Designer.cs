@@ -80,7 +80,7 @@
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "File name pattern:";
+            this.Text = "File name pattern";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmFilenamePattern_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

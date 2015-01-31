@@ -36,7 +36,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnAutoInvalidateFilenames = new System.Windows.Forms.ToolStripButton();
+            this.btnAutoValidateFilenames = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
@@ -113,7 +113,7 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCaseSensitiveSearch,
-            this.btnAutoInvalidateFilenames,
+            this.btnAutoValidateFilenames,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
@@ -135,16 +135,16 @@
             this.btnCaseSensitiveSearch.Text = "Case sensitive search";
             this.btnCaseSensitiveSearch.Click += new System.EventHandler(this.btnCaseSensitiveSearch_Click);
             // 
-            // btnAutoInvalidateFilenames
+            // btnAutoValidateFilenames
             // 
-            this.btnAutoInvalidateFilenames.CheckOnClick = true;
-            this.btnAutoInvalidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnAutoInvalidateFilenames.Image = global::FileFinder.Properties.Resources.file_check;
-            this.btnAutoInvalidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnAutoInvalidateFilenames.Name = "btnAutoInvalidateFilenames";
-            this.btnAutoInvalidateFilenames.Size = new System.Drawing.Size(23, 20);
-            this.btnAutoInvalidateFilenames.Text = "Auto invalidate filenames";
-            this.btnAutoInvalidateFilenames.Click += new System.EventHandler(this.btnAutoInvalidateFilename_Click);
+            this.btnAutoValidateFilenames.CheckOnClick = true;
+            this.btnAutoValidateFilenames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAutoValidateFilenames.Image = global::FileFinder.Properties.Resources.file_check;
+            this.btnAutoValidateFilenames.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAutoValidateFilenames.Name = "btnAutoValidateFilenames";
+            this.btnAutoValidateFilenames.Size = new System.Drawing.Size(23, 20);
+            this.btnAutoValidateFilenames.Text = "Auto validate filenames";
+            this.btnAutoValidateFilenames.Click += new System.EventHandler(this.btnAutoValidateFilename_Click);
             // 
             // lblProgress
             // 
@@ -222,7 +222,7 @@
             this.Opacity = 0.95D;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Select file to open";
+            this.Text = "Select files to open";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmOpenFile_FormClosing);
             this.Load += new System.EventHandler(this.frmOpenFile_Load);
             this.statusStrip.ResumeLayout(false);
@@ -244,7 +244,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lblEmpty;
         private System.Windows.Forms.ToolStripStatusLabel lblResult;
         private System.Windows.Forms.ToolStripButton btnCaseSensitiveSearch;
-        private System.Windows.Forms.ToolStripButton btnAutoInvalidateFilenames;
+        private System.Windows.Forms.ToolStripButton btnAutoValidateFilenames;
         public System.Windows.Forms.ListBox LbxFiles;
         private System.Windows.Forms.Button btnFolderUp;
         private System.Windows.Forms.ToolTip ttOpenFile;
