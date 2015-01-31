@@ -251,7 +251,7 @@ namespace FileFinder
                         if (Main.AutoValidateFilenames)
                         {
                             FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
-                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath) ||
+                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FilePath) ||
                                 !File.Exists(filePath))
                             {
                                 OpenLastClosedFile();
@@ -361,10 +361,11 @@ namespace FileFinder
                 dlg.Description = "Select the folder from where to start the recursive file search";
                 dlg.ShowNewFolderButton = false;
                 dlg.SelectedPath = rootDir;
-                if (dlg.ShowDialog() == DialogResult.OK)
+                if (dlg.ShowDialog() != DialogResult.OK)
                 {
-                    rootDir = dlg.SelectedPath;
+                    return new List<string>();
                 }
+                rootDir = dlg.SelectedPath;
             }
             if (string.IsNullOrEmpty(searchPattern))
             {

@@ -130,16 +130,8 @@ namespace FileFinder
                     string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
                     if (File.Exists(filePath))
                     {
-                        bool skipFile = false;
-                        if (Main.AutoValidateFilenames)
-                        {
-                            FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
-                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FullPath))
-                            {
-                                skipFile = true;
-                            }
-                        }
-                        if (!skipFile)
+                        FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
+                        if (!fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FilePath))
                         {
                             Main.HistoryFiles.Insert(0, filePath);
                             if (Main.HistoryFiles.Count > Main.MaxHistoryLength)

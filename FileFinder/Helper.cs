@@ -11,53 +11,109 @@ namespace FileFinder
     {
         public enum MatchType
         {
-            FileName,
+            FilePath,
             Directory,
-            FullPath
+            RegEx
         }
 
-        List<Regex> strictMasks;
-        List<Regex> greedyMasks;
+        List<Regex> fileNameMasks;
+        List<Regex> dirNameMasks;
+        List<Regex> regexMasks;
         public FileMaskMatcher(List<string> fileMaskList)
         {
-            strictMasks = new List<Regex>();
-            greedyMasks = new List<Regex>();
-            foreach (string mask in fileMaskList)
+            fileNameMasks = new List<Regex>();
+            dirNameMasks = new List<Regex>();
+            regexMasks = new List<Regex>();
+            foreach (string _mask in fileMaskList)
             {
-                string convertedMask = Environment.ExpandEnvironmentVariables(mask);
-                convertedMask = Regex.Escape(convertedMask).Replace("\\*", ".*").Replace("\\?", ".");
-                strictMasks.Add(new Regex("^" + convertedMask + "$", RegexOptions.IgnoreCase));
-                greedyMasks.Add(new Regex(convertedMask, RegexOptions.IgnoreCase));
+                string mask = _mask;
+                if (mask != null)
+                {
+                    mask = mask.Trim();
+                }
+                if (string.IsNullOrEmpty(mask))
+                {
+                    continue;
+                }
+                if (!mask.StartsWith(":"))
+                {
+                    string expandedMask = Environment.ExpandEnvironmentVariables(mask);
+
+                    string convertedMask = Regex.Escape(expandedMask).Replace("\\*", ".*").Replace("\\?", ".");
+                    fileNameMasks.Add(new Regex("^" + convertedMask + "$", RegexOptions.IgnoreCase));
+
+                    if (!expandedMask.Contains(":") && !expandedMask.StartsWith(@"\"))
+                    {
+                        expandedMask = @"\" + expandedMask;
+                    }
+                    if (!expandedMask.EndsWith(@"\"))
+                    {
+                        expandedMask += @"\";
+                    }
+                    convertedMask = Regex.Escape(expandedMask).Replace("\\*", ".*").Replace("\\?", ".");
+                    dirNameMasks.Add(new Regex(convertedMask, RegexOptions.IgnoreCase));
+                }
+                else
+                {
+                    regexMasks.Add(new Regex(mask.Substring(1)));
+                }
             }
         }
         public bool IsMatch(string name, MatchType matchType)
         {
-            if (matchType == MatchType.FileName)
+            if (matchType == MatchType.Directory)
             {
-                foreach (Regex fileMask in strictMasks)
-                {
-                    if (fileMask.IsMatch(name))
-                    {
-                        return true;
-                    }
-                }
-            }
-            else if (matchType == MatchType.Directory)
-            {
-                foreach (Regex fileMask in greedyMasks)
-                {
-                    if (fileMask.IsMatch(name))
-                    {
-                        return true;
-                    }
-                }
-            }
-            else if (matchType == MatchType.FullPath)
-            {
-                if (IsMatch(Path.GetFileName(name), MatchType.FileName) ||
-                    IsMatch(Path.GetDirectoryName(name), MatchType.Directory))
+                if (IsMatch(name, MatchType.RegEx))
                 {
                     return true;
+                }
+
+                string dir = name;
+                if (!dir.EndsWith(@"\"))
+                {
+                    dir += @"\";
+                }
+                foreach (Regex dirNameMask in dirNameMasks)
+                {
+                    if (dirNameMask.IsMatch(dir))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (matchType == MatchType.FilePath)
+            {
+                if (IsMatch(name, MatchType.RegEx))
+                {
+                    return true;
+                }
+
+                string fname = Path.GetFileName(name);
+                foreach (Regex fileNameMask in fileNameMasks)
+                {
+                    if (fileNameMask.IsMatch(fname))
+                    {
+                        return true;
+                    }
+                }
+
+                string dir = Path.GetDirectoryName(name) + @"\";
+                foreach (Regex dirNameMask in dirNameMasks)
+                {
+                    if (dirNameMask.IsMatch(dir))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (matchType == MatchType.RegEx)
+            {
+                foreach (Regex regexMask in regexMasks)
+                {
+                    if (regexMask.IsMatch(name))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;

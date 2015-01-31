@@ -155,7 +155,6 @@
             // tbxDirSearchExclusions
             // 
             this.tbxDirSearchExclusions.AcceptsReturn = true;
-            this.tbxDirSearchExclusions.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbxDirSearchExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbxDirSearchExclusions.Location = new System.Drawing.Point(180, 28);
             this.tbxDirSearchExclusions.Multiline = true;
@@ -193,7 +192,6 @@
             // tbxHistoryExclusions
             // 
             this.tbxHistoryExclusions.AcceptsReturn = true;
-            this.tbxHistoryExclusions.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
             this.tbxHistoryExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbxHistoryExclusions.Location = new System.Drawing.Point(180, 92);
             this.tbxHistoryExclusions.Multiline = true;

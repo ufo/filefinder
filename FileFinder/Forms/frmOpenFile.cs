@@ -275,6 +275,11 @@ namespace FileFinder
         }
         void GetFiles(string dirPath, string searchPattern)
         {
+            if (fileMaskMatcher.IsMatch(dirPath, FileMaskMatcher.MatchType.Directory))
+            {
+                return;
+            }
+
             string[] dirFiles = new string[] { };
             try
             {
@@ -295,7 +300,7 @@ namespace FileFinder
                     return;
                 }
 
-                if (!fileMaskMatcher.IsMatch(Path.GetFileName(file), FileMaskMatcher.MatchType.FileName))
+                if (!fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
                 {
                     lock (allFiles)
                     {
@@ -303,7 +308,7 @@ namespace FileFinder
                     }
                 }
 
-                if (!updateProgressBar(100))
+                if (!UpdateProgressBar(100))
                 {
                     return;
                 }
@@ -322,12 +327,9 @@ namespace FileFinder
                     return;
                 }
 
-                if (!fileMaskMatcher.IsMatch(dir, FileMaskMatcher.MatchType.Directory))
-                {
-                    GetFiles(dir, searchPattern);
-                }
+                GetFiles(dir, searchPattern);
 
-                if (!updateProgressBar(100))
+                if (!UpdateProgressBar(100))
                 {
                     return;
                 }
@@ -350,7 +352,7 @@ namespace FileFinder
                     }
 
                     System.Threading.Thread.Sleep(10);
-                    if (fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FullPath) ||
+                    if (fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath) ||
                         !File.Exists(file))
                     {
                         lock (allFiles)
@@ -359,14 +361,14 @@ namespace FileFinder
                         }
                     }
 
-                    if (!updateProgressBar(10))
+                    if (!UpdateProgressBar(10))
                     {
                         return;
                     }
                 }
             }
         }
-        bool updateProgressBar(int counterLimit)
+        bool UpdateProgressBar(int counterLimit)
         {
             updateCounter++;
             if (updateCounter == counterLimit)
