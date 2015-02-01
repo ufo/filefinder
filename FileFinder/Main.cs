@@ -357,15 +357,14 @@ namespace FileFinder
         {
             if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
             {
-                FolderBrowserDialog dlg = new FolderBrowserDialog();
-                dlg.Description = "Select the folder from where to start the recursive file search";
-                dlg.ShowNewFolderButton = false;
-                dlg.SelectedPath = rootDir;
-                if (dlg.ShowDialog() != DialogResult.OK)
+                FolderSelectDialog dlg = new FolderSelectDialog();
+                dlg.Title = "Select the folder from where to start the recursive file search";
+                dlg.InitialDirectory = rootDir;
+                if (!dlg.ShowDialog())
                 {
                     return new List<string>();
                 }
-                rootDir = dlg.SelectedPath;
+                rootDir = dlg.FileName;
             }
             if (string.IsNullOrEmpty(searchPattern))
             {
