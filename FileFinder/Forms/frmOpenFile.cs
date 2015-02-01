@@ -28,9 +28,14 @@ namespace FileFinder
             {
                 Directory = directory;
                 SearchPattern = searchPattern;
+                if (!string.IsNullOrEmpty(SearchPattern) && SearchPattern.StartsWith(":"))
+                {
+                    RegexPattern = new FileMaskMatcher(new List<string>() { SearchPattern });
+                }
             }
-            public string Directory;
-            public string SearchPattern;
+            public string Directory = null;
+            public string SearchPattern = null;
+            public FileMaskMatcher RegexPattern = null;
         }
         DirectorySearch directorySearch = null;
         
@@ -273,7 +278,7 @@ namespace FileFinder
 
             lblResult.Text = string.Format("Result: {0} / {1}", LbxFiles.Items.Count, formattedFiles.Count);
         }
-        void GetFiles(string dirPath, string searchPattern)
+        void GetFiles(string dirPath)
         {
             if (fileMaskMatcher.IsMatch(dirPath, FileMaskMatcher.MatchType.Directory))
             {
@@ -283,13 +288,13 @@ namespace FileFinder
             string[] dirFiles = new string[] { };
             try
             {
-                if (string.IsNullOrEmpty(searchPattern))
+                if (string.IsNullOrEmpty(directorySearch.SearchPattern) || (directorySearch.RegexPattern != null))
                 {
                     dirFiles = Directory.GetFiles(dirPath);
                 }
                 else
                 {
-                    dirFiles = Directory.GetFiles(dirPath, searchPattern);
+                    dirFiles = Directory.GetFiles(dirPath, directorySearch.SearchPattern);
                 }
             }
             catch (UnauthorizedAccessException) { }
@@ -300,7 +305,13 @@ namespace FileFinder
                     return;
                 }
 
-                if (!fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
+                bool skipFile = false;
+                if ((directorySearch.RegexPattern != null) &&
+                    !directorySearch.RegexPattern.IsMatch(file, FileMaskMatcher.MatchType.RegEx))
+                {
+                    skipFile = true;
+                }
+                if (!skipFile && !fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
                 {
                     lock (allFiles)
                     {
@@ -327,7 +338,7 @@ namespace FileFinder
                     return;
                 }
 
-                GetFiles(dir, searchPattern);
+                GetFiles(dir);
 
                 if (!UpdateProgressBar(100))
                 {
@@ -416,7 +427,7 @@ namespace FileFinder
                 if (e.Argument is DirectorySearch)
                 {
                     directorySearch = (DirectorySearch)e.Argument;
-                    GetFiles(directorySearch.Directory, directorySearch.SearchPattern);
+                    GetFiles(directorySearch.Directory);
                 }
                 else
                 {
