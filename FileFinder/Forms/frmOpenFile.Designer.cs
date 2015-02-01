@@ -83,7 +83,6 @@
             this.LbxFiles.TabIndex = 2;
             this.LbxFiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lbxFiles_DrawItem);
             this.LbxFiles.SelectedIndexChanged += new System.EventHandler(this.lbxFiles_SelectedIndexChanged);
-            this.LbxFiles.SizeChanged += new System.EventHandler(this.lbxFiles_SizeChanged);
             this.LbxFiles.DoubleClick += new System.EventHandler(this.lbxFiles_DoubleClick);
             this.LbxFiles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lbxFiles_KeyDown);
             // 

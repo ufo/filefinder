@@ -31,6 +31,8 @@ namespace FileFinder
         internal static int OpenFileDialogWidth;
         internal static int OpenFileDialogHeight;
 
+        internal static bool VerboseExceptions;
+
         static bool showTbOpenFromDirectoryGreedy;
         static bool showTbSearchInDirectoryExplicitly;
         static bool showTbOpenFromFileHistory;
@@ -201,7 +203,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
         internal static void SearchInDirectoryExplicitly()
@@ -219,7 +221,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
         internal static void OpenFromFileHistory()
@@ -234,7 +236,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
         internal static void OpenLastClosedFile()
@@ -265,7 +267,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
         internal static void ShowOptions()
@@ -314,7 +316,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Dbg.Msg(ex);
             }
         }
         internal static void ShowHelp()
@@ -326,7 +328,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Dbg.Msg(ex);
             }
         }
         internal static void ShowAbout()
@@ -337,7 +339,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                Dbg.Msg(ex);
             }
         }
         #endregion

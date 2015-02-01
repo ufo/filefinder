@@ -27,7 +27,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
 
@@ -87,7 +87,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
             return 1;
         }
@@ -145,7 +145,7 @@ namespace FileFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dbg.Msg(ex);
             }
         }
     }

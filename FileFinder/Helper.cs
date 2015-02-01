@@ -9,6 +9,79 @@ using System.Windows.Forms;
 
 namespace FileFinder
 {
+    class Dbg
+    {
+        internal static void Msg(Exception ex)
+        {
+            #if DEBUG
+                MessageBox.Show(ex.ToString(), Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            #else
+                MessageBox.Show(ex.Message, Main.PluginName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            #endif
+        }
+    }
+
+    class MatchItem
+    {
+        public enum MatchItemStatus
+        {
+            Matched,
+            Excluded,
+            Denied
+        }
+        public MatchItem(MatchItemStatus status, string fullPath, string formattedPath)
+        {
+            Status = status;
+            FullPath = fullPath;
+            FormattedPath = formattedPath;
+        }
+        public MatchItemStatus Status;
+        public string FullPath;
+        public string FormattedPath;
+    }
+
+    class MatchItemList : List<MatchItem>
+    {
+        public MatchItemList() { }
+        public MatchItemList(List<string> fullPaths)
+        {
+            foreach (string fullPath in fullPaths)
+            {
+                this.Add(new MatchItem(MatchItem.MatchItemStatus.Matched, fullPath, null));
+            }
+        }
+        public MatchItem this[string fullPath]
+	    {
+		    get
+            {
+                foreach (MatchItem mi in this)
+                {
+                    if (mi.FullPath == fullPath)
+                    {
+                        return mi;
+                    }
+                }
+                return null;
+            }
+	    }
+    }
+
+    class DirectorySearch
+    {
+        public DirectorySearch(string directory, string searchPattern)
+        {
+            Directory = directory;
+            SearchPattern = searchPattern;
+            if (!string.IsNullOrEmpty(SearchPattern) && SearchPattern.StartsWith(":"))
+            {
+                RegexPattern = new FileMaskMatcher(new List<string>() { SearchPattern });
+            }
+        }
+        public string Directory = null;
+        public string SearchPattern = null;
+        public FileMaskMatcher RegexPattern = null;
+    }
+
     class FileMaskMatcher
     {
         public enum MatchType
@@ -203,7 +276,7 @@ namespace FileFinder
         }
     }
 
-    public class FolderSelectDialog
+    class FolderSelectDialog
     {
         // taken from:
         // http://www.lyquidity.com/devblog/?p=136
@@ -283,7 +356,7 @@ namespace FileFinder
         }
     }
 
-    public class WindowWrapper : IWin32Window
+    class WindowWrapper : IWin32Window
     {
         public WindowWrapper(IntPtr handle)
         {
@@ -296,7 +369,7 @@ namespace FileFinder
         private IntPtr _hwnd;
     }
 
-    public class Reflector
+    class Reflector
     {
         string m_ns;
         Assembly m_asmb;
@@ -378,4 +451,30 @@ namespace FileFinder
         }
     }
 
+    class SuspendDrawingUpdate : IDisposable
+    {
+        private const int WM_SETREDRAW = 0x000B;
+        private readonly Control _control;
+        private readonly NativeWindow _window;
+
+        public SuspendDrawingUpdate(Control control)
+        {
+            _control = control;
+
+            Message msgSuspendUpdate = Message.Create(_control.Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+
+            _window = NativeWindow.FromHandle(_control.Handle);
+            _window.DefWndProc(ref msgSuspendUpdate);
+        }
+
+        public void Dispose()
+        {
+            IntPtr wparam = new IntPtr(1);  // Create a C "true" boolean as an IntPtr
+            Message msgResumeUpdate = Message.Create(_control.Handle, WM_SETREDRAW, wparam, IntPtr.Zero);
+
+            _window.DefWndProc(ref msgResumeUpdate);
+
+            _control.Invalidate();
+        }
+    }
 }
