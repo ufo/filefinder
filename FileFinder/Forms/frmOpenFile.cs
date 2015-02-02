@@ -498,7 +498,10 @@ namespace FileFinder
                 if (e.Argument is DirectorySearch)
                 {
                     directorySearch = (DirectorySearch)e.Argument;
-                    GetFiles(directorySearch.Directory);
+                    using (new FileSystemRedirection.Disabled())
+                    {
+                        GetFiles(directorySearch.Directory);
+                    }
                 }
                 else
                 {

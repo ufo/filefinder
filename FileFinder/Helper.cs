@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -475,6 +476,72 @@ namespace FileFinder
             _window.DefWndProc(ref msgResumeUpdate);
 
             _control.Invalidate();
+        }
+    }
+
+    class FileSystemRedirection
+    {
+        [DllImport("kernel32")]
+        static extern bool IsWow64Process(IntPtr hProcess, out bool wow64Process);
+        static bool? _IsUsed = null;
+
+        public static bool IsUsed
+        {
+            get
+            {
+                if (!_IsUsed.HasValue)
+                {
+                    _IsUsed = false;
+                    if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
+                        Environment.OSVersion.Version.Major >= 6)
+                    {
+                        using (Process p = Process.GetCurrentProcess())
+                        {
+                            bool wow64Process = false;
+                            if (IsWow64Process_ManagedWrapper(p.Handle, out wow64Process))
+                            {
+                                _IsUsed = wow64Process;
+                            }
+                        }
+                    }
+                }
+                return _IsUsed.Value;
+            }
+        }
+
+        static bool IsWow64Process_ManagedWrapper(IntPtr hProcess, out bool wow64Process)
+        {
+            return IsWow64Process(hProcess, out wow64Process);
+        }
+
+        public class Disabled : IDisposable
+        {
+            [DllImport("kernel32")]
+            static extern bool Wow64DisableWow64FsRedirection(out IntPtr OldValue);
+            [DllImport("kernel32")]
+            static extern bool Wow64RevertWow64FsRedirection(IntPtr OldValue);
+            IntPtr oldValue;
+            bool disabled;
+
+            public Disabled()
+            {
+                if (FileSystemRedirection.IsUsed)
+                {
+                    disabled = Wow64DisableWow64FsRedirection(out oldValue);
+                    if (!disabled)
+                    {
+                        throw new Exception("The file system redirection could not be disabled");
+                    }
+                }
+            }
+        
+            public void Dispose()
+            {
+                if (disabled)
+                {
+                    Wow64RevertWow64FsRedirection(oldValue);
+                }
+            }
         }
     }
 }

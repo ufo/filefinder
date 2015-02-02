@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -360,14 +361,26 @@ namespace FileFinder
         {
             if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
             {
-                FolderSelectDialog dlg = new FolderSelectDialog();
-                dlg.Title = "Select the folder from where to start the recursive file search";
-                dlg.InitialDirectory = rootDir;
-                if (!dlg.ShowDialog())
+                string title = "Select the folder from where to start the recursive file search";
+                if (!FileSystemRedirection.IsUsed)
                 {
-                    return new List<string>();
+                    FolderSelectDialog dlg = new FolderSelectDialog();
+                    dlg.Title = title;
+                    dlg.InitialDirectory = rootDir;
+                    if (!dlg.ShowDialog(PluginBase.nppData._nppHandle))
+                    {
+                        return new List<string>();
+                    }
+                    rootDir = dlg.FileName;
                 }
-                rootDir = dlg.FileName;
+                else
+                {
+                    using (Process p = new Process())
+                    {
+                        // TODO:
+                        rootDir = "";
+                    }
+                }
             }
             if (string.IsNullOrEmpty(searchPattern))
             {
