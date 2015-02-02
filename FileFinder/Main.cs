@@ -31,8 +31,6 @@ namespace FileFinder
         internal static int OpenFileDialogWidth;
         internal static int OpenFileDialogHeight;
 
-        internal static bool VerboseExceptions;
-
         static bool showTbOpenFromDirectoryGreedy;
         static bool showTbSearchInDirectoryExplicitly;
         static bool showTbOpenFromFileHistory;
@@ -51,6 +49,7 @@ namespace FileFinder
         const string PATH_EXT_DIR_SEARCH_PATTERNS = ".dir-search-patterns.txt";
         internal static AutoCompleteStringCollection LastSearchPatterns;
         internal const int MAX_LAST_SEARCH_PATTERNS = 100;
+        internal static bool ShowFilteredPaths = true;
 
         const string PATH_EXT_HISTORY_FILES = ".history-files.txt";
         internal static List<string> HistoryFiles;

@@ -101,7 +101,11 @@ namespace FileFinder
             SelectedFiles = new List<string>();
             foreach (int index in LbxFiles.SelectedIndices)
             {
-                SelectedFiles.Add(listBoxShadowItems[index].FullPath);
+                string filePath = listBoxShadowItems[index].FullPath;
+                if (!filePath.EndsWith(@"\"))
+                {
+                    SelectedFiles.Add(filePath);
+                }
             }
 
             Main.OpenFileDialogWidth = Width;
@@ -164,9 +168,7 @@ namespace FileFinder
                     foreach (MatchItem _mi in allMatchItemsInterThreaded)
                     {
                         allMatchItemsThreadSafe.Add(
-                            new MatchItem(MatchItem.MatchItemStatus.Matched,
-                                _mi.FullPath,
-                                _mi.FullPath.Substring(lcaDirPath.Length)));
+                            new MatchItem(_mi.Status, _mi.FullPath, _mi.FullPath.Substring(lcaDirPath.Length)));
                     }
                 }
             }
@@ -197,7 +199,7 @@ namespace FileFinder
                     {
                         LbxFiles.Items.Add("");
                         listBoxShadowItems.Add(
-                            new MatchItem(MatchItem.MatchItemStatus.Matched, _mi.FullPath, _mi.FormattedPath));
+                            new MatchItem(_mi.Status, _mi.FullPath, _mi.FormattedPath));
                         if (_mi.FullPath == oldSelection)
                         {
                             LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
@@ -224,7 +226,7 @@ namespace FileFinder
                         {
                             LbxFiles.Items.Add("");
                             listBoxShadowItems.Add(
-                                new MatchItem(MatchItem.MatchItemStatus.Matched, _mi.FullPath, _mi.FormattedPath));
+                                new MatchItem(_mi.Status, _mi.FullPath, _mi.FormattedPath));
                             if (_mi.FullPath == oldSelection)
                             {
                                 LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
@@ -280,6 +282,11 @@ namespace FileFinder
         {
             if (fileMaskMatcher.IsMatch(dirPath, FileMaskMatcher.MatchType.Directory))
             {
+                if (Main.ShowFilteredPaths)
+                {
+                    allMatchItemsInterThreaded.Add(
+                        new MatchItem(MatchItem.MatchItemStatus.Excluded, dirPath + @"\", null));
+                }
                 return;
             }
 
@@ -295,7 +302,15 @@ namespace FileFinder
                     dirFiles = Directory.GetFiles(dirPath, directorySearch.SearchPattern);
                 }
             }
-            catch (UnauthorizedAccessException) { }
+            catch (UnauthorizedAccessException)
+            {
+                if (Main.ShowFilteredPaths)
+                {
+                    allMatchItemsInterThreaded.Add(
+                        new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
+                }
+                return;
+            }
             foreach (string file in dirFiles)
             {
                 if (bw.CancellationPending == true)
@@ -307,14 +322,27 @@ namespace FileFinder
                 if ((directorySearch.RegexPattern != null) &&
                     !directorySearch.RegexPattern.IsMatch(file, FileMaskMatcher.MatchType.RegEx))
                 {
-                    skipFile = true;
-                }
-                if (!skipFile && !fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
-                {
-                    lock (allMatchItemsInterThreaded)
+                    if (Main.ShowFilteredPaths)
                     {
                         allMatchItemsInterThreaded.Add(
-                            new MatchItem(MatchItem.MatchItemStatus.Matched, file, null));
+                           new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                    }
+                    skipFile = true;
+                }
+                if (!skipFile)
+                {
+                    if (!fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
+                    {
+                        lock (allMatchItemsInterThreaded)
+                        {
+                            allMatchItemsInterThreaded.Add(
+                                new MatchItem(MatchItem.MatchItemStatus.Matched, file, null));
+                        }
+                    }
+                    else if (Main.ShowFilteredPaths)
+                    {
+                        allMatchItemsInterThreaded.Add(
+                           new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
                     }
                 }
 
@@ -329,7 +357,14 @@ namespace FileFinder
             {
                 dirs = Directory.GetDirectories(dirPath);
             }
-            catch (UnauthorizedAccessException) { }
+            catch (UnauthorizedAccessException)
+            {
+                if (Main.ShowFilteredPaths)
+                {
+                    allMatchItemsInterThreaded.Add(
+                        new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
+                }
+            }
             foreach (string dir in dirs)
             {
                 if (bw.CancellationPending == true)
@@ -501,25 +536,38 @@ namespace FileFinder
 
                     MatchItem mi = listBoxShadowItems[e.Index];
 
-                    string fileExt = Path.GetExtension(mi.FullPath).ToLower();
-                    if (string.IsNullOrEmpty(fileExt))
-                        fileExt = "-";
-                    int imgIndex = iconCache.Images.IndexOfKey(fileExt);
-                    if (imgIndex < 0)
+                    if (!string.IsNullOrEmpty(Path.GetFileName(mi.FullPath)))
                     {
-                        Bitmap bmp = SHGetIcon.GetBmp(mi.FullPath, true);
-                        iconCache.Images.Add(fileExt, bmp);
-                        imgIndex = iconCache.Images.IndexOfKey(fileExt);
+                        string fileExt = Path.GetExtension(mi.FullPath).ToLower();
+                        if (string.IsNullOrEmpty(fileExt))
+                            fileExt = "-";
+                        int imgIndex = iconCache.Images.IndexOfKey(fileExt);
+                        if (imgIndex < 0)
+                        {
+                            Bitmap bmp = SHGetIcon.GetBmp(mi.FullPath, true);
+                            iconCache.Images.Add(fileExt, bmp);
+                            imgIndex = iconCache.Images.IndexOfKey(fileExt);
+                        }
+                        iconCache.Draw(e.Graphics, new Point(e.Bounds.Location.X + 1, e.Bounds.Location.Y), imgIndex);
                     }
-                    iconCache.Draw(e.Graphics, new Point(e.Bounds.Location.X + 1, e.Bounds.Location.Y), imgIndex);
+
+                    Color foreColor = ForeColor;
+                    if (mi.Status == MatchItem.MatchItemStatus.Excluded)
+                    {
+                        foreColor = Color.DarkCyan;
+                    }
+                    if (mi.Status == MatchItem.MatchItemStatus.Denied)
+                    {
+                        foreColor = Color.Red;
+                    }
 
                     int fontSwitchIndex;
                     Color firstColor;
                     Color secondColor;
                     Color dimmedForeColor = Color.FromArgb(
-                                127 - ((127 - ForeColor.R) / 2),
-                                127 - ((127 - ForeColor.G) / 2),
-                                127 - ((127 - ForeColor.B) / 2));
+                                127 - ((127 - foreColor.R) / 2),
+                                127 - ((127 - foreColor.G) / 2),
+                                127 - ((127 - foreColor.B) / 2));
                     Color dimmedHighlightText = Color.FromArgb(
                                 127 - ((127 - SystemColors.HighlightText.R) / 2),
                                 127 - ((127 - SystemColors.HighlightText.G) / 2),
@@ -539,7 +587,7 @@ namespace FileFinder
                         else
                         {
                             firstColor = dimmedForeColor;
-                            secondColor = ForeColor;
+                            secondColor = foreColor;
                         }
                     }
                     else
@@ -552,7 +600,7 @@ namespace FileFinder
                         }
                         else
                         {
-                            firstColor = ForeColor;
+                            firstColor = foreColor;
                             secondColor = dimmedForeColor;
                         }
                     }
