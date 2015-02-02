@@ -298,19 +298,19 @@ namespace FileFinder
                 return;
             }
 
-            string[] dirFiles = new string[] { };
+            FileInfo[] fileInfos = new FileInfo[] { };
             try
             {
                 if (string.IsNullOrEmpty(directorySearch.SearchPattern) || (directorySearch.RegexPattern != null))
                 {
-                    dirFiles = Directory.GetFiles(dirPath);
+                    fileInfos = new DirectoryInfo(dirPath).GetFiles();
                 }
                 else
                 {
-                    dirFiles = Directory.GetFiles(dirPath, directorySearch.SearchPattern);
+                    fileInfos = new DirectoryInfo(dirPath).GetFiles(directorySearch.SearchPattern);
                 }
             }
-            catch (UnauthorizedAccessException)
+            catch
             {
                 lock (allMatchItemsInterThreaded)
                 {
@@ -319,7 +319,7 @@ namespace FileFinder
                 }
                 return;
             }
-            foreach (string file in dirFiles)
+            foreach (FileInfo fileInfo in fileInfos)
             {
                 if (bw.CancellationPending == true)
                 {
@@ -327,24 +327,36 @@ namespace FileFinder
                 }
 
                 bool skipFile = false;
-                if ((directorySearch.RegexPattern != null) &&
-                    !directorySearch.RegexPattern.IsMatch(file, FileMaskMatcher.MatchType.RegEx))
+                if ((fileInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                 {
                     lock (allMatchItemsInterThreaded)
                     {
                         allMatchItemsInterThreaded.Add(
-                                   new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                            new MatchItem(MatchItem.MatchItemStatus.Denied, fileInfo.FullName, null));
                     }
                     skipFile = true;
                 }
                 if (!skipFile)
                 {
-                    if (!fileMaskMatcher.IsMatch(file, FileMaskMatcher.MatchType.FilePath))
+                    if ((directorySearch.RegexPattern != null) &&
+                         !directorySearch.RegexPattern.IsMatch(fileInfo.FullName, FileMaskMatcher.MatchType.RegEx))
                     {
                         lock (allMatchItemsInterThreaded)
                         {
                             allMatchItemsInterThreaded.Add(
-                                new MatchItem(MatchItem.MatchItemStatus.Matched, file, null));
+                                new MatchItem(MatchItem.MatchItemStatus.Excluded, fileInfo.FullName, null));
+                        }
+                        skipFile = true;
+                    }
+                }
+                if (!skipFile)
+                {
+                    if (!fileMaskMatcher.IsMatch(fileInfo.FullName, FileMaskMatcher.MatchType.FilePath))
+                    {
+                        lock (allMatchItemsInterThreaded)
+                        {
+                            allMatchItemsInterThreaded.Add(
+                                new MatchItem(MatchItem.MatchItemStatus.Matched, fileInfo.FullName, null));
                         }
                     }
                     else
@@ -352,7 +364,7 @@ namespace FileFinder
                         lock (allMatchItemsInterThreaded)
                         {
                             allMatchItemsInterThreaded.Add(
-                                     new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                                new MatchItem(MatchItem.MatchItemStatus.Excluded, fileInfo.FullName, null));
                         }
                     }
                 }
@@ -363,12 +375,12 @@ namespace FileFinder
                 }
             }
 
-            string[] dirs = new string[] { };
+            DirectoryInfo[] dirInfos = new DirectoryInfo[] { };
             try
             {
-                dirs = Directory.GetDirectories(dirPath);
+                dirInfos = new DirectoryInfo(dirPath).GetDirectories();
             }
-            catch (UnauthorizedAccessException)
+            catch
             {
                 lock (allMatchItemsInterThreaded)
                 {
@@ -376,14 +388,27 @@ namespace FileFinder
                         new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
                 }
             }
-            foreach (string dir in dirs)
+            foreach (DirectoryInfo dirInfo in dirInfos)
             {
                 if (bw.CancellationPending == true)
                 {
                     return;
                 }
 
-                GetFiles(dir);
+                bool skipDir = false;
+                if ((dirInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                {
+                    lock (allMatchItemsInterThreaded)
+                    {
+                        allMatchItemsInterThreaded.Add(
+                            new MatchItem(MatchItem.MatchItemStatus.Denied, dirInfo.FullName + @"\", null));
+                    }
+                    skipDir = true;
+                }
+                if (!skipDir)
+                {
+                    GetFiles(dirInfo.FullName);
+                }
 
                 if (!UpdateProgressBar(100))
                 {
