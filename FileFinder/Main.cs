@@ -377,8 +377,24 @@ namespace FileFinder
                 {
                     using (Process p = new Process())
                     {
-                        // TODO:
-                        rootDir = "";
+                        p.StartInfo.FileName = Path.Combine(pluginDir, PluginName, "FolderSelectDialog.exe");
+                        p.StartInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"",
+                            title, rootDir, PluginBase.nppData._nppHandle);
+                        p.StartInfo.UseShellExecute = false;
+                        p.StartInfo.CreateNoWindow = true;
+                        p.StartInfo.RedirectStandardOutput = true;
+                        p.StartInfo.RedirectStandardError = true;
+                        p.Start();
+                        rootDir = p.StandardOutput.ReadToEnd().Replace("\r\n", "");
+                        p.WaitForExit();
+                        if (p.ExitCode != 0)
+                        {
+                            rootDir = "";
+                        }
+                    }
+                    if (string.IsNullOrEmpty(rootDir))
+                    {
+                        return new List<string>();
                     }
                 }
             }

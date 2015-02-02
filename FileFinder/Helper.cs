@@ -284,7 +284,7 @@ namespace FileFinder
         OpenFileDialog ofd = null;
         public FolderSelectDialog()
         {
-            ofd = new System.Windows.Forms.OpenFileDialog();
+            ofd = new OpenFileDialog();
 
             ofd.Filter = "Folders|\n";
             ofd.AddExtension = false;
@@ -323,7 +323,7 @@ namespace FileFinder
                 object dialog = r.Call(ofd, "CreateVistaDialog");
                 r.Call(ofd, "OnBeforeVistaDialog", dialog);
 
-                uint options = (uint)r.CallAs(typeof(System.Windows.Forms.FileDialog), ofd, "GetOptions");
+                uint options = (uint)r.CallAs(typeof(FileDialog), ofd, "GetOptions");
                 options |= (uint)r.GetEnum("FileDialogNative.FOS", "FOS_PICKFOLDERS");
                 r.CallAs(typeIFileDialog, dialog, "SetOptions", options);
 

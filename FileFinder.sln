@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileFinder", "FileFinder\FileFinder.csproj", "{E7F9B6CC-A4B8-4C2E-AD8E-77E5B0D73658}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderSelectDialog", "FolderSelectDialog\FolderSelectDialog.csproj", "{94D71742-F56B-43E8-B91D-709486DAFD5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E7F9B6CC-A4B8-4C2E-AD8E-77E5B0D73658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7F9B6CC-A4B8-4C2E-AD8E-77E5B0D73658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7F9B6CC-A4B8-4C2E-AD8E-77E5B0D73658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D71742-F56B-43E8-B91D-709486DAFD5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D71742-F56B-43E8-B91D-709486DAFD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D71742-F56B-43E8-B91D-709486DAFD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D71742-F56B-43E8-B91D-709486DAFD5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
