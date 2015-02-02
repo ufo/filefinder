@@ -65,6 +65,7 @@ namespace FileFinder
             fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
             InitForm();
             btnFolderUp.Visible = false;
+            btnShowFilteredPaths.Visible = false;
             StartBackgroundWorker(null);
         }
         void InitForm()
@@ -75,6 +76,7 @@ namespace FileFinder
             Height = Main.OpenFileDialogHeight;
             btnCaseSensitiveSearch.Checked = Main.CaseSensitiveSearch;
             btnAutoValidateFilenames.Checked = Main.AutoValidateFilenames;
+            btnShowFilteredPaths.Checked = Main.ShowFilteredPaths;
             if (iconCache == null)
             {
                 iconCache = new ImageList();
@@ -127,35 +129,38 @@ namespace FileFinder
                         lcaDirPath = null;
                         foreach (MatchItem mi in allMatchItemsInterThreaded)
                         {
-                            string dirPath = Path.GetDirectoryName(mi.FullPath).ToLower();
-                            if (lcaDirPath == null)
+                            if ((mi.Status == MatchItem.MatchItemStatus.Matched) || Main.ShowFilteredPaths)
                             {
-                                lcaDirPath = dirPath;
-                            }
-                            else
-                            {
-                                for (int i = 0; i < lcaDirPath.Length; i++)
+                                string dirPath = Path.GetDirectoryName(mi.FullPath).ToLower();
+                                if (lcaDirPath == null)
                                 {
-                                    if (lcaDirPath[i] != dirPath[i])
+                                    lcaDirPath = dirPath;
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < lcaDirPath.Length; i++)
                                     {
-                                        if (i == 0)
+                                        if (lcaDirPath[i] != dirPath[i])
                                         {
-                                            lcaDirPath = "";
-                                        }
-                                        else
-                                        {
-                                            lcaDirPath = Path.GetDirectoryName(lcaDirPath.Substring(0, i + 1));
-                                            if (lcaDirPath == null)
+                                            if (i == 0)
                                             {
                                                 lcaDirPath = "";
                                             }
+                                            else
+                                            {
+                                                lcaDirPath = Path.GetDirectoryName(lcaDirPath.Substring(0, i + 1));
+                                                if (lcaDirPath == null)
+                                                {
+                                                    lcaDirPath = "";
+                                                }
+                                            }
+                                            break;
                                         }
-                                        break;
-                                    }
-                                    else if (i == (dirPath.Length - 1))
-                                    {
-                                        lcaDirPath = dirPath;
-                                        break;
+                                        else if (i == (dirPath.Length - 1))
+                                        {
+                                            lcaDirPath = dirPath;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -165,10 +170,13 @@ namespace FileFinder
                     {
                         lcaDirPath = "";
                     }
-                    foreach (MatchItem _mi in allMatchItemsInterThreaded)
+                    foreach (MatchItem mi in allMatchItemsInterThreaded)
                     {
-                        allMatchItemsThreadSafe.Add(
-                            new MatchItem(_mi.Status, _mi.FullPath, _mi.FullPath.Substring(lcaDirPath.Length)));
+                        if ((mi.Status == MatchItem.MatchItemStatus.Matched) || Main.ShowFilteredPaths)
+                        {
+                            allMatchItemsThreadSafe.Add(
+                                new MatchItem(mi.Status, mi.FullPath, mi.FullPath.Substring(lcaDirPath.Length)));
+                        }
                     }
                 }
             }
@@ -195,12 +203,12 @@ namespace FileFinder
             {
                 if (string.IsNullOrEmpty(pattern))
                 {
-                    foreach (MatchItem _mi in allMatchItemsThreadSafe)
+                    foreach (MatchItem mi in allMatchItemsThreadSafe)
                     {
                         LbxFiles.Items.Add("");
                         listBoxShadowItems.Add(
-                            new MatchItem(_mi.Status, _mi.FullPath, _mi.FormattedPath));
-                        if (_mi.FullPath == oldSelection)
+                            new MatchItem(mi.Status, mi.FullPath, mi.FormattedPath));
+                        if (mi.FullPath == oldSelection)
                         {
                             LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
                         }
@@ -211,12 +219,12 @@ namespace FileFinder
                     string[] patterns = pattern.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     StringComparison strCompMode = Main.CaseSensitiveSearch ?
                         StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
-                    foreach (MatchItem _mi in allMatchItemsThreadSafe)
+                    foreach (MatchItem mi in allMatchItemsThreadSafe)
                     {
                         bool match = true;
                         foreach (string _pat in patterns)
                         {
-                            if (!(_mi.FormattedPath.IndexOf(_pat, strCompMode) >= 0))
+                            if (!(mi.FormattedPath.IndexOf(_pat, strCompMode) >= 0))
                             {
                                 match = false;
                                 break;
@@ -226,8 +234,8 @@ namespace FileFinder
                         {
                             LbxFiles.Items.Add("");
                             listBoxShadowItems.Add(
-                                new MatchItem(_mi.Status, _mi.FullPath, _mi.FormattedPath));
-                            if (_mi.FullPath == oldSelection)
+                                new MatchItem(mi.Status, mi.FullPath, mi.FormattedPath));
+                            if (mi.FullPath == oldSelection)
                             {
                                 LbxFiles.SelectedIndex = LbxFiles.Items.Count - 1;
                             }
@@ -282,10 +290,10 @@ namespace FileFinder
         {
             if (fileMaskMatcher.IsMatch(dirPath, FileMaskMatcher.MatchType.Directory))
             {
-                if (Main.ShowFilteredPaths)
+                lock (allMatchItemsInterThreaded)
                 {
                     allMatchItemsInterThreaded.Add(
-                        new MatchItem(MatchItem.MatchItemStatus.Excluded, dirPath + @"\", null));
+                            new MatchItem(MatchItem.MatchItemStatus.Excluded, dirPath + @"\", null));
                 }
                 return;
             }
@@ -304,10 +312,10 @@ namespace FileFinder
             }
             catch (UnauthorizedAccessException)
             {
-                if (Main.ShowFilteredPaths)
+                lock (allMatchItemsInterThreaded)
                 {
                     allMatchItemsInterThreaded.Add(
-                        new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
+                          new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
                 }
                 return;
             }
@@ -322,10 +330,10 @@ namespace FileFinder
                 if ((directorySearch.RegexPattern != null) &&
                     !directorySearch.RegexPattern.IsMatch(file, FileMaskMatcher.MatchType.RegEx))
                 {
-                    if (Main.ShowFilteredPaths)
+                    lock (allMatchItemsInterThreaded)
                     {
                         allMatchItemsInterThreaded.Add(
-                           new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                                   new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
                     }
                     skipFile = true;
                 }
@@ -339,10 +347,13 @@ namespace FileFinder
                                 new MatchItem(MatchItem.MatchItemStatus.Matched, file, null));
                         }
                     }
-                    else if (Main.ShowFilteredPaths)
+                    else
                     {
-                        allMatchItemsInterThreaded.Add(
-                           new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                        lock (allMatchItemsInterThreaded)
+                        {
+                            allMatchItemsInterThreaded.Add(
+                                     new MatchItem(MatchItem.MatchItemStatus.Excluded, file, null));
+                        }
                     }
                 }
 
@@ -359,7 +370,7 @@ namespace FileFinder
             }
             catch (UnauthorizedAccessException)
             {
-                if (Main.ShowFilteredPaths)
+                lock (allMatchItemsInterThreaded)
                 {
                     allMatchItemsInterThreaded.Add(
                         new MatchItem(MatchItem.MatchItemStatus.Denied, dirPath + @"\", null));
@@ -701,6 +712,12 @@ namespace FileFinder
         {
             Main.AutoValidateFilenames = btnAutoValidateFilenames.Checked;
             StartBackgroundWorker(null);
+        }
+        private void btnShowFilteredPaths_Click(object sender, EventArgs e)
+        {
+            Main.ShowFilteredPaths = btnShowFilteredPaths.Checked;
+            InitList();
+            UpdateListBox();
         }
         private void btnFolderUp_Click(object sender, EventArgs e)
         {

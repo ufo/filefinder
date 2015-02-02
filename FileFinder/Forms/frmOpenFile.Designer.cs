@@ -37,6 +37,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.btnCaseSensitiveSearch = new System.Windows.Forms.ToolStripButton();
             this.btnAutoValidateFilenames = new System.Windows.Forms.ToolStripButton();
+            this.btnShowFilteredPaths = new System.Windows.Forms.ToolStripButton();
             this.lblProgress = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.lblEmpty = new System.Windows.Forms.ToolStripStatusLabel();
@@ -113,6 +114,7 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnCaseSensitiveSearch,
             this.btnAutoValidateFilenames,
+            this.btnShowFilteredPaths,
             this.lblProgress,
             this.pbProgress,
             this.lblEmpty,
@@ -145,6 +147,17 @@
             this.btnAutoValidateFilenames.Text = "Auto validate filenames";
             this.btnAutoValidateFilenames.Click += new System.EventHandler(this.btnAutoValidateFilename_Click);
             // 
+            // btnShowFilteredPaths
+            // 
+            this.btnShowFilteredPaths.CheckOnClick = true;
+            this.btnShowFilteredPaths.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnShowFilteredPaths.Image = global::FileFinder.Properties.Resources.show_filtered_paths;
+            this.btnShowFilteredPaths.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnShowFilteredPaths.Name = "btnShowFilteredPaths";
+            this.btnShowFilteredPaths.Size = new System.Drawing.Size(23, 20);
+            this.btnShowFilteredPaths.Text = "Show filtered paths";
+            this.btnShowFilteredPaths.Click += new System.EventHandler(this.btnShowFilteredPaths_Click);
+            // 
             // lblProgress
             // 
             this.lblProgress.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -164,7 +177,7 @@
             // lblEmpty
             // 
             this.lblEmpty.Name = "lblEmpty";
-            this.lblEmpty.Size = new System.Drawing.Size(410, 17);
+            this.lblEmpty.Size = new System.Drawing.Size(44, 17);
             this.lblEmpty.Spring = true;
             // 
             // lblResult
@@ -249,5 +262,6 @@
         private System.Windows.Forms.Button btnFolderUp;
         private System.Windows.Forms.ToolTip ttOpenFile;
         public System.Windows.Forms.RichTextBox rbxFullSelectedPath;
+        private System.Windows.Forms.ToolStripButton btnShowFilteredPaths;
     }
 }

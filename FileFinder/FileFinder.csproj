@@ -149,6 +149,9 @@
   <ItemGroup>
     <None Include="Properties\filefinder.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\show_filtered_paths.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>

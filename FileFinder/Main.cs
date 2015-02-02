@@ -124,7 +124,8 @@ namespace FileFinder
             showTbSearchInDirectoryExplicitly = (Win32.GetPrivateProfileInt("Toolbar", "SearchInDirectoryExplicitly", 1, iniFilePath) == 1);
             showTbOpenFromFileHistory = (Win32.GetPrivateProfileInt("Toolbar", "OpenFromFileHistory", 1, iniFilePath) == 1);
             showTbOpenLastClosedFile = (Win32.GetPrivateProfileInt("Toolbar", "OpenLastClosedFile", 0, iniFilePath) == 1);
-            
+
+            ShowFilteredPaths = (Win32.GetPrivateProfileInt("Options", "ShowFilteredPaths", 0, iniFilePath) == 1);
             MaxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             CaseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
             AutoValidateFilenames = (Win32.GetPrivateProfileInt("Options", "AutoValidateFilenames", 0, iniFilePath) == 1);
@@ -164,7 +165,8 @@ namespace FileFinder
             Win32.WritePrivateProfileString("Toolbar", "SearchInDirectoryExplicitly", showTbSearchInDirectoryExplicitly ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Toolbar", "OpenFromFileHistory", showTbOpenFromFileHistory ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Toolbar", "OpenLastClosedFile", showTbOpenLastClosedFile ? "1" : "0", iniFilePath);
-            
+
+            Win32.WritePrivateProfileString("Options", "ShowFilteredPaths", ShowFilteredPaths ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", MaxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", CaseSensitiveSearch ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "AutoValidateFilenames", AutoValidateFilenames ? "1" : "0", iniFilePath);
