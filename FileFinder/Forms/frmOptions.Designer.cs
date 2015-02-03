@@ -50,6 +50,8 @@
             this.btnSearchInDirectoryExplicitly = new System.Windows.Forms.CheckBox();
             this.btnOpenFromDirectoryGreedy = new System.Windows.Forms.CheckBox();
             this.ttOptions = new System.Windows.Forms.ToolTip(this.components);
+            this.cbxShowFilteredPaths = new System.Windows.Forms.CheckBox();
+            this.cbxBypassFSR = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxHistoryLength)).BeginInit();
             this.gbxDirectorySearch.SuspendLayout();
             this.gbxHistorySearch.SuspendLayout();
@@ -69,7 +71,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(578, 287);
+            this.btnCancel.Location = new System.Drawing.Point(578, 348);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(89, 23);
             this.btnCancel.TabIndex = 7;
@@ -79,7 +81,7 @@
             // btnSave
             // 
             this.btnSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnSave.Location = new System.Drawing.Point(474, 287);
+            this.btnSave.Location = new System.Drawing.Point(474, 348);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(89, 23);
             this.btnSave.TabIndex = 6;
@@ -142,12 +144,14 @@
             // 
             // gbxDirectorySearch
             // 
+            this.gbxDirectorySearch.Controls.Add(this.cbxBypassFSR);
+            this.gbxDirectorySearch.Controls.Add(this.cbxShowFilteredPaths);
             this.gbxDirectorySearch.Controls.Add(this.tbxDirSearchExclusions);
             this.gbxDirectorySearch.Controls.Add(this.lblDirSearchExclusions);
             this.gbxDirectorySearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbxDirectorySearch.Location = new System.Drawing.Point(12, 151);
+            this.gbxDirectorySearch.Location = new System.Drawing.Point(12, 150);
             this.gbxDirectorySearch.Name = "gbxDirectorySearch";
-            this.gbxDirectorySearch.Size = new System.Drawing.Size(320, 159);
+            this.gbxDirectorySearch.Size = new System.Drawing.Size(320, 221);
             this.gbxDirectorySearch.TabIndex = 15;
             this.gbxDirectorySearch.TabStop = false;
             this.gbxDirectorySearch.Text = "Directory search";
@@ -168,7 +172,7 @@
             // 
             this.lblDirSearchExclusions.AutoSize = true;
             this.lblDirSearchExclusions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDirSearchExclusions.Location = new System.Drawing.Point(7, 31);
+            this.lblDirSearchExclusions.Location = new System.Drawing.Point(6, 31);
             this.lblDirSearchExclusions.Name = "lblDirSearchExclusions";
             this.lblDirSearchExclusions.Size = new System.Drawing.Size(160, 13);
             this.lblDirSearchExclusions.TabIndex = 16;
@@ -288,13 +292,35 @@
             this.ttOptions.SetToolTip(this.btnOpenFromDirectoryGreedy, "Open from directory (greedy)...");
             this.btnOpenFromDirectoryGreedy.UseVisualStyleBackColor = true;
             // 
+            // cbxShowFilteredPaths
+            // 
+            this.cbxShowFilteredPaths.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbxShowFilteredPaths.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxShowFilteredPaths.Location = new System.Drawing.Point(6, 154);
+            this.cbxShowFilteredPaths.Name = "cbxShowFilteredPaths";
+            this.cbxShowFilteredPaths.Size = new System.Drawing.Size(301, 24);
+            this.cbxShowFilteredPaths.TabIndex = 17;
+            this.cbxShowFilteredPaths.Text = "Show filtered paths";
+            this.cbxShowFilteredPaths.UseVisualStyleBackColor = true;
+            // 
+            // cbxBypassFSR
+            // 
+            this.cbxBypassFSR.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbxBypassFSR.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxBypassFSR.Location = new System.Drawing.Point(6, 184);
+            this.cbxBypassFSR.Name = "cbxBypassFSR";
+            this.cbxBypassFSR.Size = new System.Drawing.Size(301, 24);
+            this.cbxBypassFSR.TabIndex = 18;
+            this.cbxBypassFSR.Text = "Bypass file system redirection";
+            this.cbxBypassFSR.UseVisualStyleBackColor = true;
+            // 
             // frmOptions
             // 
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(682, 324);
+            this.ClientSize = new System.Drawing.Size(681, 384);
             this.Controls.Add(this.gbxCommon);
             this.Controls.Add(this.gbxHistorySearch);
             this.Controls.Add(this.gbxDirectorySearch);
@@ -342,5 +368,7 @@
         public System.Windows.Forms.CheckBox btnOpenFromFileHistory;
         public System.Windows.Forms.CheckBox btnSearchInDirectoryExplicitly;
         private System.Windows.Forms.ToolTip ttOptions;
+        public System.Windows.Forms.CheckBox cbxBypassFSR;
+        public System.Windows.Forms.CheckBox cbxShowFilteredPaths;
     }
 }

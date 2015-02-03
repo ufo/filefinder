@@ -498,7 +498,14 @@ namespace FileFinder
                 if (e.Argument is DirectorySearch)
                 {
                     directorySearch = (DirectorySearch)e.Argument;
-                    using (new FileSystemRedirection.Disabled())
+                    if (Main.BypassFSR)
+                    {
+                        using (new FileSystemRedirection.Disabled())
+                        {
+                            GetFiles(directorySearch.Directory);
+                        }
+                    }
+                    else
                     {
                         GetFiles(directorySearch.Directory);
                     }
@@ -562,6 +569,11 @@ namespace FileFinder
             {
                 KeySendToLbx = false;
                 tbxSearch.Focus();
+            }
+            else if (btnFolderUp.Visible && (e.Modifiers == Keys.Alt) && (e.KeyCode == Keys.Up))
+            {
+                btnFolderUp.PerformClick();
+                e.Handled = true;
             }
         }
         private void lbxFiles_DrawItem(object sender, DrawItemEventArgs e)

@@ -51,6 +51,7 @@ namespace FileFinder
         internal static AutoCompleteStringCollection LastSearchPatterns;
         internal const int MAX_LAST_SEARCH_PATTERNS = 100;
         internal static bool ShowFilteredPaths = true;
+        internal static bool BypassFSR = true;
 
         const string PATH_EXT_HISTORY_FILES = ".history-files.txt";
         internal static List<string> HistoryFiles;
@@ -127,6 +128,7 @@ namespace FileFinder
             showTbOpenLastClosedFile = (Win32.GetPrivateProfileInt("Toolbar", "OpenLastClosedFile", 0, iniFilePath) == 1);
 
             ShowFilteredPaths = (Win32.GetPrivateProfileInt("Options", "ShowFilteredPaths", 0, iniFilePath) == 1);
+            BypassFSR = (Win32.GetPrivateProfileInt("Options", "BypassFSR", 0, iniFilePath) == 1);
             MaxHistoryLength = Win32.GetPrivateProfileInt("Options", "MaxHistoryLength", 500, iniFilePath);
             CaseSensitiveSearch = (Win32.GetPrivateProfileInt("Options", "CaseSensitiveSearch", 0, iniFilePath) == 1);
             AutoValidateFilenames = (Win32.GetPrivateProfileInt("Options", "AutoValidateFilenames", 0, iniFilePath) == 1);
@@ -168,6 +170,7 @@ namespace FileFinder
             Win32.WritePrivateProfileString("Toolbar", "OpenLastClosedFile", showTbOpenLastClosedFile ? "1" : "0", iniFilePath);
 
             Win32.WritePrivateProfileString("Options", "ShowFilteredPaths", ShowFilteredPaths ? "1" : "0", iniFilePath);
+            Win32.WritePrivateProfileString("Options", "BypassFSR", BypassFSR ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "MaxHistoryLength", MaxHistoryLength.ToString(), iniFilePath);
             Win32.WritePrivateProfileString("Options", "CaseSensitiveSearch", CaseSensitiveSearch ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "AutoValidateFilenames", AutoValidateFilenames ? "1" : "0", iniFilePath);
@@ -289,11 +292,20 @@ namespace FileFinder
                 }
                 frmOptions.cbxDisplayedFilePathFormat.SelectedIndex = (int)DisplayedFilePathFormat;
 
+                frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
+                frmOptions.cbxShowFilteredPaths.Checked = ShowFilteredPaths;
+                if (!FileSystemRedirection.IsUsed)
+                {
+                    frmOptions.cbxBypassFSR.Enabled = false;
+                }
+                else
+                {
+                    frmOptions.cbxBypassFSR.Checked = BypassFSR;
+                }
+
                 frmOptions.nudMaxHistoryLength.Value = MaxHistoryLength;
                 frmOptions.cbxAutoValidateFilenames.Checked = AutoValidateFilenames;
                 frmOptions.tbxHistoryExclusions.Lines = HistoryExclusions.ToArray();
-
-                frmOptions.tbxDirSearchExclusions.Lines = DirSearchExclusions.ToArray();
 
                 if (frmOptions.ShowDialog() == DialogResult.OK)
                 {
@@ -304,6 +316,10 @@ namespace FileFinder
                     CaseSensitiveSearch = frmOptions.cbxCaseSensitiveSearch.Checked;
                     DisplayedFilePathFormat = (FilePathFormat)frmOptions.cbxDisplayedFilePathFormat.SelectedIndex;
 
+                    DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
+                    ShowFilteredPaths = frmOptions.cbxShowFilteredPaths.Checked;
+                    BypassFSR = frmOptions.cbxBypassFSR.Checked;
+
                     MaxHistoryLength = (int)frmOptions.nudMaxHistoryLength.Value;
                     if (HistoryFiles.Count > MaxHistoryLength)
                     {
@@ -312,8 +328,6 @@ namespace FileFinder
                     }
                     AutoValidateFilenames = frmOptions.cbxAutoValidateFilenames.Checked;
                     HistoryExclusions = new List<string>(frmOptions.tbxHistoryExclusions.Lines);
-
-                    DirSearchExclusions = new List<string>(frmOptions.tbxDirSearchExclusions.Lines);
                 }
             }
             catch (Exception ex)
@@ -362,7 +376,7 @@ namespace FileFinder
             if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
             {
                 string title = "Select the folder from where to start the recursive file search";
-                if (!FileSystemRedirection.IsUsed)
+                if (!FileSystemRedirection.IsUsed && Main.BypassFSR)
                 {
                     FolderSelectDialog dlg = new FolderSelectDialog();
                     dlg.Title = title;

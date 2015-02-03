@@ -79,6 +79,23 @@ desired file name hit list, but sometimes it is required to use an advanced and
 more precise query string as an exclusion filter. For this purpose please see the
 section below about regular expressions.
 
+"Show filtered paths":
+Sometimes you might wonder if any files are missing in the expected result list,
+either due to inaccurate exclusion filters, "hidden" file attribute or insufficient
+access rights. If you enable this option, which you can also toggle in the left
+bottom corner of the directory search dialog, then all of these files will be shown
+too (red = hidden or access denied, blue = excluded by filter).
+
+"Bypass file system redirection":
+If you ever tried on a 64 bit Windows navigating via a file dialog of a 32 bit
+application (like N++) into the "native" system32 folder, then you surely know that
+you fail. As for technical reasons this is not possible without an expensive
+workaround, FileFinder provides an approach to do so by executing an included small
+64 bit binary (".../plugins/FileFinder/FileSelectDialog.exe"). So since this results
+in a short delay of a second or two, you shouldn't really enable this options if
+you don't intend to ever search anything in the system32 folder.
+As this is a 64 bit issue, the check box is disabled on a 32 bit windows.
+
 "Maximum history length":
 Don't remember a higher amount of closed file paths than defined.
 
