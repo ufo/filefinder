@@ -91,8 +91,8 @@ If you ever tried on a 64 bit Windows navigating via a file dialog of a 32 bit
 application (like N++) into the "native" system32 folder, then you surely know that
 you fail. As for technical reasons this is not possible without an expensive
 workaround, FileFinder provides an approach to do so by executing an included small
-64 bit binary (".../plugins/FileFinder/FileSelectDialog.exe"). So since this results
-in a short delay of a second or two, you shouldn't really enable this options if
+64 bit binary (".../plugins/FileFinder/FolderSelectDialog.exe"). Since this results
+in a short delay of a second or two, you shouldn't really enable this option if
 you don't intend to ever search anything in the system32 folder.
 As this is a 64 bit issue, the check box is disabled on a 32 bit windows.
 
