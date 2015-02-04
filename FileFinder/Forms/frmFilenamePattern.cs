@@ -11,9 +11,10 @@ namespace FileFinder
 
             Icon = Properties.Resources.filefinder;
 
-            if (Main.LastSearchPatterns.Count > 0)
+            cbxPattern.Items.AddRange(Main.LastSearchPatterns.ToArray());
+            if (cbxPattern.Items.Count > 0)
             {
-                cbxPattern.Text = Main.LastSearchPatterns[0];
+                cbxPattern.SelectedIndex = 0;
             }
         }
 
@@ -24,14 +25,12 @@ namespace FileFinder
                 string searchPattern = cbxPattern.Text.Trim();
                 if (!string.IsNullOrEmpty(searchPattern))
                 {
-                    if (!Main.LastSearchPatterns.Contains(searchPattern))
+                    Main.LastSearchPatterns.Remove(searchPattern);
+                    while (Main.LastSearchPatterns.Count >= Main.MAX_LAST_SEARCH_PATTERNS)
                     {
-                        Main.LastSearchPatterns.Insert(0, searchPattern);
-                        if (Main.LastSearchPatterns.Count > Main.MAX_LAST_SEARCH_PATTERNS)
-                        {
-                            Main.LastSearchPatterns.RemoveAt(Main.MAX_LAST_SEARCH_PATTERNS);
-                        }
+                        Main.LastSearchPatterns.RemoveAt(Main.MAX_LAST_SEARCH_PATTERNS);
                     }
+                    Main.LastSearchPatterns.Insert(0, searchPattern);
                 }
                 else
                 {

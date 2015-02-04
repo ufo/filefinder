@@ -58,7 +58,7 @@
             // cbxPattern
             // 
             this.cbxPattern.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cbxPattern.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cbxPattern.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbxPattern.Location = new System.Drawing.Point(12, 11);
             this.cbxPattern.Name = "cbxPattern";
             this.cbxPattern.Size = new System.Drawing.Size(186, 21);

@@ -48,7 +48,7 @@ namespace FileFinder
             "*.obj", "*.pyc", "*.pyd", "*.pyo"
         };
         const string PATH_EXT_DIR_SEARCH_PATTERNS = ".dir-search-patterns.txt";
-        internal static AutoCompleteStringCollection LastSearchPatterns;
+        internal static List<string> LastSearchPatterns;
         internal const int MAX_LAST_SEARCH_PATTERNS = 100;
         internal static bool ShowFilteredPaths = true;
         internal static bool BypassFSR = true;
@@ -147,17 +147,9 @@ namespace FileFinder
                 new List<string>(File.ReadAllLines(configFilePath)) :
                 new List<string>(DEFAULT_DIR_SEARCH_EXCLUSIONS);
             configFilePath = Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS);
-            LastSearchPatterns = new AutoCompleteStringCollection();
-            if (File.Exists(configFilePath))
-            {
-                foreach (string pat in File.ReadAllLines(configFilePath))
-                {
-                    if (!string.IsNullOrEmpty(pat))
-                    {
-                        LastSearchPatterns.Add(pat);
-                    }
-                }
-            }
+            LastSearchPatterns = File.Exists(configFilePath) ?
+                new List<string>(File.ReadAllLines(configFilePath)) :
+                new List<string>();
         }
         internal static void SaveSettings()
         {
@@ -179,12 +171,7 @@ namespace FileFinder
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_EXCLUSIONS), HistoryExclusions);
             File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS), DirSearchExclusions);
-            List<string> _lastSearchPatterns = new List<string>();
-            foreach (string pat in LastSearchPatterns)
-	        {
-                _lastSearchPatterns.Add(pat);
-        	}
-            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS), _lastSearchPatterns);
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS), LastSearchPatterns);
         }
         #endregion
 
@@ -415,11 +402,6 @@ namespace FileFinder
             if (string.IsNullOrEmpty(searchPattern))
             {
                 frmFilenamePattern frmFilenamePattern = new frmFilenamePattern();
-                frmFilenamePattern.cbxPattern.AutoCompleteCustomSource = LastSearchPatterns;
-                foreach (string pat in LastSearchPatterns)
-                {
-                    frmFilenamePattern.cbxPattern.Items.Add(pat);
-                }
                 if (frmFilenamePattern.ShowDialog() != DialogResult.OK)
                 {
                     return new List<string>();
