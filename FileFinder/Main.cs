@@ -376,7 +376,7 @@ namespace FileFinder
             if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
             {
                 string title = "Select the folder from where to start the recursive file search";
-                if (!FileSystemRedirection.IsUsed && Main.BypassFSR)
+                if (!FileSystemRedirection.IsUsed || !Main.BypassFSR)
                 {
                     FolderSelectDialog dlg = new FolderSelectDialog();
                     dlg.Title = title;
