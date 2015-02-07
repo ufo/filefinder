@@ -123,7 +123,7 @@ namespace FileFinder
                 {
                     using (Process p = new Process())
                     {
-                        p.StartInfo.FileName = Path.Combine(Main.PluginDir, Main.PluginName, "FolderSelectDialog.exe");
+                        p.StartInfo.FileName = Path.Combine(Path.Combine(Main.PluginDir, Main.PluginName), "FolderSelectDialog.exe");
                         p.StartInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"",
                             title, rootDir, PluginBase.nppData._nppHandle);
                         p.StartInfo.UseShellExecute = false;

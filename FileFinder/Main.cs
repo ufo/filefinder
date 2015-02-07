@@ -168,10 +168,10 @@ namespace FileFinder
             Win32.WritePrivateProfileString("Options", "AutoValidateFilenames", AutoValidateFilenames ? "1" : "0", iniFilePath);
             Win32.WritePrivateProfileString("Options", "DisplayedFilePathFormat", ((int)DisplayedFilePathFormat).ToString(), iniFilePath);
 
-            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles);
-            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_EXCLUSIONS), HistoryExclusions);
-            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS), DirSearchExclusions);
-            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS), LastSearchPatterns);
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_FILES), HistoryFiles.ToArray());
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_HISTORY_EXCLUSIONS), HistoryExclusions.ToArray());
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_EXCLUSIONS), DirSearchExclusions.ToArray());
+            File.WriteAllLines(Path.Combine(pluginConfigDir, PluginName + PATH_EXT_DIR_SEARCH_PATTERNS), LastSearchPatterns.ToArray());
         }
         #endregion
 
@@ -302,7 +302,7 @@ namespace FileFinder
         {
             try
             {
-                string filePath = Path.Combine(PluginDir, "doc", PluginName + ".README.txt");
+                string filePath = Path.Combine(Path.Combine(PluginDir, "doc"), PluginName + ".README.txt");
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
             }
             catch (Exception ex)
