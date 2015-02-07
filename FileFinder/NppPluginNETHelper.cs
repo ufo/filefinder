@@ -2231,7 +2231,7 @@ namespace NppPluginNET
             while (ptr != IntPtr.Zero)
             {
                 _nativeItems.Add(ptr);
-                ptr = Marshal.ReadIntPtr(_nativeArray, (int)_nativeArray + (_nativeItems.Count * IntPtr.Size));
+                ptr = Marshal.ReadIntPtr(_nativeArray, _nativeItems.Count * IntPtr.Size);
             }
             AutoDispose = false;
         }

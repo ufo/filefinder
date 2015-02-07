@@ -16,7 +16,7 @@ namespace FileFinder
         #region " Fields "
         internal const string PluginName = "FileFinder";
 
-        static string pluginDir;
+        internal static string PluginDir;
         static string pluginConfigDir;
         static string iniFilePath;
 
@@ -108,7 +108,7 @@ namespace FileFinder
         }
         internal static void LoadSettings()
         {
-            pluginDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            PluginDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             StringBuilder sbPluginDir = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR,
@@ -191,7 +191,7 @@ namespace FileFinder
                 {
                     dirPath = Environment.CurrentDirectory;
                 }
-                OpenFromDirectoryGreedy("Recursive file search", dirPath, true);
+                API.OpenFromDirectoryGreedy("Recursive file search", dirPath, true);
             }
             catch (Exception ex)
             {
@@ -209,7 +209,7 @@ namespace FileFinder
                 {
                     rootDir = Path.GetDirectoryName(filePath);
                 }
-                SearchInDirectoryExplicitly("Recursive file search", rootDir, null, true, true);
+                API.SearchInDirectoryExplicitly("Recursive file search", rootDir, null, true, true);
             }
             catch (Exception ex)
             {
@@ -220,7 +220,7 @@ namespace FileFinder
         {
             try
             {
-                List<string> selectedFiles = OpenFromStringListGreedy("File history", HistoryFiles, true);
+                List<string> selectedFiles = API.OpenFromStringListGreedy("File history", HistoryFiles, true);
                 foreach (string filePath in selectedFiles)
                 {
                     HistoryFiles.Remove(filePath);
@@ -326,7 +326,7 @@ namespace FileFinder
         {
             try
             {
-                string filePath = Path.Combine(pluginDir, "doc", PluginName + ".README.txt");
+                string filePath = Path.Combine(PluginDir, "doc", PluginName + ".README.txt");
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
             }
             catch (Exception ex)
@@ -344,88 +344,6 @@ namespace FileFinder
             {
                 Dbg.Msg(ex);
             }
-        }
-        #endregion
-
-        #region " API functions "
-        internal static List<string> OpenFromDirectoryGreedy(string frmTitlePrefix, string dirPath, bool openFiles)
-        {
-            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, dirPath, null);
-            return showFrmOpenFile(frmOpenFile, openFiles);
-        }
-        internal static List<string> OpenFromStringListGreedy(string frmTitlePrefix, List<string> lstFiles, bool openFiles)
-        {
-            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, HistoryFiles);
-            return showFrmOpenFile(frmOpenFile, openFiles);
-        }
-        internal static List<string> SearchInDirectoryExplicitly(string frmTitlePrefix, string rootDir, string searchPattern, bool showFolderBrowser, bool openFiles)
-        {
-            if (string.IsNullOrEmpty(rootDir) || showFolderBrowser)
-            {
-                string title = "Select the folder from where to start the recursive file search";
-                if (!FileSystemRedirection.IsUsed || !Main.BypassFSR)
-                {
-                    FolderSelectDialog dlg = new FolderSelectDialog();
-                    dlg.Title = title;
-                    dlg.InitialDirectory = rootDir;
-                    if (!dlg.ShowDialog(PluginBase.nppData._nppHandle))
-                    {
-                        return new List<string>();
-                    }
-                    rootDir = dlg.FileName;
-                }
-                else
-                {
-                    using (Process p = new Process())
-                    {
-                        p.StartInfo.FileName = Path.Combine(pluginDir, PluginName, "FolderSelectDialog.exe");
-                        p.StartInfo.Arguments = string.Format("\"{0}\" \"{1}\" \"{2}\"",
-                            title, rootDir, PluginBase.nppData._nppHandle);
-                        p.StartInfo.UseShellExecute = false;
-                        p.StartInfo.CreateNoWindow = true;
-                        p.StartInfo.RedirectStandardOutput = true;
-                        p.StartInfo.RedirectStandardError = true;
-                        p.Start();
-                        rootDir = p.StandardOutput.ReadToEnd().Replace("\r\n", "");
-                        p.WaitForExit();
-                        if (p.ExitCode != 0)
-                        {
-                            rootDir = "";
-                        }
-                    }
-                    if (string.IsNullOrEmpty(rootDir))
-                    {
-                        return new List<string>();
-                    }
-                }
-            }
-            if (string.IsNullOrEmpty(searchPattern))
-            {
-                frmFilenamePattern frmFilenamePattern = new frmFilenamePattern();
-                if (frmFilenamePattern.ShowDialog() != DialogResult.OK)
-                {
-                    return new List<string>();
-                }
-                searchPattern = frmFilenamePattern.cbxPattern.Text.Trim();
-            }
-            frmOpenFile frmOpenFile = new frmOpenFile(frmTitlePrefix, rootDir, searchPattern);
-            return showFrmOpenFile(frmOpenFile, openFiles);
-        }
-        static List<string> showFrmOpenFile(frmOpenFile frmOpenFile, bool openFiles)
-        {
-            List<string> selectedFiles = new List<string>();
-            if (frmOpenFile.ShowDialog() == DialogResult.OK)
-            {
-                selectedFiles = frmOpenFile.SelectedFiles;
-                if (openFiles)
-                {
-                    foreach (string filePath in selectedFiles)
-                    {
-                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
-                    }
-                }
-            }
-            return selectedFiles;
         }
         #endregion
     }

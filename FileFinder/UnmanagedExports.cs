@@ -38,11 +38,6 @@ namespace FileFinder
             return PluginBase._funcItems.NativePointer;
         }
 
-        const int NPEM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY = 0x0101;
-        const int NPEM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY = 0x0102;
-        const int NPEM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY = 0x0103;
-        const int NPEM_FILEFINDER_OPEN_FROM_HISTORY = 0x0104;
-        const int NPEM_FILEFINDER_OPEN_LAST_CLOSED_FILE = 0x0105;
         [DllExport(CallingConvention = CallingConvention.Cdecl)]
         static uint messageProc(uint Message, IntPtr wParam, IntPtr lParam)
         {
@@ -53,32 +48,38 @@ namespace FileFinder
                     CommunicationInfo communicationInfo = (CommunicationInfo)Marshal.PtrToStructure(
                         (IntPtr)lParam, typeof(CommunicationInfo));
                     string srcModuleName = Marshal.PtrToStringAuto(communicationInfo.srcModuleName);
-                    if (communicationInfo.internalMsg == NPEM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY)
+                    if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY)
                     {
-                        string dirPath = Marshal.PtrToStringAuto(communicationInfo.info);
-                        bool openFiles = false;
-                        List<string> selectedFiles = Main.OpenFromDirectoryGreedy(srcModuleName, dirPath, openFiles);
+                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
+                            communicationInfo.info, typeof(API.NppmFileFinderInfo));
+                        string dirPath = Marshal.PtrToStringAuto(info.szDirPath);
+                        bool openFiles = info.bOpenFiles;
+                        List<string> selectedFiles = API.OpenFromDirectoryGreedy(srcModuleName, dirPath, openFiles);
                     }
-                    else if (communicationInfo.internalMsg == NPEM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY)
+                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY)
                     {
-                        List<string> lstFiles = new ClikeStringArray(communicationInfo.info).ManagedStringsUnicode;
-                        bool openFiles = false;
-                        List<string> selectedFiles = Main.OpenFromStringListGreedy(srcModuleName, lstFiles, openFiles);
+                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
+                           communicationInfo.info, typeof(API.NppmFileFinderInfo));
+                        List<string> lstFiles = new ClikeStringArray(info.arrFilePaths).ManagedStringsUnicode;
+                        bool openFiles = info.bOpenFiles;
+                        List<string> selectedFiles = API.OpenFromStringListGreedy(srcModuleName, lstFiles, openFiles);
                     }
-                    else if (communicationInfo.internalMsg == NPEM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY)
+                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY)
                     {
-                        string dirPath = Marshal.PtrToStringAuto(communicationInfo.info);
-                        string searchPattern = "";
-                        bool showFolderBrowser = true;
-                        bool openFiles = false;
-                        List<string> selectedFiles = Main.SearchInDirectoryExplicitly(srcModuleName, dirPath,
+                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
+                          communicationInfo.info, typeof(API.NppmFileFinderInfo));
+                        string dirPath = Marshal.PtrToStringAuto(info.szDirPath);
+                        string searchPattern = Marshal.PtrToStringAuto(info.szSearchPattern);
+                        bool showFolderBrowser = info.bShowFolderBrowser;
+                        bool openFiles = info.bOpenFiles;
+                        List<string> selectedFiles = API.SearchInDirectoryExplicitly(srcModuleName, dirPath,
                             searchPattern, showFolderBrowser, openFiles);
                     }
-                    else if (communicationInfo.internalMsg == NPEM_FILEFINDER_OPEN_FROM_HISTORY)
+                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_HISTORY)
                     {
                         Main.OpenFromFileHistory();
                     }
-                    else if (communicationInfo.internalMsg == NPEM_FILEFINDER_OPEN_LAST_CLOSED_FILE)
+                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE)
                     {
                         Main.OpenLastClosedFile();
                     }
