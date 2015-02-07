@@ -123,7 +123,10 @@ namespace FileFinder
                     string filePath = PluginBase.GetFilePathFromBufferID(nc.nmhdr.idFrom);
                     if (File.Exists(filePath))
                     {
-                        Main.HistoryFiles.Remove(filePath);
+                        while (Main.HistoryFiles.Contains(filePath))
+                        {
+                            Main.HistoryFiles.Remove(filePath);
+                        }
                     }
                 }
                 else if (nc.nmhdr.code == (uint)NppMsg.NPPN_FILEBEFORECLOSE)
@@ -134,11 +137,14 @@ namespace FileFinder
                         FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
                         if (!fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FilePath))
                         {
-                            Main.HistoryFiles.Insert(0, filePath);
-                            if (Main.HistoryFiles.Count > Main.MaxHistoryLength)
+                            if (!Main.HistoryFiles.Contains(filePath))
                             {
-                                Main.HistoryFiles.RemoveRange(Main.MaxHistoryLength,
-                                    Main.HistoryFiles.Count - Main.MaxHistoryLength);
+                                Main.HistoryFiles.Insert(0, filePath);
+                                if (Main.HistoryFiles.Count > Main.MaxHistoryLength)
+                                {
+                                    Main.HistoryFiles.RemoveRange(Main.MaxHistoryLength,
+                                        Main.HistoryFiles.Count - Main.MaxHistoryLength);
+                                }
                             }
                         }
                     }
