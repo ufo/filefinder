@@ -1,15 +1,16 @@
 FileFinder
 ==========
 
-A plug-in for N++ which helps quickly finding files by the name.
+A plug-in for N++ which helps quickly finding files by name.
 Besides it serves an extended usage of N++'s file history.
 
-The plug-in features were heavily inspired by Wing IDE's "Select
-Project File to Open" and Opera's "Reopen last closed tab".
-
-Note: This plug-in is not going to crawl the content of files.
-N++ already perfectly offers this functionality. Also the
-plug-in's own file history is not inherited by the one of N++.
+Additional notes:
+1) The plug-in features were inspired by Wing IDE's "Select
+   Project File to Open" and Opera's "Reopen last closed tab".
+2) The plug-in does not crawl the content of files.
+   N++ already offers this functionality ("Find in Files").
+3) The file history of the plug-in is not directly related to
+   the one of N++.
 
 Functions:
 ----------
@@ -21,12 +22,14 @@ the top level directory for the asynchronously starting file search, gets
 highlighted in the full file path box. All further dialog interactions (e.g.
 entering a filter string) can be immediately started while the asynchronous
 file search is still active. The context can be navigated to the parent folder
-by clicking the folder-up icon or by pressing ALT + UP, which restarts the file
-search.
+by clicking the folder-up icon (or by pressing ALT + UP as in Windows Explorer),
+which restarts the file search. In the left bottom corner on the one hand case
+sensitive search can be toggled on and off, on the other hand all filtered
+results can be made visible in the match list.
 Note: The use case for this function is to quickly open a file, which resides
-"nearby" or in the same "workspace". For technical reasons this approach of file
-search starts slowing down when the match list contains hundreds or thousands
-of file entries.
+"nearby" or in the same recursive "workspace". For technical reasons this
+approach of file search starts slowing down when the match list contains
+thousands of file entries.
 
 "Search in directory (explicitly)...":
 Opens a folder browser dialog preselected with the folder of the document,
@@ -37,10 +40,12 @@ gets started asynchronously. The context folder, which was chosen in the folder
 browser dialog gets highlighted in the full file path box. All further dialog
 interactions (e.g. entering a filter string) can be immediately started while
 the asynchronous file search is still active. The context can be navigated to
-the parent folder by clicking the folder-up icon or by pressing ALT + UP, which
-restarts the file search.
+the parent folder by clicking the folder-up icon (or by pressing ALT + UP as in
+Windows Explorer), which restarts the file search. In the left bottom corner
+on the one hand case sensitive search can be toggled on and off, on the other
+hand all filtered results can be made visible in the match list.
 Note: The use case for this function is to search for a file "somewhere on disk"
-or in workspaces with thousands of files.
+or in "workspaces" with thousands of files.
 
 "Open from file history...":
 Show a filterable list of the last closed files. Select and open a file or
@@ -66,7 +71,9 @@ Choose how to compare the search box string with the file paths in the list box.
 This option can also be toggled in the left bottom corner of the search dialog.
 
 "Displayed file path format":
-Choose how to display the file paths in the list box.
+Choose how to display the file paths in the list box. Displaying relative paths
+means that the least common directory ancestor of all currently found entries
+is the root directory for all relative paths.
 
 "Excluded directories / file names":
 For each "folder search" and "file history search" directories and file
@@ -76,31 +83,31 @@ box of an Explorer window):
 The strings can contain a combination of valid literal path, wildcard (* and ?)
 characters and environment variables. Typically this syntax results in the
 desired file name hit list, but sometimes it is required to use an advanced and
-more precise query string as an exclusion filter. For this purpose please see the
-section below about regular expressions.
+more precise query string to be used as an exclusion filter. For this purpose
+please see the section below about regular expressions.
 
 "Show filtered paths":
 Sometimes you might wonder if any files are missing in the expected result list,
-either due to inaccurate exclusion filters, "hidden" file attribute or insufficient
+either due to inaccurate exclusion filters, "hidden" file attributes or insufficient
 access rights. If you enable this option, which you can also toggle in the left
 bottom corner of the directory search dialog, then all of these files will be shown
 too (red = hidden or access denied, blue = excluded by filter).
 
 "Bypass file system redirection":
 If you ever tried on a 64 bit Windows navigating via a file dialog of a 32 bit
-application (like N++) into the "native" system32 folder, then you surely know that
-you fail. As for technical reasons this is not possible without an expensive
-workaround, FileFinder provides an approach to do so by executing an included small
-64 bit binary (".../plugins/FileFinder/FolderSelectDialog.exe"). Since this results
-in a short delay of a second or two, you shouldn't really enable this option if
-you don't intend to ever search anything in the system32 folder.
-As this is a 64 bit issue, the check box is disabled on a 32 bit windows.
+application (like N++) into the "native" system32 folder, then you might have
+noticed that it is not possible. As for technical reasons this is not doable without
+an expensive workaround, FileFinder provides an approach to do so by executing an
+included small 64 bit binary (".../plugins/FileFinder/FolderSelectDialog.exe").
+Since this sometimes results in a delay of some seconds, you shouldn't enable this
+option if you don't intend to ever search anything in the system32 folder.
+Note: As this is a 64 bit issue, the check box is disabled on a 32 bit windows.
 
 "Maximum history length":
 Don't remember a higher amount of closed file paths than defined.
 
 "Auto validate file names":
-When accessing the file history check if all listed file paths exist and that
+When accessing the file history always check if all listed file paths exist and that
 they don't match the defined file history exclusion list.
 
 Regular expressions:
@@ -122,8 +129,53 @@ for the "MSDN: Regular Expression Language - Quick Reference".
 Plug-in developers:
 -------------------
 
-FileFinder exposes its functionality to other N++ plug-ins.
-[T.b.d.]
+FileFinder exposes its functionality to other N++ plug-ins:
+
+NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY = 0x0101;
+// Evaluated NppmFileFinderInfo members:
+// -NppmFileFinderInfo.szDirPath
+// -NppmFileFinderInfo.bOpenFiles
+// If bOpenFiles if false, then all selected paths are returned in
+// the form of a string array which must be freed by the caller.
+NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY = 0x0102;
+// Evaluated NppmFileFinderInfo members:
+// -NppmFileFinderInfo.arrFilePaths
+// -NppmFileFinderInfo.bOpenFiles
+// If bOpenFiles if false, then all selected paths are returned in
+// the form of a string array which must be freed by the caller.
+NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY = 0x0103;
+// Evaluated NppmFileFinderInfo members:
+// -NppmFileFinderInfo.szDirPath
+// -NppmFileFinderInfo.szSearchPattern
+// -NppmFileFinderInfo.bShowFolderBrowser
+// -NppmFileFinderInfo.bOpenFiles
+// If bOpenFiles if false, then all selected paths are returned in
+// the form of a string array which must be freed by the caller.
+NPPM_FILEFINDER_OPEN_FROM_HISTORY = 0x0104;
+// Evaluated NppmFileFinderInfo members:
+// -NppmFileFinderInfo.bOpenFiles
+// If bOpenFiles if false, then all selected paths are returned in
+// the form of a string array which must be freed by the caller.
+NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE = 0x0105;
+// Evaluated NppmFileFinderInfo members:
+// -NppmFileFinderInfo.bOpenFiles
+// If bOpenFiles if false, then all selected paths are returned in
+// the form of a string array which must be freed by the caller.
+
+Example call:
+SendMessage(nppData._nppHandle, NPPM_MSGTOPLUGIN, "FileFinder.dll", communicationInfo)
+
+Example CommunicationInfo:
+communicationInfo.srcModuleName = "MyPlugin.dll";
+communicationInfo.internalMsg = NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY;
+communicationInfo.info = nppmFileFinderInfo;
+
+Example NppmFileFinderInfo:
+nppmFileFinderInfo.szDirPath = "C:\some\directory";
+nppmFileFinderInfo.arrFilePaths = NULL;
+nppmFileFinderInfo.szSearchPattern = NULL;
+nppmFileFinderInfo.bShowFolderBrowser = false;
+nppmFileFinderInfo.bOpenFiles = true;
 
 Change log:
 -----------
