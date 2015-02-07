@@ -45,45 +45,7 @@ namespace FileFinder
             {
                 if (Message == (uint)NppMsg.NPPM_MSGTOPLUGIN)
                 {
-                    CommunicationInfo communicationInfo = (CommunicationInfo)Marshal.PtrToStructure(
-                        (IntPtr)lParam, typeof(CommunicationInfo));
-                    string srcModuleName = Marshal.PtrToStringAuto(communicationInfo.srcModuleName);
-                    if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY)
-                    {
-                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
-                            communicationInfo.info, typeof(API.NppmFileFinderInfo));
-                        string dirPath = Marshal.PtrToStringAuto(info.szDirPath);
-                        bool openFiles = info.bOpenFiles;
-                        List<string> selectedFiles = API.OpenFromDirectoryGreedy(srcModuleName, dirPath, openFiles);
-                    }
-                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY)
-                    {
-                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
-                           communicationInfo.info, typeof(API.NppmFileFinderInfo));
-                        List<string> lstFiles = new ClikeStringArray(info.arrFilePaths).ManagedStringsUnicode;
-                        bool openFiles = info.bOpenFiles;
-                        List<string> selectedFiles = API.OpenFromStringListGreedy(srcModuleName, lstFiles, openFiles);
-                    }
-                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY)
-                    {
-                        API.NppmFileFinderInfo info = (API.NppmFileFinderInfo)Marshal.PtrToStructure(
-                          communicationInfo.info, typeof(API.NppmFileFinderInfo));
-                        string dirPath = Marshal.PtrToStringAuto(info.szDirPath);
-                        string searchPattern = Marshal.PtrToStringAuto(info.szSearchPattern);
-                        bool showFolderBrowser = info.bShowFolderBrowser;
-                        bool openFiles = info.bOpenFiles;
-                        List<string> selectedFiles = API.SearchInDirectoryExplicitly(srcModuleName, dirPath,
-                            searchPattern, showFolderBrowser, openFiles);
-                    }
-                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_FROM_HISTORY)
-                    {
-                        Main.OpenFromFileHistory();
-                    }
-                    else if (communicationInfo.internalMsg == API.NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE)
-                    {
-                        Main.OpenLastClosedFile();
-                    }
-
+                    API.HandlePluginMessage(lParam);
                 }
             }
             catch (Exception ex)

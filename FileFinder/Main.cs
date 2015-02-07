@@ -220,11 +220,7 @@ namespace FileFinder
         {
             try
             {
-                List<string> selectedFiles = API.OpenFromStringListGreedy("File history", HistoryFiles, true);
-                foreach (string filePath in selectedFiles)
-                {
-                    HistoryFiles.Remove(filePath);
-                }
+                API.OpenFromFileHistory(true);
             }
             catch (Exception ex)
             {
@@ -235,27 +231,7 @@ namespace FileFinder
         {
             try
             {
-                if (HistoryFiles.Count > 0)
-                {
-                    string filePath = HistoryFiles[0];
-                    if (!string.IsNullOrEmpty(filePath))
-                    {
-                        HistoryFiles.Remove(filePath);
-
-                        if (Main.AutoValidateFilenames)
-                        {
-                            FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
-                            if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FilePath) ||
-                                !File.Exists(filePath))
-                            {
-                                OpenLastClosedFile();
-                                return;
-                            }
-                        }
-
-                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
-                    }
-                }
+                API.OpenLastClosedFile(true);
             }
             catch (Exception ex)
             {

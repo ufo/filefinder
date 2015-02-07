@@ -133,34 +133,49 @@ FileFinder exposes its functionality to other N++ plug-ins:
 
 NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY = 0x0101;
 // Evaluated NppmFileFinderInfo members:
-// -NppmFileFinderInfo.szDirPath
-// -NppmFileFinderInfo.bOpenFiles
+//  -NppmFileFinderInfo.szDirPath
+//  -NppmFileFinderInfo.bOpenFiles
+// Filled NppmFileFinderInfo members:
+//  -NppmFileFinderInfo.arrSelectedFilePaths
 // If bOpenFiles if false, then all selected paths are returned in
-// the form of a string array which must be freed by the caller.
+// the form of a string array ("arrSelectedFilePaths") which must
+// be freed by the caller.
 NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY = 0x0102;
 // Evaluated NppmFileFinderInfo members:
 // -NppmFileFinderInfo.arrFilePaths
 // -NppmFileFinderInfo.bOpenFiles
+// Filled NppmFileFinderInfo members:
+//  -NppmFileFinderInfo.arrSelectedFilePaths
 // If bOpenFiles if false, then all selected paths are returned in
-// the form of a string array which must be freed by the caller.
+// the form of a string array ("arrSelectedFilePaths") which must
+// be freed by the caller.
 NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY = 0x0103;
 // Evaluated NppmFileFinderInfo members:
 // -NppmFileFinderInfo.szDirPath
-// -NppmFileFinderInfo.szSearchPattern
 // -NppmFileFinderInfo.bShowFolderBrowser
+// -NppmFileFinderInfo.szSearchPattern
 // -NppmFileFinderInfo.bOpenFiles
+// Filled NppmFileFinderInfo members:
+//  -NppmFileFinderInfo.arrSelectedFilePaths
 // If bOpenFiles if false, then all selected paths are returned in
-// the form of a string array which must be freed by the caller.
+// the form of a string array ("arrSelectedFilePaths") which must
+// be freed by the caller.
 NPPM_FILEFINDER_OPEN_FROM_HISTORY = 0x0104;
 // Evaluated NppmFileFinderInfo members:
 // -NppmFileFinderInfo.bOpenFiles
+// Filled NppmFileFinderInfo members:
+//  -NppmFileFinderInfo.arrSelectedFilePaths
 // If bOpenFiles if false, then all selected paths are returned in
-// the form of a string array which must be freed by the caller.
+// the form of a string array ("arrSelectedFilePaths") which must
+// be freed by the caller.
 NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE = 0x0105;
 // Evaluated NppmFileFinderInfo members:
 // -NppmFileFinderInfo.bOpenFiles
+// Filled NppmFileFinderInfo members:
+//  -NppmFileFinderInfo.arrSelectedFilePaths
 // If bOpenFiles if false, then all selected paths are returned in
-// the form of a string array which must be freed by the caller.
+// the form of a string array ("arrSelectedFilePaths") which must
+// be freed by the caller.
 
 Example call:
 SendMessage(nppData._nppHandle, NPPM_MSGTOPLUGIN, "FileFinder.dll", communicationInfo)
@@ -173,11 +188,13 @@ communicationInfo.info = nppmFileFinderInfo;
 Example NppmFileFinderInfo:
 nppmFileFinderInfo.szDirPath = "C:\some\directory";
 nppmFileFinderInfo.arrFilePaths = NULL;
-nppmFileFinderInfo.szSearchPattern = NULL;
 nppmFileFinderInfo.bShowFolderBrowser = false;
+nppmFileFinderInfo.szSearchPattern = NULL;
 nppmFileFinderInfo.bOpenFiles = true;
+nppmFileFinderInfo.arrSelectedFilePaths = NULL;
 
 Change log:
 -----------
 
-1.0 Release
+1.0
+    -release

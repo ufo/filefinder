@@ -14,29 +14,81 @@ namespace FileFinder
         internal const int NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY = 0x0101;
         // NppmFileFinderInfo.szDirPath
         // NppmFileFinderInfo.bOpenFiles
+        // NppmFileFinderInfo.arrSelectedFilePaths
 
         internal const int NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY = 0x0102;
         // NppmFileFinderInfo.arrFilePaths
         // NppmFileFinderInfo.bOpenFiles
+        // NppmFileFinderInfo.arrSelectedFilePaths
 
         internal const int NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY = 0x0103;
         // NppmFileFinderInfo.szDirPath
-        // NppmFileFinderInfo.szSearchPattern
         // NppmFileFinderInfo.bShowFolderBrowser
+        // NppmFileFinderInfo.szSearchPattern
         // NppmFileFinderInfo.bOpenFiles
+        // NppmFileFinderInfo.arrSelectedFilePaths
 
         internal const int NPPM_FILEFINDER_OPEN_FROM_HISTORY = 0x0104;
+        // NppmFileFinderInfo.bOpenFiles
+        // NppmFileFinderInfo.arrSelectedFilePaths
 
         internal const int NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE = 0x0105;
+        // NppmFileFinderInfo.bOpenFiles
+        // NppmFileFinderInfo.arrSelectedFilePaths
         
         [StructLayout(LayoutKind.Sequential)]
         internal struct NppmFileFinderInfo
         {
             public IntPtr szDirPath;
             public IntPtr arrFilePaths;
-            public IntPtr szSearchPattern;
             public bool bShowFolderBrowser;
+            public IntPtr szSearchPattern;
             public bool bOpenFiles;
+            public IntPtr arrSelectedFilePaths;
+        }
+
+        internal static void HandlePluginMessage(IntPtr lParam)
+        {
+            CommunicationInfo communicationInfo = (CommunicationInfo)Marshal.PtrToStructure(
+                (IntPtr)lParam, typeof(CommunicationInfo));
+            string srcModuleName = Marshal.PtrToStringAuto(communicationInfo.srcModuleName);
+            NppmFileFinderInfo info = (NppmFileFinderInfo)Marshal.PtrToStructure(
+                communicationInfo.info, typeof(NppmFileFinderInfo));
+            List<string> selectedFiles = null;
+
+            if (communicationInfo.internalMsg == NPPM_FILEFINDER_OPEN_FROM_DIRECTORY_GREEDY)
+            {
+                selectedFiles = OpenFromDirectoryGreedy(
+                    srcModuleName,
+                    Marshal.PtrToStringAuto(info.szDirPath),
+                    info.bOpenFiles);
+            }
+            else if (communicationInfo.internalMsg == NPPM_FILEFINDER_OPEN_FROM_STRINGLIST_GREEDY)
+            {
+                selectedFiles = OpenFromStringListGreedy(
+                    srcModuleName,
+                    new ClikeStringArray(info.arrFilePaths).ManagedStringsUnicode,
+                    info.bOpenFiles);
+            }
+            else if (communicationInfo.internalMsg == NPPM_FILEFINDER_SEARCH_IN_DIRECTORY_EXPLICITLY)
+            {
+                selectedFiles = SearchInDirectoryExplicitly(
+                    srcModuleName,
+                    Marshal.PtrToStringAuto(info.szDirPath),
+                    Marshal.PtrToStringAuto(info.szSearchPattern),
+                    info.bShowFolderBrowser,
+                    info.bOpenFiles);
+            }
+            else if (communicationInfo.internalMsg == NPPM_FILEFINDER_OPEN_FROM_HISTORY)
+            {
+                selectedFiles = OpenFromFileHistory(info.bOpenFiles);
+            }
+            else if (communicationInfo.internalMsg == NPPM_FILEFINDER_OPEN_LAST_CLOSED_FILE)
+            {
+                selectedFiles = OpenLastClosedFile(info.bOpenFiles);
+            }
+
+            updateCommunicationInfo(ref communicationInfo, ref info, selectedFiles, info.bOpenFiles);
         }
 
         internal static List<string> OpenFromDirectoryGreedy(string frmTitlePrefix, string dirPath, bool openFiles)
@@ -120,6 +172,63 @@ namespace FileFinder
                 }
             }
             return selectedFiles;
+        }
+
+        internal static List<string> OpenFromFileHistory(bool openFiles)
+        {
+            List<string> selectedFiles = OpenFromStringListGreedy("File history", Main.HistoryFiles, openFiles);
+            if (openFiles)
+            {
+                foreach (string filePath in selectedFiles)
+                {
+                    Main.HistoryFiles.Remove(filePath);
+                }
+            }
+            return selectedFiles;
+        }
+
+        internal static List<string> OpenLastClosedFile(bool openFiles)
+        {
+            List<string> selectedFiles = new List<string>();
+            if (Main.HistoryFiles.Count > 0)
+            {
+                string filePath = Main.HistoryFiles[0];
+                if (!string.IsNullOrEmpty(filePath))
+                {
+                    Main.HistoryFiles.Remove(filePath);
+
+                    if (Main.AutoValidateFilenames)
+                    {
+                        FileMaskMatcher fileMaskMatcher = new FileMaskMatcher(Main.HistoryExclusions);
+                        if (fileMaskMatcher.IsMatch(filePath, FileMaskMatcher.MatchType.FilePath) ||
+                            !File.Exists(filePath))
+                        {
+                            return OpenLastClosedFile(openFiles);
+                        }
+                    }
+
+                    if (openFiles)
+                    {
+                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                    }
+                    else
+                    {
+                        selectedFiles.Add(filePath);
+                    }
+                }
+            }
+            return selectedFiles;
+        }
+
+        static void updateCommunicationInfo(ref CommunicationInfo communicationInfo, ref NppmFileFinderInfo info, List<string> selectedFiles, bool openFiles)
+        {
+            if (!openFiles)
+            {
+                ClikeStringArray arr = new ClikeStringArray(selectedFiles);
+                arr.AutoDispose = false;
+                info.arrSelectedFilePaths = arr.NativePointer;
+                Marshal.StructureToPtr(info, communicationInfo.info, false);
+            }
         }
     }
 }
