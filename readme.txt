@@ -118,11 +118,21 @@ and in the exclusion masks ("Excluded directories / file names") can optionally
 contain regular expressions in order to exclude files and folders by a maximum
 granularity. By starting a pattern string with a colon (":") you tell FileFinder
 that it should handle the pattern as a regular expression.
-Examples:
+
+Example folder exclusion patterns:
 :\\bak\\.*\.cs$ (case sensitive exclusion of all "*.cs" files recursively
                  found in the folder structure of any "bak" folder)
 :(?i)\\log\\    (case insensitive exclusion of all "log" folders without
                  excluding "log" files in general)
+
+Example file search patterns:
+:\.(cs|resx)$   (show all file names with the file extensions ".cs" and ".resx"
+                 without including files with other file extensions but residing
+				 in a folder e.g. like ".cs-files")
+:\\F[^\\]*$     (show all file names starting with a "F" without including files
+                 not starting with a "F" but residing in a folder starting with
+				 a "F")
+
 For details about the used regular expression engine please search the internet
 for the "MSDN: Regular Expression Language - Quick Reference".
 
