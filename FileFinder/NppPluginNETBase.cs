@@ -38,16 +38,16 @@ namespace NppPluginNET
 
         internal static IntPtr GetCurrentScintilla()
         {
-            int curScintilla;
-            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out curScintilla);
-            return (curScintilla == 0) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
+            IntPtr curScintilla;
+            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, IntPtr.Zero, out curScintilla);
+            return (curScintilla == IntPtr.Zero) ? nppData._scintillaMainHandle : nppData._scintillaSecondHandle;
         }
 
-        internal static string GetFilePathFromBufferID(uint bufferID)
+        internal static string GetFilePathFromBufferID(IntPtr bufferID)
         {
             StringBuilder sBfilePath = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle,
-                NppMsg.NPPM_GETFULLPATHFROMBUFFERID, (int)bufferID, sBfilePath);
+                NppMsg.NPPM_GETFULLPATHFROMBUFFERID, bufferID, sBfilePath);
             return sBfilePath.ToString();
         }
         #endregion

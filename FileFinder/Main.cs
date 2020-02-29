@@ -92,7 +92,7 @@ namespace FileFinder
             IntPtr pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ADDTOOLBARICON,
-                PluginBase._funcItems.Items[id]._cmdID, pTbIcons);
+                (IntPtr)PluginBase._funcItems.Items[id]._cmdID, pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
         internal static void SetToolBarIcon()
@@ -112,7 +112,7 @@ namespace FileFinder
 
             StringBuilder sbPluginDir = new StringBuilder(Win32.MAX_PATH);
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR,
-                Win32.MAX_PATH, sbPluginDir);
+                (IntPtr)Win32.MAX_PATH, sbPluginDir);
             pluginConfigDir = Path.Combine(sbPluginDir.ToString(), PluginName);
             if (!Directory.Exists(pluginConfigDir)) Directory.CreateDirectory(pluginConfigDir);
 
@@ -180,7 +180,7 @@ namespace FileFinder
         {
             try
             {
-                uint bufID = (uint)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
+                IntPtr bufID = Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, IntPtr.Zero, 0);
                 string filePath = PluginBase.GetFilePathFromBufferID(bufID);
                 string dirPath = "";
                 if (File.Exists(filePath))
@@ -203,7 +203,7 @@ namespace FileFinder
             try
             {
                 string rootDir = null;
-                uint bufID = (uint)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, 0, 0);
+                IntPtr bufID = Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTBUFFERID, IntPtr.Zero, 0);
                 string filePath = PluginBase.GetFilePathFromBufferID(bufID);
                 if (File.Exists(filePath))
                 {
@@ -303,7 +303,7 @@ namespace FileFinder
             try
             {
                 string filePath = Path.Combine(Path.Combine(PluginDir, "doc"), PluginName + ".README.txt");
-                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, IntPtr.Zero, filePath);
             }
             catch (Exception ex)
             {

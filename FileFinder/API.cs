@@ -167,7 +167,7 @@ namespace FileFinder
                 {
                     foreach (string filePath in selectedFiles)
                     {
-                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, IntPtr.Zero, filePath);
                     }
                 }
             }
@@ -209,7 +209,7 @@ namespace FileFinder
 
                     if (openFiles)
                     {
-                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, filePath);
+                        Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_DOOPEN, IntPtr.Zero, filePath);
                     }
                     else
                     {
