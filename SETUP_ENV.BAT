@@ -3,8 +3,10 @@
 IF NOT "%VS120COMNTOOLS%" == "" GOTO VS2013
 IF NOT "%VS140COMNTOOLS%" == "" GOTO VS2015
 
+IF EXIST "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" GOTO VS2022
+
 ECHO No build environment found!
-EXIT 1
+EXIT /B 1
 
 :VS2013
 SET BUILDER=VS2013
@@ -14,6 +16,11 @@ GOTO FINISH
 :VS2015
 SET BUILDER=VS2015
 CALL "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" x64
+GOTO FINISH
+
+:VS2022
+SET BUILDER=VS2022
+CALL "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64
 GOTO FINISH
 
 :FINISH

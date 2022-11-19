@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NppPlugin.DllExport;
+using NppPluginNET;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using NppPlugin.DllExport;
-using NppPluginNET;
 
 namespace FileFinder
 {
