@@ -1,16 +1,17 @@
-SET VERSION=v0.1.0
+SET VERSION=v0.2.0
 
-SET ZIP="C:\Tools\7-Zip\7z.exe"
+SET ZIP="C:\Program Files\7-Zip\7z.exe"
 
 SET TARGET=FileFinder.%VERSION%.bin
 
 MD %TARGET%
-MD %TARGET%\doc
 MD %TARGET%\FileFinder
+MD %TARGET%\FileFinder\doc
+MD %TARGET%\FileFinder\FileFinder
 
-COPY "Notepad++\plugins\FileFinder.dll" "%TARGET%"
-COPY "Notepad++\plugins\FileFinder\FolderSelectDialog.exe" "%TARGET%\FileFinder"
-COPY "readme.txt" "%TARGET%\doc\FileFinder.readme.txt"
+COPY "Notepad++\plugins\FileFinder\FileFinder.dll" "%TARGET%\FileFinder"
+COPY "Notepad++\plugins\FileFinder\FileFinder\FolderSelectDialog.exe" "%TARGET%\FileFinder\FileFinder"
+COPY "readme.txt" "%TARGET%\FileFinder\doc\FileFinder.readme.txt"
 
 CD %TARGET%
 %ZIP% a -mx9 ..\%TARGET%.zip *

@@ -206,5 +206,5 @@ nppmFileFinderInfo.arrSelectedFilePaths = NULL;
 Change log:
 -----------
 
-1.0
+0.2
     -release

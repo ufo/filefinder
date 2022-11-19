@@ -61,7 +61,7 @@
             this.lblAuthor.Name = "lblAuthor";
             this.lblAuthor.Size = new System.Drawing.Size(116, 13);
             this.lblAuthor.TabIndex = 2;
-            this.lblAuthor.Text = "Copyleft © 2015 by ufo";
+            this.lblAuthor.Text = "Copyleft © ufo";
             // 
             // lblIssues
             // 
