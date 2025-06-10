@@ -1,6 +1,6 @@
 @ECHO off
 
-SET VERSION=v0.2.0
+SET VERSION=v0.3.0
 
 SET ZIP="C:\Program Files\7-Zip\7z.exe"
 SET ZIP_ARGS=a -mx9

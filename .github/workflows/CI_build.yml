@@ -1,0 +1,40 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        build_configuration: [Release, Debug]
+        build_platform: [Any CPU]
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: MSBuild of solution
+      run: msbuild FileFinder.sln /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}" /m /verbosity:minimal
+
+    - name: zip artifacts for ${{ matrix.build_platform }}
+      if: matrix.build_platform == 'Any CPU' && matrix.build_configuration == 'Release'
+      run: .\PACKAGE.BAT
+
+    - name: Archive artifacts for ${{ matrix.build_platform }}
+      if: matrix.build_configuration == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+          name: FileFinder.v0.3.0.bin.zip
+          path: FileFinder.v0.3.0.bin.zip
+
+    - name: Create release on tagging
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          files: FileFinder.v0.3.0.bin.zip
+
